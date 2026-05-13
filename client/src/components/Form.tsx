@@ -8,7 +8,7 @@ type FormProps = {
 export function Form({ label, className, id, ...props }: FormProps){
 
     return (
-        <form className="flex flex-col gap-1 w-full">
+        <div className="flex flex-col gap-1 w-full">
             <label htmlFor={id} className="text-sm text-zinc-300">{label}</label>
             <input
                 id={id}
@@ -19,6 +19,6 @@ export function Form({ label, className, id, ...props }: FormProps){
                     className
                 )}
             />
-        </form>
+        </div>
     )
 }
