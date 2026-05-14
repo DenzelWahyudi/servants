@@ -1,10 +1,57 @@
+import React, { useState } from "react";
 import { ButtonLink } from "./ButtonLink";
 import { Form } from "./Form";
 import { Heading } from "./Heading";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 export function LoginCard(){
+
+    const navigate = useNavigate();
+    const { login } = useAuth();
+
+    const [formData, setFormData] = useState({
+        phoneNumber: "",
+        password: ""
+    });
+    const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
+
+    function handleChange(field: keyof typeof formData){
+        return (e: React.ChangeEvent<HTMLInputElement>) =>
+            setFormData((prev) => ({ ...prev, [field]: e.target.value}))
+    }
+
+    async function handleLogin(){
+        setError(null);
+        setLoading(true);
+
+        try {
+            const response = await fetch("/api/users/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData),
+            })
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                setError(data.message || "Login failed. Please try again.");
+                return;
+            }
+
+            login(data.token, data.user);
+            
+            navigate("/");
+        } catch {
+            setError("Could not connect to the server. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    }
+    
     return (
-        <div className="flex flex-col gap-1.5 p-7 bg-slate-800 items-center rounded-xl w-100 h-112">
+        <div className="flex flex-col gap-1.5 p-7 bg-slate-800 items-center rounded-xl w-100 h-118">
             <div className="mt-2">
                 <Heading>Login</Heading>
             </div>
@@ -12,12 +59,24 @@ export function LoginCard(){
                 <h2 className="text-zinc-400 text-lg">No one comes to help, no one comes to contribute, everybody comes to learn and to serve - Stephen Tong
                 </h2>
             </div>
-            <Form label="Phone number" />
-            <Form label="Password" />
+            <Form label="Phone number"  value={formData.phoneNumber}    onChange={handleChange("phoneNumber")} />
+            <Form label="Password"      value={formData.password}       onChange={handleChange("password")} />
+
+            {error && (
+                <p className="text-red-400 text-sm text-center w-full">{error}</p>
+            )}
+
             <div className="w-full flex justify-end">
                 <ButtonLink to="/" variant="secondary" className="text-amber-400 text-sm">Forgot Password?</ButtonLink>
             </div>
-            <ButtonLink to="/" variant="card" className="font-semibold text-base py-1.5 rounded-lg">Login</ButtonLink>
+
+            <button
+            onClick={handleLogin}
+            disabled={loading}
+            className="bg-amber-400 text-blue-950 text-base font-semibold py-1.5 rounded-lg w-full mt-auto hover:bg-amber-500 flex justify-center disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+                {loading ? "Logging in..." : "Login"}
+            </button>
         </div>
     )
 }

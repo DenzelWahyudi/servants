@@ -15,22 +15,22 @@ const services: Service[] = [
 export function UpcomingServices(){
     return (
         <section className="bg-white py-4">
-            <h2 className="text-3xl font-semibold text-slate-900 text-center mb-3">Upcoming Sevices</h2>
+            <h2 className="text-3xl font-semibold text-slate-900 text-center mb-3">Upcoming Services</h2>
             <div className="rounded-lg overflow-hidden shadow-lg border border-zinc-200">
                 <table className="text-xs w-full text-sm text-left text-zinc-300">
                     <thead className="text-zinc-950 border-amber-400 border-b-2 border-t-2">
                         <tr>
-                            <th className="py-2 pl-3">Upcoming Sevice</th>
+                            <th className="py-2 pl-3">Upcoming Service</th>
                             <th>Date</th>
                             <th>Time</th>
-                            <th>Roles Need</th>
+                            <th>Roles Needed</th>
                             <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
                         {services.map((s) => (
                             <tr key={s.name} className="border-b border-zinc-400 text-zinc-950">
-                                <td className="py-2 pl-3 font-medium">{s.name}</td>
+                                <td className="py-3 pl-3 font-medium">{s.name}</td>
                                 <td>{s.date}</td>
                                 <td>{s.time}</td>
                                 <td>{s.roles}</td>

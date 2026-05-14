@@ -1,3 +1,5 @@
+import logo from '../assets/logo.png'
+
 type FooterProps = {
     churchName: string
     location: string
@@ -7,16 +9,27 @@ type FooterProps = {
 
 export function Footer({ churchName, location, phone, email }: FooterProps){
     return (
-        <div className="flex gap-30">
-            <div className="flex flex-col gap-1">
-                <h3 className="text-zinc-300 font-medium">{churchName}</h3>
-                <h4 className="text-sm text-zinc-400">{location}</h4>
+        <div className="flex flex-col gap-10 pt-7">
+            <div className="flex gap-30">
+                <div className="flex flex-col gap-2">
+                    <h3 className="text-zinc-300 font-semibold">{churchName}</h3>
+                    <h4 className="text-sm text-zinc-400">{location}</h4>
+                </div>
+                <div className="flex flex-col gap-2">
+                    <h3 className="text-zinc-300 font-semibold">Contact us</h3>
+                    <div className="flex flex-col gap-1.5">
+                        <h4 className="text-sm text-zinc-400">📞 {phone}</h4>
+                        <h4 className="text-sm text-zinc-400">✉️ {email}</h4>
+                    </div>
+                </div>
             </div>
-            <div className="flex flex-col gap-1">
-                <h3 className="text-zinc-300 font-medium">Contact us</h3>
-                <h4 className="text-sm text-zinc-400">{phone}</h4>
-                <h4 className="text-sm text-zinc-400">{email}</h4>
+
+            <div className="flex gap-3 items-center">
+                <img src={logo} alt="Servants Logo" className="w-7.5 h-10" />
+                <h1 className="text-2xl font-bold">Servants</h1>
             </div>
+
+            <span className='text-sm text-zinc-400'>© 2026 Sevants. All rights reserved.</span>
         </div>
     )
 }

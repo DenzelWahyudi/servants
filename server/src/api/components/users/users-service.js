@@ -4,6 +4,10 @@ async function getUser(id) {
   return usersRepository.getUser(id);
 }
 
+async function getUserByPhoneNumber(phoneNumber) {
+  return usersRepository.getUserByPhoneNumber(phoneNumber);
+}
+
 async function emailExists(email) {
   const user = await usersRepository.getUserByEmail(email);
   return !!user; // Return true if user exists, false otherwise
@@ -36,11 +40,12 @@ async function getUserName(id) {
 
 module.exports = {
   getUser,
+  getUserByPhoneNumber,
   emailExists,
   phoneNumberExists,
   createUser,
   updateUser,
-  deleteUser,
   changePassword,
+  deleteUser,
   getUserName,
 };
