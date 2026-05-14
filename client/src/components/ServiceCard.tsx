@@ -150,7 +150,7 @@ export function ServiceCard(){
                 </button>
             </div>
 
-            <div className="flex flex-col gap-1 flex-1 mr-auto">
+            <div className="flex flex-col gap-1 flex-1 mr-auto mb-3">
                 <h3 className="text-sm text-zinc-300">Status</h3>
                 <select                  value={formData.status}  onChange={handleChange("status")}
                 className="bg-slate-700 border border-slate-600 focus:border-amber-400 outline-none text-zinc-100 text-sm rounded-lg px-3 py-2 transition-colors"
