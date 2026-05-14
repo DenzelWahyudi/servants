@@ -6,6 +6,7 @@ import { Register } from "./pages/Register";
 import { Login } from "./pages/Login";
 import { AuthProvider } from "./context/AuthProvider";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import { CreateService } from "./pages/CreateService";
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
           {/* Public routes — anyone can access */}
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/service/create" element={<CreateService />} />
 
           {/* Protected routes — must be logged in */}
           <Route path="/" element={
