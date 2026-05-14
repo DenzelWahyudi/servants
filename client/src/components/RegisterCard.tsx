@@ -37,7 +37,7 @@ export function RegisterCard(){
             const data = await response.json();
 
             if (!response.ok) {
-                setError(data.massage || "Registration failed. Please try again.");
+                setError(data.message || "Registration failed. Please try again.");
                 return;
             }
 
@@ -46,7 +46,7 @@ export function RegisterCard(){
         } catch {
             setError("Could not connect to the server. Please try again.");
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
     }
 
@@ -66,15 +66,15 @@ export function RegisterCard(){
             <Form label="Confirm Password"  value={formData.confirm_password}   onChange={handleChange("confirm_password")} />
 
             {error && (
-                <p className="tet-red-400 text-sm text-center w-full">{error}</p>
+                <p className="text-red-400 text-sm text-center w-full">{error}</p>
             )}
 
             <button
-                onClick={handleRegister}
-                disabled={loading}
-                className="bg-amber-400 text-blue-950 text-base font-semibold py-1.5 rounded-lg w-full mt-auto hover:bg-amber-500 flex justify-center disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                    {loading ? "Registering..." : "Register"}
+            onClick={handleRegister}
+            disabled={loading}
+            className="bg-amber-400 text-blue-950 text-base font-semibold py-1.5 rounded-lg w-full mt-auto hover:bg-amber-500 flex justify-center disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+                {loading ? "Registering..." : "Register"}
             </button>
 
             <div className="flex items-center mt-1">

@@ -1,10 +1,11 @@
 const usersService = require('./users-service');
 const { errorResponder, errorTypes } = require('../../../core/errors');
 const { hashPassword, passwordMatched } = require('../../../utils/password');
+const jwt = require('jsonwebtoken')
 
 async function getUser(request, response, next) {
   try {
-    const user = await usersService.getUser(request.params.id);
+    const user = await usersService.getUser(request.user.id);
 
     if (!user) {
       throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'User not found');
@@ -97,7 +98,7 @@ async function updateUserEmail(request, response, next) {
   try {
     const { email, password, newEmail } = request.body;
 
-    const user = await usersService.getUser(request.params.id);
+    const user = await usersService.getUser(request.user.id);
 
     if (!user) {
       throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'User not found');
@@ -131,7 +132,7 @@ async function updateUserEmail(request, response, next) {
     }
 
     const success = await usersService.updateUser(
-      request.params.id,
+      request.user.id,
       newEmail,
       user.phoneNumber
     );
@@ -153,7 +154,7 @@ async function updateUserPhoneNumber(request, response, next) {
   try {
     const { email, password, newPhoneNumber } = request.body;
 
-    const user = await usersService.getUser(request.params.id);
+    const user = await usersService.getUser(request.user.id);
 
     if (!user) {
       throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'User not found');
@@ -187,7 +188,7 @@ async function updateUserPhoneNumber(request, response, next) {
     }
 
     const success = await usersService.updateUser(
-      request.params.id,
+      request.user.id,
       user.email,
       newPhoneNumber
     );
@@ -207,14 +208,14 @@ async function updateUserPhoneNumber(request, response, next) {
 
 async function changePassword(request, response, next) {
   try {
-    const { id } = request.params;
+    const id = request.user.id;
     const {
       old_password: oldPassword,
       new_password: newPassword,
       confirm_new_password: confirmNewPassword,
     } = request.body;
 
-    const user = await usersService.getUser(request.params.id);
+    const user = await usersService.getUser(request.user.id);
     if (!user) {
       throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'User not found');
     }
@@ -266,7 +267,7 @@ async function changePassword(request, response, next) {
 
 async function deleteUser(request, response, next) {
   try {
-    const success = await usersService.deleteUser(request.params.id);
+    const success = await usersService.deleteUser(request.user.id);
 
     if (!success) {
       throw errorResponder(
@@ -283,16 +284,77 @@ async function deleteUser(request, response, next) {
 
 async function getUserName(req, res, next){
   try {
-    const user = await usersService.getUser(req.params.id);
+    const user = await usersService.getUser(req.user.id);
 
     if (!user) {
       throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'User not found');
     }
 
-    const name = await usersService.getUserName(req.params.id)
+    const fullName = await usersService.getUserName(req.user.id)
+    const userName = fullName ? fullName.trim().split(' ')[0] : ' ';
+
+    return res.status(200).json(userName);
+  } catch (error) {
+    return next(error)
+  }
+}
+
+async function geFullName(req, res, next){
+  try {
+    const user = await usersService.getUser(req.user.id);
+
+    if (!user) {
+      throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'User not found');
+    }
+
+    const name = await usersService.getUserName(req.user.id)
     return res.status(200).json(name);
   } catch (error) {
     return next(error)
+  }
+}
+
+async function login(req, res, next){
+
+  try {
+    const {phoneNumber, password} = req.body;
+    
+    if (!phoneNumber){
+      throw errorResponder(errorTypes.VALIDATION_ERROR, 'Phone number is required');
+    }
+
+    if (!password){
+      throw errorResponder(errorTypes.VALIDATION_ERROR, 'Password is required');
+    }
+
+    const user = await usersService.getUserByPhoneNumber(phoneNumber);
+
+    if (!user){
+      throw errorResponder(errorTypes.INVALID_CREDENTIALS, 'Invalid phone number or password');
+    }
+
+    const isMatch = await passwordMatched(password, user.passwordHash);
+    if (!isMatch) {
+      throw errorResponder(errorTypes.INVALID_CREDENTIALS, 'Invalid phone number or password');
+    }
+
+    const token = jwt.sign(
+      { id: user.id, name: user.name, role: user.role},
+      process.env.JWT_SECRET,
+      { expiresIn: '1d' }
+    );
+
+    return res.status(200).json({
+      message: 'Login succesful',
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        role: user.role
+      }
+    });
+  } catch (error) {
+    return next(error);
   }
 }
 
@@ -304,4 +366,6 @@ module.exports = {
   changePassword,
   deleteUser,
   getUserName,
+  geFullName,
+  login
 };
