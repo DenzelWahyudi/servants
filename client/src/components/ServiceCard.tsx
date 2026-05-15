@@ -104,7 +104,7 @@ export function ServiceCard(){
                     text-zinc-400 text-sm rounded-lg px-3 py-2 transition-colors"/>
                 </div>
                 <div className="flex-1">
-                    <Form label="Time"  value={formData.time}   onChange={handleChange("time")} placeholder="🕖 09:00 - 13:00"/>
+                    <Form label="Time"  value={formData.time}   onChange={handleChange("time")} placeholder="🕖  09:00"/>
                 </div>
             </div>
 

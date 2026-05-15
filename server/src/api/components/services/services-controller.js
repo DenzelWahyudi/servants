@@ -18,6 +18,10 @@ async function createService(req, res, next){
             throw errorResponder(errorTypes.VALIDATION_ERROR, 'Status is required');
         }
 
+        if (roles.some(role => !role.name)){
+            throw errorResponder(errorTypes.VALIDATION_ERROR, 'Role name is required');
+        }
+
         const serviceSuccess = await servicesService.createService(name, date, time, status);
         if (!serviceSuccess){
             throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Failed to create service');
@@ -46,11 +50,11 @@ async function createService(req, res, next){
 
 async function getServices(req, res, next){
     try {
-        const services = servicesService.getServices();
+        const services = await servicesService.getServices();
         if (!services){
             throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Failed to get services');
         }
-        return res.status(201).json(services);
+        return res.status(200).json(services);
     } catch (error) {
         return next(error);
     }
