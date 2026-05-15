@@ -1,7 +1,7 @@
 import { twMerge } from "tailwind-merge"
 import { Link, type LinkProps } from "react-router-dom"
 
-type Variant = "primary" | "secondary" | "card"
+type Variant = "primary" | "secondary" | "card" | "sidebar"
 
 type ButtonLinkProps = {
     variant?: Variant
@@ -32,6 +32,8 @@ function getVariantStyles(variant: Variant) {
             return "hover:text-amber-400"
         case "card":
             return "bg-amber-400 text-blue-950 text-xs font-medium py-1 px-2 rounded w-full mt-auto hover:bg-amber-500 flex justify-center"
+        case "sidebar":
+            return "flex text-blue-950 text-base font-medium py-2.5 pl-4 w-54 rounded-lg hover:bg-amber-400/30 justify-start"
         default:
             throw new Error(`Invalid variant: ${variant satisfies never}`)
     }

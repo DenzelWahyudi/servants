@@ -9,6 +9,7 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import { CreateService } from "./pages/CreateService";
 import { RegisterAdmin } from "./pages/RegisterAdmin";
 import { LoginAdmin } from "./pages/LoginAdmin";
+import { AdminServices } from "./pages/AdminServices";
 
 export default function App() {
   return (
@@ -20,7 +21,7 @@ export default function App() {
           <Route path="/admin/register" element={<RegisterAdmin />} />
           <Route path="/login" element={<Login />} />
           <Route path="/admin/login" element={<LoginAdmin />} />
-          <Route path="/service/create" element={<CreateService />} />
+          <Route path="/admin/service/create" element={<CreateService />} />
 
           {/* Protected routes — must be logged in */}
           <Route path="/" element={
@@ -31,6 +32,9 @@ export default function App() {
           } />
           <Route path="/openings" element={
             <ProtectedRoute><Openings /></ProtectedRoute>
+          } />
+          <Route path="/admin/services" element={
+            <ProtectedRoute requiredRole="admin"><AdminServices /></ProtectedRoute>
           } />
         </Routes>
       </AuthProvider>

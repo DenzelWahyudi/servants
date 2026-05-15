@@ -42,7 +42,7 @@ export function LoginCardAdmin(){
 
             login(data.token, data.user);
             
-            navigate("/");
+            navigate("/admin/services");
         } catch {
             setError("Could not connect to the server. Please try again.");
         } finally {

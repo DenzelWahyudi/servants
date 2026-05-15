@@ -5,7 +5,7 @@ import { ButtonLink } from './ButtonLink'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 
-type Variant = "home" | "schedule" | "openings" | "register" | "login" | "registeradmin" | "loginadmin"
+type Variant = "home" | "schedule" | "openings" | "register" | "login" | "registeradmin" | "loginadmin" | "admin"
 
 type HeaderProps = {
     variant?: Variant
@@ -29,18 +29,30 @@ export function Header({
             setLoading(false);
         }
     }
+
+    async function handleLogoutAdmin(){
+        setLoading(true);
+
+        try {
+            await logout();
+            navigate("/admin/login");
+        } finally {
+            setLoading(false);
+        }
+    }
+
     return (
         <header {...props} className="flex items-center justify-between w-full">
             <div className="flex gap-3 items-center">
                 <img src={logo} alt="Servants Logo" className="w-7.5 h-10" />
                 <h1 className="text-2xl font-bold">Servants</h1>
             </div>
-            {getVariantStyles(variant, handleLogout, loading)}
+            {getVariantStyles(variant, handleLogout, handleLogoutAdmin, loading)}
         </header>
     )
 }
 
-function getVariantStyles(variant: Variant, onLogout: () => void, isLoading: boolean) {
+function getVariantStyles(variant: Variant, onLogout: () => void, onLogoutAdmin: () => void, isLoading: boolean) {
     switch (variant) {
         case "home":
             return (
@@ -109,6 +121,18 @@ function getVariantStyles(variant: Variant, onLogout: () => void, isLoading: boo
             return (
                 <div className="flex gap-6 items-center">
                     <ButtonLink to="/admin/register" variant='primary'>Register</ButtonLink>
+                </div>
+            )
+        case "admin":
+            return (
+                <div className="flex gap-6 items-center">
+                    <button
+                    onClick={onLogoutAdmin}
+                    disabled={isLoading}
+                    className="bg-slate-900 hover:bg-amber-400 border border-amber-400 py-1.5 px-4 transition-colors rounded-lg px-2 py-1 disabled:opacity-30 disabled:cursor-not-allowed"
+                    >
+                        {isLoading ? "Logging out..." : "Logout"}
+                    </button>
                 </div>
             )
         default:
