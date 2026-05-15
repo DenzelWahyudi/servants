@@ -5,7 +5,7 @@ import { ButtonLink } from './ButtonLink'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 
-type Variant = "home" | "schedule" | "openings" | "register" | "login"
+type Variant = "home" | "schedule" | "openings" | "register" | "login" | "registeradmin" | "loginadmin"
 
 type HeaderProps = {
     variant?: Variant
@@ -97,6 +97,18 @@ function getVariantStyles(variant: Variant, onLogout: () => void, isLoading: boo
             return (
                 <div className="flex gap-6 items-center">
                     <ButtonLink to="/register" variant='primary'>Register</ButtonLink>
+                </div>
+            )
+        case "registeradmin":
+            return (
+                <div className="flex gap-6 items-center">
+                    <ButtonLink to="/admin/login" variant='primary'>Login</ButtonLink>
+                </div>
+            )
+        case "loginadmin":
+            return (
+                <div className="flex gap-6 items-center">
+                    <ButtonLink to="/admin/register" variant='primary'>Register</ButtonLink>
                 </div>
             )
         default:
