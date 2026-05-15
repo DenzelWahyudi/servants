@@ -34,6 +34,16 @@ export function ServiceCard(){
             setFormData((prev) => ({ ...prev, [field]: e.target.value}))
     }
 
+    function handleNameChange(field: keyof typeof formData){
+        return (e: React.ChangeEvent<HTMLInputElement>) =>
+            setFormData((prev) => ({ ...prev, [field]: e.target.value.length > 20 ? prev[field] : e.target.value}))
+    }
+
+    function handleTimeChange(field: keyof typeof formData){
+        return (e: React.ChangeEvent<HTMLInputElement>) =>
+            setFormData((prev) => ({ ...prev, [field]: e.target.value.length > 13 ? prev[field] : e.target.value}))
+    }
+
     function handleRoleChange(id: number, field: keyof Omit<Role, "id">, value: string){
         setRoles((prev) =>
             prev.map((role) =>
@@ -77,7 +87,7 @@ export function ServiceCard(){
                 return;
             }
 
-            navigate("/service/create");
+            navigate("/admin/service/create");
 
         } catch {
             setError("Could not connect to the server. Please try again.");
@@ -95,7 +105,7 @@ export function ServiceCard(){
                 <h2 className="text-zinc-400 text-sm">Fill out the details to define the service schedule and roles</h2>
             </div>
 
-            <Form label="Service Name"  value={formData.name}   onChange={handleChange("name")} placeholder="e.g., Sunday Sevice" />
+            <Form label="Service Name"  value={formData.name}   onChange={handleNameChange("name")} placeholder="e.g., Sunday Sevice (max 30 chars)" />
             <div className="flex gap-10 w-full justify-between">
                 <div className="flex flex-col gap-1 flex-1">
                     <h3 className="text-sm text-zinc-300">Date</h3>
@@ -104,7 +114,7 @@ export function ServiceCard(){
                     text-zinc-400 text-sm rounded-lg px-3 py-2 transition-colors"/>
                 </div>
                 <div className="flex-1">
-                    <Form label="Time"  value={formData.time}   onChange={handleChange("time")} placeholder="🕖  09:00"/>
+                    <Form label="Time"  value={formData.time}   onChange={handleTimeChange("time")} placeholder="🕖  09:00"/>
                 </div>
             </div>
 
