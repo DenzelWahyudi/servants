@@ -1,0 +1,20 @@
+const rolesService = require('./roles-service');
+const { errorResponder, errorTypes } = require('../../../core/errors');
+
+async function getRoles(req, res, next){
+    try {
+        const serviceId = req.params.serviceId;
+        const roles = await rolesService.getRoles(serviceId);
+        if(!roles) {
+            throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Failed to get roles');
+        }
+
+        return res.status(200).json(roles);
+    }   catch (error) {
+        return next(error);
+    }
+}
+
+module.exports = {
+    getRoles
+};

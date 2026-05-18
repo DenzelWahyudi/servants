@@ -183,8 +183,7 @@ export function ServiceCard(){
             </button>
 
             <div className="flex items-center mt-1">
-                <span className="text-zinc-300 text-sm">Discard New Service?</span>
-                <ButtonLink to='/login' variant="secondary" className="text-amber-400 text-sm">Home</ButtonLink>
+                <ButtonLink to='/admin/services' variant="secondary" className="text-amber-400 text-sm">← Back to Services</ButtonLink>
             </div>
         </div>
     )

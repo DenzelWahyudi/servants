@@ -21,7 +21,6 @@ export default function App() {
           <Route path="/admin/register" element={<RegisterAdmin />} />
           <Route path="/login" element={<Login />} />
           <Route path="/admin/login" element={<LoginAdmin />} />
-          <Route path="/admin/service/create" element={<CreateService />} />
 
           {/* Protected routes — must be logged in */}
           <Route path="/" element={
@@ -35,6 +34,9 @@ export default function App() {
           } />
           <Route path="/admin/services" element={
             <ProtectedRoute requiredRole="admin"><AdminServices /></ProtectedRoute>
+          } />
+          <Route path="/admin/service/create" element={
+            <ProtectedRoute requiredRole="admin"><CreateService /></ProtectedRoute>
           } />
         </Routes>
       </AuthProvider>

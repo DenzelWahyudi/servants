@@ -12,7 +12,9 @@ export function ManageServices(){
                     <ButtonLink to='/admin/service/create'variant="card" className="text-lg text-semibold py-1.5 rounded-lg text-slate-900">+ Add New Service</ButtonLink>
                 </div>
             </div>
-            <UpcomingServices />
+            <div className="rounded-lg overflow-hidden">
+                <UpcomingServices />
+            </div>
         </div>
     )
 }
