@@ -1,24 +1,28 @@
 import { useEffect, useState } from "react"
+import { Trash2, Pencil } from 'lucide-react';
+import { EditServiceCard } from "./EditServiceCard";
 
 interface Role {
     _id: string
     serviceId: string
-    name: string
+    name: string,
 }
 
 interface Service {
-    _id: string
-    name: string
-    date: string
-    time: string
-    status: string
+    _id: string,
+    name: string,
+    date: string,
+    time: string,
+    status: string,
     roles?: Role[]
 }
 
 
-export function UpcomingServices(){
+export function UpcomingServicesAdmin(){
 
-    const [services, setServices] = useState<Service[] | null>(null)
+    const [services, setServices] = useState<Service[] | null>(null);
+    const [error, setError] = useState<string | null>(null);
+    const [editingId, setEditingId] = useState<string | null>(null);
     
     useEffect(() => {
         async function fetchServices() {
@@ -46,6 +50,26 @@ export function UpcomingServices(){
         fetchServices()
     }, [])
 
+    async function handleDelete(serviceId: string){
+        setError(null);
+        try {
+            const response = await fetch(`/api/services/delete/${serviceId}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+            });
+
+            const data = await response.json();
+            if (!response.ok) {
+                setError(data.message || "Deletion failed. Please try again");
+                return;
+            }
+
+            setServices(prev => prev?.filter(s => s._id !== serviceId) ?? null)
+        } catch {
+            setError("Could not connect to the server. Please try again.")
+        }
+    }
+
     return (
         <section className="bg-white py-4">
             <h2 className="text-3xl font-semibold text-slate-900 text-center mb-3">Upcoming Services</h2>
@@ -58,6 +82,7 @@ export function UpcomingServices(){
                             <th>Time</th>
                             <th>Roles Needed</th>
                             <th>Status</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -75,11 +100,42 @@ export function UpcomingServices(){
                                         {s.status}
                                     </span>
                                 </td>
+                                <td>
+                                    <div className="flex gap-1 items-center">
+                                        <button
+                                        onClick={() => setEditingId(s._id)}
+                                        className="bg-zinc-100 px-2 py-1.5 rounded-lg border border-zinc-400 hover:bg-zinc-300 transition-colors">
+                                            <Pencil size={18} className="text-slate-900" />
+                                        </button>
+                                        <button
+                                        onClick={() => handleDelete(s._id)}
+                                        className="bg-red-100 px-2 py-1.5 rounded-lg border border-zinc-400 hover:bg-red-300 transition-colors">
+                                            <Trash2 size={18} className="text-red-900" />
+                                        </button>
+                                        {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
+                                    </div>
+                                </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
+            {editingId && (
+                <div
+                className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+                onClick={() => setEditingId(null)}
+                >
+                    <div onClick={(e) => e.stopPropagation()}>
+                        <EditServiceCard 
+                        id={editingId} 
+                        onClose={() =>{setEditingId(null)}}
+                        onSave={(updated) => {
+                            setServices(prev => prev?.map(s => s._id === updated._id ? { ...s, ...updated } : s)?? null)
+                        }}
+                        />
+                    </div>
+                </div>
+            )}
         </section>
     )
 }

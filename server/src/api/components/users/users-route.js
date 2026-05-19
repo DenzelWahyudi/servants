@@ -11,6 +11,8 @@ module.exports = (app) => {
   
   route.post('/login', usersController.login);
 
+  route.post('/login/admin', usersController.loginAdmin);
+
   // // specific dynamic routes
   // route.get('/name/:id', usersController.getUserName);
 

@@ -330,6 +330,57 @@ async function login(req, res, next){
     const user = await usersService.getUserByPhoneNumber(phoneNumber);
 
     if (!user){
+      await passwordMatched(password, "$2b$16$H9YjlxIlOV2RmYyEhdXg2ODaGcQz6D4zkkUUnamUi3vrsPSpME0tK");
+      throw errorResponder(errorTypes.INVALID_CREDENTIALS, 'Invalid phone number or password');
+    }
+
+    const isMatch = await passwordMatched(password, user.passwordHash);
+    if (!isMatch) {
+      throw errorResponder(errorTypes.INVALID_CREDENTIALS, 'Invalid phone number or password');
+    }
+
+    const token = jwt.sign(
+      { id: user.id, name: user.name, role: user.role},
+      process.env.JWT_SECRET,
+      { expiresIn: '1d' }
+    );
+
+    return res.status(200).json({
+      message: 'Login succesful',
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        role: user.role
+      }
+    });
+  } catch (error) {
+    return next(error);
+  }
+}
+
+async function loginAdmin(req, res, next){
+
+  try {
+    const {phoneNumber, password} = req.body;
+    
+    if (!phoneNumber){
+      throw errorResponder(errorTypes.VALIDATION_ERROR, 'Phone number is required');
+    }
+
+    if (!password){
+      throw errorResponder(errorTypes.VALIDATION_ERROR, 'Password is required');
+    }
+
+    const user = await usersService.getUserByPhoneNumber(phoneNumber);
+
+    if (!user){
+      await passwordMatched(password, "$2b$16$H9YjlxIlOV2RmYyEhdXg2ODaGcQz6D4zkkUUnamUi3vrsPSpME0tK");
+      throw errorResponder(errorTypes.INVALID_CREDENTIALS, 'Invalid phone number or password');
+    }
+
+    if (user.role != "admin"){
+      await passwordMatched(password, "$2b$16$H9YjlxIlOV2RmYyEhdXg2ODaGcQz6D4zkkUUnamUi3vrsPSpME0tK");
       throw errorResponder(errorTypes.INVALID_CREDENTIALS, 'Invalid phone number or password');
     }
 
@@ -367,5 +418,6 @@ module.exports = {
   deleteUser,
   getUserName,
   geFullName,
-  login
+  login,
+  loginAdmin
 };

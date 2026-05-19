@@ -1,17 +1,35 @@
 import { useNavigate } from "react-router-dom";
-import { ButtonLink } from "./ButtonLink";
 import { Form } from "./Form";
 import { Heading } from "./Heading";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Trash2 } from "lucide-react";
 
 type Role = {
-    id: number;
-    name: string;
-    spotsTotal: number | string;
+    id: number
+    name: string
+    spotsTotal: number | string
 }
 
-export function ServiceCard(){
+type EditServiceCardProps = {
+    id: string
+    onClose?: () => void
+    onSave?: (updated: Service) => void
+}
+
+interface Service {
+    _id: string
+    name: string
+    date: string
+    time: string
+    status: string
+}
+
+interface RoleInterface {
+    name: string
+    spotsTotal: string
+}
+
+export function EditServiceCard({ id, onClose, onSave }: EditServiceCardProps){
     
     const navigate = useNavigate();
 
@@ -28,6 +46,39 @@ export function ServiceCard(){
 
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        async function fetchService(){
+            const response = await fetch(`/api/services/${id}`, {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+            });
+            const service: Service = await response.json();
+            console.log("service id:", id)
+            console.log("fetched service:", service);
+            setFormData({
+                name: service.name,
+                date: service.date.split("T")[0],
+                time: service.time,
+                status: service.status
+            });
+
+            const roleRes = await fetch(`/api/roles/${service._id}`, {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+            });
+            const fetchedRoles: RoleInterface[] = await roleRes.json();
+            setRoles(
+                fetchedRoles.map((r) => ({
+                    id: Date.now() + Math.random(),
+                    name: r.name,
+                    spotsTotal: r.spotsTotal
+                }))
+            );
+        }
+        if (id) fetchService();
+    },[id]);
+    
 
     function handleChange(field: keyof typeof formData){
         return (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
@@ -68,7 +119,7 @@ export function ServiceCard(){
         setLoading(true);
 
         try {
-            const response = await fetch("/api/services/create", {
+            const response = await fetch(`/api/services/update/${id}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json"},
                 body: JSON.stringify({ 
@@ -83,11 +134,13 @@ export function ServiceCard(){
             const data = await response.json();
 
             if (!response.ok) {
-                setError(data.message || "Failed to create service. Please try again.");
+                setError(data.message || "Failed to update service. Please try again.");
                 return;
             }
 
-            navigate("/admin/services");
+            if (onClose) onClose();
+            if (onSave) onSave({_id: id, ...formData});
+            else navigate("/admin/services");
 
         } catch {
             setError("Could not connect to the server. Please try again.");
@@ -99,7 +152,7 @@ export function ServiceCard(){
     return (
         <div className="flex flex-col gap-3 p-7 bg-slate-800 items-center rounded-xl w-130">
             <div className="mt-2 mr-auto">
-                <Heading>Create New Service</Heading>
+                <Heading>Update Service</Heading>
             </div>
             <div className="-mt-2 mb-3 mr-auto">
                 <h2 className="text-zinc-400 text-sm">Fill out the details to define the service schedule and roles</h2>
@@ -179,11 +232,16 @@ export function ServiceCard(){
             disabled={loading}
             className="bg-amber-400 text-blue-950 text-base font-semibold py-1.5 rounded-lg w-full mt-auto hover:bg-amber-500 flex justify-center disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-                {loading ? "Creating..." : "Create Service"}
+                {loading ? "Updating..." : "Update Service"}
             </button>
 
             <div className="flex items-center mt-1">
-                <ButtonLink to='/admin/services' variant="secondary" className="text-amber-400 text-sm">← Back to Services</ButtonLink>
+                <button
+                onClick={() => onClose ? onClose() : navigate("admin/services")}
+                className="text-amber-400 text-sm"
+                >
+                    ← Back to Services
+                </button>
             </div>
         </div>
     )

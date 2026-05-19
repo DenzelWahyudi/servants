@@ -1,7 +1,7 @@
 import type { ComponentProps } from "react"
 import { twMerge } from "tailwind-merge"
 
-type Variant = "primary" | "secondary" | "card"
+type Variant = "primary" | "secondary" | "card" | "sidebar"
 
 type ButtonProps = {
     variant?: Variant
@@ -32,6 +32,8 @@ function getVariantStyles(variant: Variant) {
             return "text-amber-400"
         case "card":
             return "bg-amber-400 text-blue-950 text-xs font-medium py-1 px-2 rounded w-full mt-auto hover:bg-amber-500"
+        case "sidebar":
+            return "flex bg-amber-400 text-blue-950 text-base font-medium py-2 pl-4 w-54 rounded-lg justify-start"
         default:
             throw new Error(`Invalid variant: ${variant satisfies never}`)
     }
