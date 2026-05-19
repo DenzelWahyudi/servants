@@ -15,6 +15,19 @@ async function getRoles(req, res, next){
     }
 }
 
+async function getAllRoles(req, res, next){
+    try {
+        const success = await rolesService.getAllRoles()
+        if (!success) {
+            throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Failed to get all roles');
+        }
+        return res.status(200).json(success)
+    } catch (error) {
+        return next(error)
+    }
+}
+
 module.exports = {
-    getRoles
+    getRoles,
+    getAllRoles
 };

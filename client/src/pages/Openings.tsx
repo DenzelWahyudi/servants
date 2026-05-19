@@ -5,29 +5,47 @@ import { Heading } from "../components/Heading";
 import { OpeningsCard } from "../components/OpeningsCard";
 
 interface Service {
-    id: number,
-    name: string,
-    date: string,
-    time: string,
+    _id: string
+    name: string
+    date: string
+    time: string
     status: string
+}
+
+interface Role {
+    _id: string
+    serviceId: string
+    name: string
+    spotsTotal: number
+    spotsFilled: number
 }
 
 export function Openings() {
 
     const [services, setServices] = useState<Service[] | null>(null)
-    
+    const [roles, setRoles] = useState<Role[] | null>(null)
+
     useEffect(() => {
-        async function fetchServices() {
-            const response = await fetch('/api/services', {
+        async function fetchRoles() {
+            const roles = await fetch('/api/roles', {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            })
+            const rolesData = await roles.json()
+            setRoles(rolesData)
+
+            const services = await fetch('/api/services', {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
                 },
             })
-            const data = await response.json()
-            setServices(data)
+            const servicesData = await services.json()
+            setServices(servicesData)
         }
-        fetchServices()
+        fetchRoles()
     }, [])
 
     return(
@@ -35,11 +53,18 @@ export function Openings() {
             <Header variant="openings" />
             <Heading>Openings</Heading>
                 <div className="-mt-7 flex flex-wrap gap-4">
-                    {services?.map((service) => (
-                        <OpeningsCard key={service.id} serviceName={service.name} 
-                        date={new Date(service.date).toLocaleDateString("en-GB", { year:"numeric", month: "long", day: "numeric",})} 
-                        time={service.time} role={service.status} />
-                    ))}
+                    {roles?.map((role) => {
+                        if (role.spotsFilled < role.spotsTotal){
+                            const service = services?.find(s => s._id === role.serviceId)
+                            if (!service) return null
+
+                            return (
+                                <OpeningsCard key={role._id} serviceName={service.name} 
+                                date={new Date(service.date).toLocaleDateString("en-GB", { year:"numeric", month: "long", day: "numeric",})} 
+                                time={service.time} role={role.name} />
+                            )
+                        }
+                    })}
                 </div>
             <Footer churchName="Gereja Sidang Kristus" location="Kelapa Gading" phone="+6289682115180" email="gskkelapagading@gmail.com" />
         </div>

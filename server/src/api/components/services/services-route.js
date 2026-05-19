@@ -8,5 +8,10 @@ module.exports = (app) => {
     route.get('/', servicesController.getServices);
 
     route.post('/create', servicesController.createService);
-};
 
+    route.post('/update/:serviceId', servicesController.updateService)
+
+    route.post('/delete/:serviceId', servicesController.deleteService);
+
+    route.get('/:id', servicesController.getService);
+};

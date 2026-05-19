@@ -5,5 +5,7 @@ const route = express.Router();
 module.exports = (app) => {
     app.use('/roles', route);
 
+    route.get('/', rolesController.getAllRoles);
+    
     route.get('/:serviceId', rolesController.getRoles);
 };

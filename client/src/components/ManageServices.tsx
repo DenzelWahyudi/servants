@@ -1,7 +1,7 @@
 
 import { ButtonLink } from "./ButtonLink";
 import { Heading } from "./Heading";
-import { UpcomingServices } from "./UpcomingServices";
+import { UpcomingServicesAdmin } from "./UpcomingServicesAdmin";
 
 export function ManageServices(){
     return (
@@ -13,7 +13,7 @@ export function ManageServices(){
                 </div>
             </div>
             <div className="rounded-lg overflow-hidden">
-                <UpcomingServices />
+                <UpcomingServicesAdmin />
             </div>
         </div>
     )

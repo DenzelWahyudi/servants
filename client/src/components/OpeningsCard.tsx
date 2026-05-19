@@ -15,7 +15,7 @@ export function OpeningsCard({ serviceName, date, time, role }: OpeningsCardProp
                 <h2>{ date }</h2>
                 <h2>{ time }</h2>
             </div>
-            <h2 className="font-semibold">{ role }</h2>
+            <h2 className="font-semibold">{ role.length > 17 ? role.slice(0, 17) + "...": role}</h2>
             <div className="flex justify-center mt-auto">
                 <ButtonLink to="/schedule" variant="card" className="text-sm">Sign Up</ButtonLink>
             </div>

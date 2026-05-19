@@ -12,8 +12,18 @@ async function getService(id){
     return servicesRepository.getService(id);
 }
 
+async function deleteService(id){
+    return servicesRepository.deleteService(id);
+}
+
+async function updateService(id, name, date, time, status){
+    return servicesRepository.updateService(id, name, date, time, status)
+}
+
 module.exports = {
     createService,
     getServices,
-    getService
+    getService,
+    deleteService,
+    updateService
 };

@@ -12,8 +12,18 @@ async function getRoles(serviceId){
     return rolesRepository.getRoles(serviceId)
 }
 
+async function getAllRoles(){
+    return rolesRepository.getAllRoles()
+}
+
+async function deleteRoles(serviceId){
+    return rolesRepository.deleteRoles(serviceId)
+}
+
 module.exports = {
   createRoles,
   createRole,
-  getRoles
+  getRoles,
+  getAllRoles,
+  deleteRoles
 };
