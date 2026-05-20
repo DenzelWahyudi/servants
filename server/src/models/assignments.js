@@ -10,15 +10,10 @@ module.exports = (db) =>
         type: db.Schema.Types.ObjectId,
         ref: 'Role',
       },
-        serviceId: {
-        type: db.Schema.Types.ObjectId,
-        ref: 'Service',
-      },
       status: {
         type: String,
-        default: 'declined',
+        default: 'pending',
         enum: ['confirmed', 'pending', 'declined'],
       },
-      assignedAt: Date
     })
   );

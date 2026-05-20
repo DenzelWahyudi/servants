@@ -82,7 +82,7 @@ export function UpcomingServicesAdmin(){
                             <th>Time</th>
                             <th className="pl-3">Roles Needed</th>
                             <th>Status</th>
-                            <th>Actions</th>
+                            <th className="text-center pr-1">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -101,7 +101,7 @@ export function UpcomingServicesAdmin(){
                                     </span>
                                 </td>
                                 <td>
-                                    <div className="flex gap-1 items-center">
+                                    <div className="flex gap-1 items-center justify-center">
                                         <button
                                         onClick={() => setEditingId(s._id)}
                                         className="bg-zinc-100 px-2 py-1.5 rounded-lg border border-zinc-400 hover:bg-zinc-300 transition-colors">
