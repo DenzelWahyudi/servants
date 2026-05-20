@@ -80,7 +80,7 @@ export function UpcomingServicesAdmin(){
                             <th className="py-2 pl-3">Upcoming Service</th>
                             <th>Date</th>
                             <th>Time</th>
-                            <th>Roles Needed</th>
+                            <th className="pl-3">Roles Needed</th>
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>
@@ -91,7 +91,7 @@ export function UpcomingServicesAdmin(){
                                 <td className="py-3 pl-3 font-medium">{s.name}</td>
                                 <td>{new Date(s.date).toLocaleDateString("en-GB", { year:"numeric", month: "long", day: "numeric",})}</td>
                                 <td>{s.time}</td>
-                                <td>{s.roles?.map(r => r.name).join(", ") ?? "..."}</td>
+                                <td className="pl-3 pr-7 max-w-[355px] break-words">{s.roles?.map(r => r.name).join(", ") ?? "..."}</td>
                                 <td>
                                     <span className={`px-3 py-0.5 rounded font-semibold ${s.status === "Fully Staffed"
                                     ? "bg-red-200"
@@ -130,7 +130,7 @@ export function UpcomingServicesAdmin(){
                         id={editingId} 
                         onClose={() =>{setEditingId(null)}}
                         onSave={(updated) => {
-                            setServices(prev => prev?.map(s => s._id === updated._id ? { ...s, ...updated } : s)?? null)
+                            setServices(prev => prev?.map(s => s._id === updated._id ? { ...s, ...updated, roles: updated.roles } : s)?? null)
                         }}
                         />
                     </div>
