@@ -1,11 +1,11 @@
-const rolesRepository = require('./roles-repository');
+const rolesRepository = require('./roles-repository')
 
 async function createRoles(roles) {
-  return rolesRepository.createRoles(roles);
+    return rolesRepository.createRoles(roles)
 }
 
 async function createRole(serviceId, name, spotsTotal, spotsFilled) {
-    return rolesRepository.createRole(serviceId, name, spotsTotal, spotsFilled);
+    return rolesRepository.createRole(serviceId, name, spotsTotal, spotsFilled)
 }
 
 async function getRoles(serviceId){
@@ -16,8 +16,16 @@ async function getAllRoles(){
     return rolesRepository.getAllRoles()
 }
 
+async function getRole(id){
+    return rolesRepository.getRole(id)
+}
+
 async function deleteRoles(serviceId){
     return rolesRepository.deleteRoles(serviceId)
+}
+
+async function increaseRoleSpotsFilled(id){
+    return rolesRepository.increaseRoleSpotsFilled(id)
 }
 
 module.exports = {
@@ -25,5 +33,7 @@ module.exports = {
   createRole,
   getRoles,
   getAllRoles,
-  deleteRoles
+  getRole,
+  deleteRoles,
+  increaseRoleSpotsFilled
 };

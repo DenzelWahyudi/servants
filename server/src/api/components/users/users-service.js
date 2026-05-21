@@ -4,6 +4,10 @@ async function getUser(id) {
   return usersRepository.getUser(id);
 }
 
+async function getUsers(){
+  return usersRepository.getUsers();
+}
+
 async function getUserByPhoneNumber(phoneNumber) {
   return usersRepository.getUserByPhoneNumber(phoneNumber);
 }
@@ -40,6 +44,7 @@ async function getUserName(id) {
 
 module.exports = {
   getUser,
+  getUsers,
   getUserByPhoneNumber,
   emailExists,
   phoneNumberExists,

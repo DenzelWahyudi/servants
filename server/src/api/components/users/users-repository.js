@@ -4,6 +4,10 @@ async function getUser(id) {
   return Users.findById(id);
 }
 
+async function getUsers() {
+  return Users.find();
+}
+
 async function getUserByEmail(email) {
   return Users.findOne({ email });
 }
@@ -35,6 +39,7 @@ async function getUserName(id) {
 
 module.exports = {
   getUser,
+  getUsers,
   getUserByEmail,
   getUserByPhoneNumber,
   createUser,

@@ -82,12 +82,13 @@ export function RolesCard({ serviceId }: RolesCardProps){
                             <td className="text-center">
                                 <div className="flex gap-1 items-center justify-center">
                                     <button
+                                    disabled={r.spotsFilled >= r.spotsTotal}
                                     onClick={() => setAssignData({
                                         roleId: r._id,
                                         serviceName: service.name,
                                         roleName: r.name
                                     })}
-                                    className="bg-zinc-100 px-1.5 py-1 rounded-lg border border-zinc-400 hover:bg-zinc-300 trasition-colors"
+                                    className="bg-zinc-100 px-1.5 py-1 rounded-lg border border-zinc-400 hover:bg-zinc-300 disabled:bg-red-300 trasition-colors"
                                     >
                                         <UserPlus size={16} className="text-slate-900"/>
                                     </button>

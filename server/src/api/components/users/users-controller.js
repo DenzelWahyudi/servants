@@ -17,6 +17,19 @@ async function getUser(request, response, next) {
   }
 }
 
+async function getUsers(request, response, next) {
+  try {
+    const users = await usersService.getUsers();
+    if (!users) {
+      throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Users not found');
+    }
+
+    return response.status(200).json(users);
+  } catch (error) {
+    return next(error);
+  }
+}
+
 async function createUser(request, response, next) {
   try {
     const {
@@ -411,6 +424,7 @@ async function loginAdmin(req, res, next){
 
 module.exports = {
   getUser,
+  getUsers,
   createUser,
   updateUserEmail,
   updateUserPhoneNumber,
