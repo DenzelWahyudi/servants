@@ -8,7 +8,7 @@ export function Schedule() {
             <Header variant="schedule" />
             <Heading>Schedule</Heading>
 
-            <Footer churchName="Gereja Sidang Kristus" location="Kelapa Gading" phone="+6289682115180" email="gskkelapagading@gmail.com" />
+            <Footer />
         </div>
     )
 }

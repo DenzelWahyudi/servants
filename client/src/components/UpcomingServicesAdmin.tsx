@@ -88,10 +88,10 @@ export function UpcomingServicesAdmin(){
                     <tbody>
                         {services?.map((s) => (
                             <tr key={s._id} className="border-b border-zinc-400 text-zinc-950">
-                                <td className="py-3 pl-3 font-medium">{s.name}</td>
+                                <td className="pl-3 font-medium">{s.name}</td>
                                 <td>{new Date(s.date).toLocaleDateString("en-GB", { year:"numeric", month: "long", day: "numeric",})}</td>
                                 <td>{s.time}</td>
-                                <td className="pl-3 pr-7 max-w-[355px] break-words">{s.roles?.map(r => r.name).join(", ") ?? "..."}</td>
+                                <td className="pl-3 pr-7 py-3 max-w-[355px] break-words">{s.roles?.map(r => r.name).join(", ") ?? "..."}</td>
                                 <td>
                                     <span className={`px-3 py-0.5 rounded font-semibold ${s.status === "Fully Staffed"
                                     ? "bg-red-200"

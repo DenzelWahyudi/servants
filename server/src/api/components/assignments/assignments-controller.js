@@ -1,6 +1,6 @@
 const assignmentsService = require('./assignments-service')
 const rolesService = require('../roles/roles-service')
-const { errorResponder, errorTypes } = require('../../../core/errors');
+const { errorResponder, errorTypes } = require('../../../core/errors')
 
 async function createAssignment(req, res, next){
     try {
@@ -30,6 +30,23 @@ async function createAssignment(req, res, next){
     }
 }
 
+async function getUsersForRole(req, res, next){
+    try {
+        const roleId = req.params.roleId
+
+        const success = await assignmentsService.getUsersForRole(roleId)
+
+        if (!success){
+            throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Failed to users name')
+        }
+
+        return res.status(200).json(success)
+    } catch (error) {
+        next(error)
+    }
+}
+
 module.exports = {
-    createAssignment
+    createAssignment,
+    getUsersForRole
 }

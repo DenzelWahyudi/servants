@@ -9,7 +9,7 @@ type OpeningsCardProp = {
 
 export function OpeningsCard({ serviceName, date, time, role }: OpeningsCardProp){
     return (
-        <div className="flex flex-col gap-3  bg-zinc-100  text-slate-900 w-53 h-52 rounded-lg p-3.5">
+        <div className="flex flex-col gap-3  bg-zinc-100  text-slate-900 w-55 h-52 rounded-lg p-3.5">
             <h2 className="font-semibold">{ serviceName }</h2>
             <div className="flex flex-col gap-1">
                 <h2>{ date }</h2>

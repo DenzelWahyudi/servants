@@ -6,11 +6,16 @@ type RolesCardProps = {
     serviceId: string
 }
 
+interface userName {
+    name: string
+}
+
 interface Role {
     _id: string
     name: string
     spotsTotal: number
     spotsFilled: number
+    usersNames: userName[]
 }
 
 interface Service {
@@ -18,7 +23,6 @@ interface Service {
     name: string
     date: string
     time: string
-    role?: Role[]
 }
 
 interface Assign {
@@ -46,13 +50,40 @@ export function RolesCard({ serviceId }: RolesCardProps){
                 headers: { "Content-Type": "applicaton/json" }
             })
             const rolesData: Role[] = await rolesResponse.json()
+
+            const rolesWithNamesResponse = await Promise.all(rolesData?.map(async (r) => {
+                    const usersNameRes = await fetch(`/api/assignments/${r._id}`, {
+                        method: "GET",
+                        headers: { "Content-Type": "application/json" }
+                    })
+                    const usersNames: userName[] = await usersNameRes.json()
+                    return { ...r, usersNames }
+                }))
             setService(serviceData)
-            setRoles(rolesData)
+            setRoles(rolesWithNamesResponse)
         }
         fetchService()
     }, [serviceId])
 
     if(!service) return <div>Loading...</div>
+
+    async function fetchRoles(serviceId: string){
+        const rolesResponse = await fetch(`/api/roles/${serviceId}`, {
+            method: "GET",
+            headers: { "Content-Type": "applicaton/json" }
+        })
+        const rolesData: Role[] = await rolesResponse.json()
+
+        const rolesWithNamesResponse = await Promise.all(rolesData?.map(async (r) => {
+                const usersNameRes = await fetch(`/api/assignments/${r._id}`, {
+                    method: "GET",
+                    headers: { "Content-Type": "application/json" }
+                })
+                const usersNames: userName[] = await usersNameRes.json()
+                return { ...r, usersNames }
+            }))
+        setRoles(rolesWithNamesResponse)
+    }
 
     return (
         <div className="bg-white rounded-lg overflow-hidden p-2.5">
@@ -70,8 +101,8 @@ export function RolesCard({ serviceId }: RolesCardProps){
                 <tbody>
                     {roles?.map((r) => (
                         <tr key={r._id} className="border-b border-zinc-200 text-zinc-900">
-                            <td className="px-2.5 py-2">{r.name}</td>
-                            <td>....</td>
+                            <td className="px-2.5 py-2  w-[200px]">{r.name}</td>
+                            <td className="w-[570px] break-words">{r.usersNames?.map(userName => userName.name).join(", ") ?? "..."}</td>
                             <td className="text-center">{r.spotsFilled}/{r.spotsTotal}</td>
                             <td className="text-center">
                                 <span className={`py-1 px-2.5 text-xs rounded-xl text-zinc-100 font-light shadow
@@ -111,7 +142,10 @@ export function RolesCard({ serviceId }: RolesCardProps){
                         roleId={assignData.roleId}
                         serviceName={assignData.serviceName}
                         roleName={assignData.roleName}
-                        onClose={() => {setAssignData(null)}}
+                        onClose={() => {
+                            setAssignData(null)
+                            fetchRoles(serviceId)
+                        }}
                         />
                     </div>
                 </div>

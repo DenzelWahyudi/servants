@@ -6,4 +6,6 @@ module.exports = (app) => {
     app.use('/assignments', route)
 
     route.post('/', assignmentsController.createAssignment)
+
+    route.get('/:roleId', assignmentsController.getUsersForRole)
 }

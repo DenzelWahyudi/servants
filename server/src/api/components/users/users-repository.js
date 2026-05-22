@@ -16,6 +16,10 @@ async function getUserByPhoneNumber(phoneNumber) {
   return Users.findOne({ phoneNumber });
 }
 
+async function getUserByName(name){
+  return Users.findOne({ name });
+}
+
 async function createUser(name, email, phoneNumber, passwordHash, role) {
   return Users.create({ name, email, phoneNumber, passwordHash, role });
 }
@@ -42,6 +46,7 @@ module.exports = {
   getUsers,
   getUserByEmail,
   getUserByPhoneNumber,
+  getUserByName,
   createUser,
   updateUser,
   changePassword,

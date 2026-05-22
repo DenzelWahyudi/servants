@@ -14,12 +14,17 @@ async function getUserByPhoneNumber(phoneNumber) {
 
 async function emailExists(email) {
   const user = await usersRepository.getUserByEmail(email);
-  return !!user; // Return true if user exists, false otherwise
+  return !!user;
 }
 
 async function phoneNumberExists(phoneNumber) {
   const user = await usersRepository.getUserByPhoneNumber(phoneNumber);
-  return !!user; // Return true if user exists, false otherwise
+  return !!user;
+}
+
+async function nameExists(name) {
+  const user = await usersRepository.getUserByName(name);
+  return !!user;
 }
 
 async function createUser(name, email, phoneNumber, passwordHash, role) {
@@ -47,6 +52,7 @@ module.exports = {
   getUsers,
   getUserByPhoneNumber,
   emailExists,
+  nameExists,
   phoneNumberExists,
   createUser,
   updateUser,

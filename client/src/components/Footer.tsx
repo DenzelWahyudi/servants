@@ -1,25 +1,18 @@
 import logo from '../assets/logo.png'
 
-type FooterProps = {
-    churchName: string
-    location: string
-    phone: string
-    email: string
-}
-
-export function Footer({ churchName, location, phone, email }: FooterProps){
+export function Footer(){
     return (
         <div className="flex flex-col gap-10 pt-7">
             <div className="flex gap-30">
                 <div className="flex flex-col gap-2">
-                    <h3 className="text-zinc-300 font-semibold">{churchName}</h3>
-                    <h4 className="text-sm text-zinc-400">{location}</h4>
+                    <h3 className="text-zinc-300 font-semibold">Location</h3>
+                    <h4 className="text-sm text-zinc-400">Indonesia, Jakarta Utara</h4>
                 </div>
                 <div className="flex flex-col gap-2">
                     <h3 className="text-zinc-300 font-semibold">Contact us</h3>
                     <div className="flex flex-col gap-1.5">
-                        <h4 className="text-sm text-zinc-400">📞 {phone}</h4>
-                        <h4 className="text-sm text-zinc-400">✉️ {email}</h4>
+                        <h4 className="text-sm text-zinc-400">📞 089682115180</h4>
+                        <h4 className="text-sm text-zinc-400">✉️ denzel.wahyudi@outlook.com</h4>
                     </div>
                 </div>
             </div>

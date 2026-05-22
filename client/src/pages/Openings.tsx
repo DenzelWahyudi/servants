@@ -66,7 +66,7 @@ export function Openings() {
                         }
                     })}
                 </div>
-            <Footer churchName="Gereja Sidang Kristus" location="Kelapa Gading" phone="+6289682115180" email="gskkelapagading@gmail.com" />
+            <Footer />
         </div>
     )
 }

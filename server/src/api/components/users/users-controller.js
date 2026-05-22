@@ -70,6 +70,13 @@ async function createUser(request, response, next) {
       );
     }
 
+    if (await usersService.nameExists(name)) {
+      throw errorResponder(
+        errorTypes.EMAIL_ALREADY_TAKEN,
+        'Name already exists'
+      );
+    }
+
     if (password.length < 8) {
       throw errorResponder(
         errorTypes.VALIDATION_ERROR,
