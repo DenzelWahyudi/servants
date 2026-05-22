@@ -80,18 +80,18 @@ export function UpcomingServicesAdmin(){
                             <th className="py-2 pl-3">Upcoming Service</th>
                             <th>Date</th>
                             <th>Time</th>
-                            <th>Roles Needed</th>
+                            <th className="pl-3">Roles Needed</th>
                             <th>Status</th>
-                            <th>Actions</th>
+                            <th className="text-center pr-1">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {services?.map((s) => (
                             <tr key={s._id} className="border-b border-zinc-400 text-zinc-950">
-                                <td className="py-3 pl-3 font-medium">{s.name}</td>
+                                <td className="pl-3 font-medium">{s.name}</td>
                                 <td>{new Date(s.date).toLocaleDateString("en-GB", { year:"numeric", month: "long", day: "numeric",})}</td>
                                 <td>{s.time}</td>
-                                <td>{s.roles?.map(r => r.name).join(", ") ?? "..."}</td>
+                                <td className="pl-3 pr-7 py-3 max-w-[355px] break-words">{s.roles?.map(r => r.name).join(", ") ?? "..."}</td>
                                 <td>
                                     <span className={`px-3 py-0.5 rounded font-semibold ${s.status === "Fully Staffed"
                                     ? "bg-red-200"
@@ -101,7 +101,7 @@ export function UpcomingServicesAdmin(){
                                     </span>
                                 </td>
                                 <td>
-                                    <div className="flex gap-1 items-center">
+                                    <div className="flex gap-1 items-center justify-center">
                                         <button
                                         onClick={() => setEditingId(s._id)}
                                         className="bg-zinc-100 px-2 py-1.5 rounded-lg border border-zinc-400 hover:bg-zinc-300 transition-colors">
@@ -125,12 +125,15 @@ export function UpcomingServicesAdmin(){
                 className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
                 onClick={() => setEditingId(null)}
                 >
-                    <div onClick={(e) => e.stopPropagation()}>
+                    <div 
+                    onClick={(e) => e.stopPropagation()}
+                    className="max-h-[90vh] overflow-y-auto"
+                    >
                         <EditServiceCard 
                         id={editingId} 
                         onClose={() =>{setEditingId(null)}}
                         onSave={(updated) => {
-                            setServices(prev => prev?.map(s => s._id === updated._id ? { ...s, ...updated } : s)?? null)
+                            setServices(prev => prev?.map(s => s._id === updated._id ? { ...s, ...updated, roles: updated.roles } : s)?? null)
                         }}
                         />
                     </div>

@@ -11,7 +11,7 @@ export function Home() {
       <div className="-mx-12 -my-8 bg-white px-12 pb-30">
         <UpcomingServices />
       </div>
-      <Footer churchName="Gereja Sidang Kristus" location="Kelapa Gading" phone="+6289682115180" email="gskkelapagading@gmail.com" />
+      <Footer />
     </div>
   )
 }

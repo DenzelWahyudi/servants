@@ -4,18 +4,27 @@ async function getUser(id) {
   return usersRepository.getUser(id);
 }
 
+async function getUsers(){
+  return usersRepository.getUsers();
+}
+
 async function getUserByPhoneNumber(phoneNumber) {
   return usersRepository.getUserByPhoneNumber(phoneNumber);
 }
 
 async function emailExists(email) {
   const user = await usersRepository.getUserByEmail(email);
-  return !!user; // Return true if user exists, false otherwise
+  return !!user;
 }
 
 async function phoneNumberExists(phoneNumber) {
   const user = await usersRepository.getUserByPhoneNumber(phoneNumber);
-  return !!user; // Return true if user exists, false otherwise
+  return !!user;
+}
+
+async function nameExists(name) {
+  const user = await usersRepository.getUserByName(name);
+  return !!user;
 }
 
 async function createUser(name, email, phoneNumber, passwordHash, role) {
@@ -40,8 +49,10 @@ async function getUserName(id) {
 
 module.exports = {
   getUser,
+  getUsers,
   getUserByPhoneNumber,
   emailExists,
+  nameExists,
   phoneNumberExists,
   createUser,
   updateUser,

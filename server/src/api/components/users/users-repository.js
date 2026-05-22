@@ -4,12 +4,20 @@ async function getUser(id) {
   return Users.findById(id);
 }
 
+async function getUsers() {
+  return Users.find();
+}
+
 async function getUserByEmail(email) {
   return Users.findOne({ email });
 }
 
 async function getUserByPhoneNumber(phoneNumber) {
   return Users.findOne({ phoneNumber });
+}
+
+async function getUserByName(name){
+  return Users.findOne({ name });
 }
 
 async function createUser(name, email, phoneNumber, passwordHash, role) {
@@ -35,8 +43,10 @@ async function getUserName(id) {
 
 module.exports = {
   getUser,
+  getUsers,
   getUserByEmail,
   getUserByPhoneNumber,
+  getUserByName,
   createUser,
   updateUser,
   changePassword,

@@ -56,7 +56,7 @@ export function UpcomingServices(){
                             <th className="py-2 pl-3">Upcoming Service</th>
                             <th>Date</th>
                             <th>Time</th>
-                            <th>Roles Needed</th>
+                            <th className="pl-2">Roles Needed</th>
                             <th>Status</th>
                         </tr>
                     </thead>
@@ -66,7 +66,7 @@ export function UpcomingServices(){
                                 <td className="py-3 pl-3 font-medium">{s.name}</td>
                                 <td>{new Date(s.date).toLocaleDateString("en-GB", { year:"numeric", month: "long", day: "numeric",})}</td>
                                 <td>{s.time}</td>
-                                <td>{s.roles?.map(r => r.name).join(", ") ?? "..."}</td>
+                                <td className="pl-2 w-[750px] break-words">{s.roles?.map(r => r.name).join(", ") ?? "..."}</td>
                                 <td>
                                     <span className={`px-3 py-0.5 rounded font-semibold ${s.status === "Fully Staffed"
                                     ? "bg-red-200"

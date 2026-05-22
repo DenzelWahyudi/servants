@@ -10,10 +10,16 @@ type Role = {
     spotsTotal: number | string
 }
 
+type SavedRole = {
+    _id: string
+    serviceId: string
+    name: string
+}
+
 type EditServiceCardProps = {
     id: string
     onClose?: () => void
-    onSave?: (updated: Service) => void
+    onSave?: (updated: Service & { roles: SavedRole[] }) => void
 }
 
 interface Service {
@@ -139,7 +145,12 @@ export function EditServiceCard({ id, onClose, onSave }: EditServiceCardProps){
             }
 
             if (onClose) onClose();
-            if (onSave) onSave({_id: id, ...formData});
+            if (onSave) onSave({_id: id, ...formData, roles: roles.map(({ name }) => ({
+                _id: "",
+                serviceId: id,
+                name
+                }))
+            });
             else navigate("/admin/services");
 
         } catch {

@@ -9,7 +9,7 @@ export function AdminServices() {
         <Header variant="admin"/>
       </div>
       <div className="flex flex-1 min-h-0">
-        <Sidebar />
+        <Sidebar variant="services" />
         <ManageServices />
       </div>
     </div>

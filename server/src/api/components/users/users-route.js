@@ -7,6 +7,8 @@ module.exports = (app) => {
   app.use('/users', route);
 
   // static routes
+  route.get('/', usersController.getUsers);
+
   route.post('/', usersController.createUser);
   
   route.post('/login', usersController.login);

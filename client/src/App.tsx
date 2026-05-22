@@ -10,6 +10,7 @@ import { CreateService } from "./pages/CreateService";
 import { RegisterAdmin } from "./pages/RegisterAdmin";
 import { LoginAdmin } from "./pages/LoginAdmin";
 import { AdminServices } from "./pages/AdminServices";
+import { AdminRoles } from "./pages/AdminRoles";
 
 export default function App() {
   return (
@@ -37,6 +38,9 @@ export default function App() {
           } />
           <Route path="/admin/service/create" element={
             <ProtectedRoute requiredRole="admin"><CreateService /></ProtectedRoute>
+          } />
+          <Route path="/admin/roles" element={
+            <ProtectedRoute requiredRole="admin"><AdminRoles /></ProtectedRoute>
           } />
         </Routes>
       </AuthProvider>
