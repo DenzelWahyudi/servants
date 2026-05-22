@@ -4,6 +4,7 @@ import { RolesCard } from "./RolesCard";
 
 interface Service{
     _id: string
+    date: string
 }
 
 export function ManageRoles(){
@@ -17,7 +18,10 @@ export function ManageRoles(){
                 headers: { "Content-Type": 'application/json'}
             })
             const data: Service[] = await response.json()
-            setServices(data)
+            const sorted = data.sort(
+                (a,b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+            )
+            setServices(sorted)
         }
         fetchServices()
     }, [])
