@@ -24,6 +24,8 @@ module.exports = (app) => {
 
   // route.put('/update/password/:id', usersController.changePassword);
 
+  route.get('/id', authMiddleware, usersController.getUserId);
+  
   route.get('/name', authMiddleware, usersController.getUserName);
 
   route.put('/update/email', authMiddleware, usersController.updateUserEmail);

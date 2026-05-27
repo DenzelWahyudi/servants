@@ -33,7 +33,12 @@ async function getUsersForRole(roleId){
     ])
 }
 
+async function hasUserBeenAssigned(roleId, userId){
+    return Assignments.findOne({ roleId, userId })
+}
+
 module.exports = {
     createAssignment,
-    getUsersForRole
+    getUsersForRole,
+    hasUserBeenAssigned
 }
