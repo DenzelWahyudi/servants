@@ -165,8 +165,11 @@ export function EditServiceCard({ id, onClose, onSave }: EditServiceCardProps){
             <div className="mt-2 mr-auto">
                 <Heading>Update Service</Heading>
             </div>
-            <div className="-mt-2 mb-3 mr-auto">
+            <div className="-mt-2 mr-auto">
                 <h2 className="text-zinc-400 text-sm">Fill out the details to define the service schedule and roles</h2>
+            </div>
+            <div className="-mt-2.5 mb-3 mr-auto">
+                <h2 className="text-red-400 text-sm">Updating this service will remove all current role assignments.</h2>
             </div>
 
             <Form label="Service Name"  value={formData.name}   onChange={handleNameChange("name")} placeholder="e.g., Sunday Sevice (max 30 chars)" />

@@ -17,6 +17,10 @@ async function createAssignment(req, res, next){
             throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Role id invalid!')
         }
 
+        if (await assignmentsService.hasUserBeenAssigned(roleId, userId)){
+            throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Already signed up!')
+        }
+
         await rolesService.increaseRoleSpotsFilled(roleId)
 
         const success = await assignmentsService.createAssignment(userId, roleId, status)

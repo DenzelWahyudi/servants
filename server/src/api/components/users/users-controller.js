@@ -429,6 +429,20 @@ async function loginAdmin(req, res, next){
   }
 }
 
+async function getUserId(request, response, next) {
+  try {
+    const user = await usersService.getUser(request.user.id);
+
+    if (!user) {
+      throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'User not found');
+    }
+
+    return response.status(200).json(user._id);
+  } catch (error) {
+    return next(error);
+  }
+}
+
 module.exports = {
   getUser,
   getUsers,
@@ -440,5 +454,6 @@ module.exports = {
   getUserName,
   geFullName,
   login,
-  loginAdmin
+  loginAdmin,
+  getUserId
 };

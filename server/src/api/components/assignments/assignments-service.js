@@ -8,7 +8,12 @@ async function getUsersForRole(roleId){
     return assignmentsRepository.getUsersForRole(roleId)
 }
 
+async function hasUserBeenAssigned(roleId, userId){
+    return assignmentsRepository.hasUserBeenAssigned(roleId, userId)
+}
+
 module.exports = {
     createAssignment,
-    getUsersForRole
+    getUsersForRole,
+    hasUserBeenAssigned
 }
