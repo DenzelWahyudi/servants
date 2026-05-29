@@ -40,8 +40,8 @@ export function AdmitCard({ _id, userName, roleName, serviceName, date, time, on
                     <h2>{format(date, 'dd MMMM yyyy')}</h2>
                     <h2>{ time }</h2>
                 </div>
-                <h2 className="font-semibold">{ roleName.length > 17 ? userName.slice(0, 17) + "...": roleName}</h2>
-                <h2 className="font-semibold">{ userName }</h2>
+                <h2 className="font-semibold">{ roleName.length > 17 ? roleName.slice(0, 17) + "...": roleName}</h2>
+                <h2 className="font-semibold">{ userName.length > 19 ? userName.slice(0, 17) + "...": userName}</h2>
                 <div className="flex justify-between mt-auto">
                     <button
                     onClick={() => {
