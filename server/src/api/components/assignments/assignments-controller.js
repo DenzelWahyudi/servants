@@ -41,7 +41,7 @@ async function getUsersForRole(req, res, next){
         const success = await assignmentsService.getUsersForRole(roleId)
 
         if (!success){
-            throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Failed to users name')
+            throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Failed to get users name')
         }
 
         return res.status(200).json(success)
@@ -50,7 +50,24 @@ async function getUsersForRole(req, res, next){
     }
 }
 
+async function getUserSchedule(req, res, next){
+    try {
+        const userId = req.user.id
+
+        const success = await assignmentsService.getUserSchedule(userId)
+
+        if(!success.length){
+            throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Failed to get user schedule')
+        }
+
+        return res.status(200).json(success)
+    } catch (error) {
+        next (error)
+    }
+}
+
 module.exports = {
     createAssignment,
-    getUsersForRole
+    getUsersForRole,
+    getUserSchedule
 }

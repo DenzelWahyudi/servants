@@ -12,8 +12,13 @@ async function hasUserBeenAssigned(roleId, userId){
     return assignmentsRepository.hasUserBeenAssigned(roleId, userId)
 }
 
+async function getUserSchedule(userId) {
+    return assignmentsRepository.getUserSchedule(userId)
+}
+
 module.exports = {
     createAssignment,
     getUsersForRole,
-    hasUserBeenAssigned
+    hasUserBeenAssigned,
+    getUserSchedule
 }

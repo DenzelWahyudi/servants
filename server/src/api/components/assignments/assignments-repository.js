@@ -37,8 +37,51 @@ async function hasUserBeenAssigned(roleId, userId){
     return Assignments.findOne({ roleId, userId })
 }
 
+async function getUserSchedule(userId){
+    return Assignments.aggregate([
+        {
+            $match: {
+                userId: new mongoose.Types.ObjectId(userId),
+                status: 'confirmed'
+            }
+        },
+        {
+            $lookup: {
+                from: 'roles',
+                localField: 'roleId',
+                foreignField: '_id',
+                as: 'roles'
+            }
+        },
+        {
+            $unwind: '$roles'
+        },
+        {
+            $lookup: {
+                from: 'services',
+                localField: 'roles.serviceId',
+                foreignField: '_id',
+                as: 'services'
+            }
+        },
+        {
+            $unwind: '$services'
+        },
+        {
+            $project: {
+                _id: 0,
+                roleName: '$roles.name',
+                serviceName: '$services.name',
+                date: '$services.date',
+                time: '$services.time'
+            }
+        }
+    ])
+}
+
 module.exports = {
     createAssignment,
     getUsersForRole,
-    hasUserBeenAssigned
+    hasUserBeenAssigned,
+    getUserSchedule
 }
