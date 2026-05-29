@@ -41,8 +41,8 @@ export function Calendar(){
                     "Content-Type": "application/json",
                 },
             })
-            const data = await response.json()
-            setSchedule(data)
+            const data: Schedule[] = await response.json()
+            setSchedule(Array.isArray(data) ? data : [])
         }
         if (token) {
             fetchSchedule()
@@ -134,8 +134,8 @@ export function Calendar(){
                                         startOfDay(s.date),
                                         startOfDay(new Date(day))
                                     ))
-                                    .map((s) => 
-                                        <div className="flex justify-between">
+                                    ?.map((s) => 
+                                        <div key = {s.roleName} className="flex justify-between">
                                             <button
                                             onClick={() => setRoleInfo({
                                                 roleName: s.roleName,
