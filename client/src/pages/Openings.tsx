@@ -89,7 +89,8 @@ export function Openings() {
         <div className="mx-auto px-12 py-5 flex flex-col gap-13">
             <Header variant="openings" />
             <Heading>Openings</Heading>
-                <div className="-mt-7 flex flex-wrap gap-4">
+            <div className="min-h-130">
+                <div className="-mt-7 flex flex-wrap gap-4 ">
                     {roles?.map((role) => {
                         if (role.spotsFilled < role.spotsTotal){
                             const service = services?.find(s => s._id === role.serviceId)
@@ -108,6 +109,7 @@ export function Openings() {
                         }
                     })}
                 </div>
+            </div>
             <Footer />
         </div>
     )

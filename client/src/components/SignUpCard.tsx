@@ -26,7 +26,7 @@ export function SignUpCard({ userId, roleId, serviceName, roleName, date, onClos
                 body: JSON.stringify({
                     userId,
                     roleId,
-                    status: "confirmed"
+                    status: "pending"
                 })
             });
 
