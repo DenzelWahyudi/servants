@@ -8,6 +8,10 @@ module.exports = (app) => {
 
     route.post('/', assignmentsController.createAssignment)
 
+    route.get('/pendingstatus', assignmentsController.getPendingStatusAssignments)
+
+    route.post('/updatestatus/:id', assignmentsController.updateStatus)
+
     route.get('/schedule', authMiddleware, assignmentsController.getUserSchedule)
 
     route.get('/:roleId', assignmentsController.getUsersForRole)

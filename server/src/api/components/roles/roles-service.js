@@ -1,4 +1,5 @@
 const rolesRepository = require('./roles-repository')
+const assignmentsRepository = require('../assignments/assignments-repository')
 
 async function createRoles(roles) {
     return rolesRepository.createRoles(roles)
@@ -21,6 +22,8 @@ async function getRole(id){
 }
 
 async function deleteRoles(serviceId){
+    const roles = await rolesRepository.getAllRoles(serviceId)
+    roles?.map(async (r) => await assignmentsRepository.deleteAssignmentByRoleId(r._id))
     return rolesRepository.deleteRoles(serviceId)
 }
 

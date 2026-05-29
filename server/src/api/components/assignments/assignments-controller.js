@@ -62,12 +62,53 @@ async function getUserSchedule(req, res, next){
 
         return res.status(200).json(success)
     } catch (error) {
-        next (error)
+        next(error)
+    }
+}
+
+async function getPendingStatusAssignments(req, res, next){
+    try {
+        const success = await assignmentsService.getPendingStatusAssignments()
+
+        if(!success){
+            throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Failed to get pending status assignments')
+        }
+
+        return res.status(200).json(success)
+    } catch (error) {
+        next(error)
+    }
+}
+
+async function updateStatus(req, res, next){
+    try {
+        const assignmentId = req.params.id
+        const { status } = req.body
+
+        if (!assignmentId){
+            throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Assignment id empty')
+        }
+
+        if (!status){
+            throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Status type empty')
+        }
+
+        const success = await assignmentsService.updateStatus(assignmentId, status)
+
+        if(!success){
+            throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Failed to update assignment status')
+        }
+
+        return res.status(200).json(success)
+    } catch (error) {
+        next(error)
     }
 }
 
 module.exports = {
     createAssignment,
     getUsersForRole,
-    getUserSchedule
+    getUserSchedule,
+    getPendingStatusAssignments,
+    updateStatus
 }
