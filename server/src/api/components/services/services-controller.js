@@ -163,7 +163,7 @@ async function updateStatus(req, res, next){
             throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Failed to update service status')
         }
 
-        return res.status(204)
+        return res.status(200).json({ message: "Update service status success!" })
     } catch (error) {
         next(error)
     }
