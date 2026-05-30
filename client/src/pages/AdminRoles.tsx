@@ -1,17 +1,51 @@
 import { Header } from "../components/Header";
-import { ManageRoles } from "../components/ManageRoles";
 import { Sidebar } from "../components/Sidebar";
+import { useEffect, useState } from "react";
+import { Heading } from "../components/Heading";
+import { RolesCard } from "../components/RolesCard";
+
+interface Service{
+	_id: string
+	date: string
+}
 
 export function AdminRoles() {
-  return (
-    <div className="flex flex-col overflow-y-auto h-screen">
-      <div className="px-6.5 py-4">
-        <Header variant="admin"/>
-      </div>
-      <div className="flex flex-1">
-        <Sidebar variant="roles" />
-        <ManageRoles />
-      </div>
-    </div>
-  )
+
+	const [services, setServices] = useState<Service[] | null>(null)
+
+	useEffect(() => {
+		async function fetchServices(){
+			const response = await fetch('/api/services', {
+				method: "GET",
+				headers: { "Content-Type": 'application/json'}
+			})
+			const data: Service[] = await response.json()
+			const sorted = data.sort(
+				(a,b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+			)
+			setServices(sorted)
+		}
+		fetchServices()
+	}, [])
+
+	return (
+		<div className="flex flex-col overflow-y-auto h-screen">
+			<div className="px-6.5 py-4">
+				<Header variant="admin"/>
+			</div>
+			<div className="flex flex-1">
+				<Sidebar variant="roles" />
+				<div className="flex flex-col bg-zinc-100/2 px-10 w-full h-full">
+					<div className="flex justify-between py-7 items-center">
+						<Heading>Manage Roles</Heading>
+					</div>
+					{services?.map((service) => 
+					<div className="rounded-lg overflow-hidden pb-4.5">
+						<RolesCard serviceId={service._id} />
+					</div>
+					)}
+				</div>
+			</div>
+		</div>
+	)
 }

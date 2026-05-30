@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom"
 import { Heading } from "./Heading"
 import React, { useEffect, useState } from "react"
 
-type AssignRoleCardProps = {
+type RelieveRoleFormProps = {
     userId?: string
     roleId: string
     serviceName: string
@@ -15,7 +15,7 @@ interface User {
     name: string
 }
 
-export function AssignRoleCard({ roleId, serviceName, roleName, onClose }: AssignRoleCardProps){
+export function RelieveRoleForm({ roleId, serviceName, roleName, onClose }: RelieveRoleFormProps){
 
     const navigate = useNavigate()
     const [error, setError] = useState<string | null>(null)

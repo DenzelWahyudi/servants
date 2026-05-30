@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { UserPlus } from 'lucide-react'
-import { AssignRoleCard } from "./AssignRoleCard"
+import { AssignRoleForm } from "./AssignRoleForm"
 
 type RolesCardProps = {
     serviceId: string
@@ -138,7 +138,7 @@ export function RolesCard({ serviceId }: RolesCardProps){
                     onClick={(e) => e.stopPropagation()}
                     className="max-h-[90vh] overflow-y-auto"
                     >
-                        <AssignRoleCard 
+                        <AssignRoleForm
                         roleId={assignData.roleId}
                         serviceName={assignData.serviceName}
                         roleName={assignData.roleName}
