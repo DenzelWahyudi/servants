@@ -146,7 +146,7 @@ export function Home() {
                                 <td className="py-3 px-3 font-medium">{a.serviceName}</td>
                                 <td>{new Date(a.date).toLocaleDateString("en-GB", { year:"numeric", month: "long", day: "numeric",})}</td>
                                 <td>{a.time}</td>
-                                <td className="px-2 w-[100px] break-words">{a.roleName}</td>
+                                <td className="px-2 w-[140px] break-words">{a.roleName}</td>
                                 <td className="text-center">
                                     <span className={`px-3 py-0.5 rounded font-semibold text-zinc-950 inline-block w-23 ${
 										a.status === "confirmed"
