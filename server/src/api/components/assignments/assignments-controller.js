@@ -105,10 +105,25 @@ async function updateStatus(req, res, next){
     }
 }
 
+async function getAllUserAssignments(req, res, next){
+    try {
+        const success = await assignmentsService.getAllUserAssignments(req.user.id)
+        
+        if (!success){
+            throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Failed to get user assignments')
+        }
+
+        return res.status(200).json(success)
+    } catch (error) {
+        next (error)
+    }
+}
+
 module.exports = {
     createAssignment,
     getUsersForRole,
     getUserSchedule,
     getPendingStatusAssignments,
-    updateStatus
+    updateStatus,
+    getAllUserAssignments
 }

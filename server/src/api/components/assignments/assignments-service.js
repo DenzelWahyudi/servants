@@ -24,11 +24,16 @@ async function updateStatus(assignmentId, status){
     return assignmentsRepository.updateStatus(assignmentId, status)
 }
 
+async function getAllUserAssignments(userId){
+    return assignmentsRepository.getAllUserAssignments(userId)
+}
+
 module.exports = {
     createAssignment,
     getUsersForRole,
     hasUserBeenAssigned,
     getUserSchedule,
     getPendingStatusAssignments,
-    updateStatus
+    updateStatus,
+    getAllUserAssignments
 }

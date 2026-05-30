@@ -56,7 +56,7 @@ export function ServiceCard(){
     }
 
     function addRole(){
-        setRoles((prev) => [...prev, { id: Date.now(), name:"", spotsTotal: 0}])
+        setRoles((prev) => [...prev, { id: Date.now(), name:"", spotsTotal: null}])
     }
 
     function removeRole(id: number){
