@@ -16,7 +16,7 @@ type SavedRole = {
     name: string
 }
 
-type EditServiceCardProps = {
+type EditServiceFormProps = {
     id: string
     onClose?: () => void
     onSave?: (updated: Service & { roles: SavedRole[] }) => void
@@ -35,7 +35,7 @@ interface RoleInterface {
     spotsTotal: string
 }
 
-export function EditServiceCard({ id, onClose, onSave }: EditServiceCardProps){
+export function EditServiceForm({ id, onClose, onSave }: EditServiceFormProps){
     
     const navigate = useNavigate();
 

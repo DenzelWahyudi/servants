@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Trash2, Pencil } from 'lucide-react';
-import { EditServiceCard } from "./EditServiceCard";
+import { EditServiceForm } from "./EditServiceForm";
 
 interface Role {
     _id: string
@@ -150,7 +150,7 @@ export function UpcomingServicesAdmin(){
                     onClick={(e) => e.stopPropagation()}
                     className="max-h-[90vh] overflow-y-auto"
                     >
-                        <EditServiceCard 
+                        <EditServiceForm 
                         id={editingId} 
                         onClose={() =>{setEditingId(null)}}
                         onSave={(updated) => {

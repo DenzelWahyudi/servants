@@ -10,6 +10,8 @@ module.exports = (app) => {
 
     route.get('/pendingstatus', assignmentsController.getPendingStatusAssignments)
 
+    route.delete('/relieve', assignmentsController.relieveUser)
+
     route.put('/updatestatus/:id', assignmentsController.updateStatus)
 
     route.get('/schedule', authMiddleware, assignmentsController.getUserSchedule)
@@ -18,4 +20,5 @@ module.exports = (app) => {
 
     route.get('/:roleId', assignmentsController.getUsersForRole)
 
+    route.get('/relieve/:roleId', assignmentsController.getUsersToRelieve)
 }

@@ -32,6 +32,14 @@ async function increaseRoleSpotsFilled(id){
     )
 }
 
+async function decreaseRoleSpotsFilled(id){
+    return Roles.findByIdAndUpdate(
+        id,
+        { $inc: { spotsFilled: -1 } },
+        { new: true }
+    )
+}
+
 module.exports = {
   createRoles,
   createRole,
@@ -39,5 +47,6 @@ module.exports = {
   getRole,
   getAllRoles,
   deleteRoles,
-  increaseRoleSpotsFilled
+  increaseRoleSpotsFilled,
+  decreaseRoleSpotsFilled
 };

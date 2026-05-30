@@ -191,6 +191,39 @@ async function deleteAssignmentByRoleId(roleId){
     return Assignments.deleteMany({roleId})
 }
 
+async function getUsersToRelieve(roleId){
+    return Assignments.aggregate([
+        {
+            $match: {
+                roleId: new mongoose.Types.ObjectId(roleId),
+                status: 'confirmed'
+            }
+        },
+        {
+            $lookup: {
+                from: 'users',
+                localField: 'userId',
+                foreignField: '_id',
+                as: 'user'
+            }
+        },
+        {
+            $unwind: '$user'
+        },
+        {
+            $project: {
+                _id: 0,
+                userId: "$user._id",
+                name: '$user.name'
+            }
+        }
+    ])
+}
+
+async function relieveUser(userId, roleId){
+    return Assignments.deleteOne({ userId, roleId })
+}
+
 module.exports = {
     createAssignment,
     getUsersForRole,
@@ -199,5 +232,7 @@ module.exports = {
     getPendingStatusAssignments,
     updateStatus,
     deleteAssignmentByRoleId,
-    getAllUserAssignments
+    getAllUserAssignments,
+    getUsersToRelieve,
+    relieveUser
 }
