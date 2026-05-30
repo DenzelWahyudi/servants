@@ -22,7 +22,7 @@ async function getRole(id){
 }
 
 async function deleteRoles(serviceId){
-    const roles = await rolesRepository.getAllRoles(serviceId)
+    const roles = await rolesRepository.getRoles(serviceId)
     roles?.map(async (r) => await assignmentsRepository.deleteAssignmentByRoleId(r._id))
     return rolesRepository.deleteRoles(serviceId)
 }

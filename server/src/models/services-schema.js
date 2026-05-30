@@ -7,8 +7,8 @@ module.exports = (db) =>
       time: String,
       status: {
         type: String,
-        default: 'Fully Staffed',
-        enum: ['Roles Open', 'Fully Staffed'],
+        default: 'Roles Closed',
+        enum: ['Roles Open', 'Roles Closed'],
       },
     })
   );

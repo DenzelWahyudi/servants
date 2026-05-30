@@ -233,7 +233,7 @@ export function EditServiceCard({ id, onClose, onSave }: EditServiceCardProps){
                 className="bg-slate-700 border border-slate-600 focus:border-amber-400 outline-none text-zinc-100 text-sm rounded-lg px-3 py-2 transition-colors"
                 >
                     <option value="Roles Open">Roles Open</option>
-                    <option value="Fully Staffed">Fully Staffed</option>
+                    <option value="Roles Closed">Roles Closed</option>
                 </select>
             </div>
 

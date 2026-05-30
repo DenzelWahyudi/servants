@@ -81,7 +81,7 @@ export function UpcomingServicesAdmin(){
                             <th>Date</th>
                             <th>Time</th>
                             <th className="pl-3">Roles Needed</th>
-                            <th>Status</th>
+                            <th className="text-center pr-1.5">Status</th>
                             <th className="text-center pr-1">Actions</th>
                         </tr>
                     </thead>
@@ -92,8 +92,8 @@ export function UpcomingServicesAdmin(){
                                 <td>{new Date(s.date).toLocaleDateString("en-GB", { year:"numeric", month: "long", day: "numeric",})}</td>
                                 <td>{s.time}</td>
                                 <td className="pl-3 pr-7 py-3 max-w-[355px] break-words">{s.roles?.map(r => r.name).join(", ") ?? "..."}</td>
-                                <td>
-                                    <span className={`px-3 py-0.5 rounded font-semibold ${s.status === "Fully Staffed"
+                                <td className="text-center">
+                                    <span className={`px-3 py-0.5 rounded font-semibold inline-block w-28 text-center ${s.status === "Roles Closed"
                                     ? "bg-red-200"
                                     : "bg-green-200"
                                     }`}>

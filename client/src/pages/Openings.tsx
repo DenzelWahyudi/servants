@@ -93,7 +93,7 @@ export function Openings() {
                 <div className="-mt-7 flex flex-wrap gap-4 ">
                     {roles?.map((role) => {
                         if (role.spotsFilled < role.spotsTotal){
-                            const service = services?.find(s => s._id === role.serviceId)
+                            const service = services?.find(s => s._id === role.serviceId && s.status == "Roles Open")
                             if (!service) return null
 
                             return (
