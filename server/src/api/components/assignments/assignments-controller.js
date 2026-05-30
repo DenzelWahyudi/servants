@@ -119,11 +119,45 @@ async function getAllUserAssignments(req, res, next){
     }
 }
 
+async function getUsersToRelieve(req, res, next){
+    try {
+        const roleId = req.params.roleId
+
+        const success = await assignmentsService.getUsersToRelieve(roleId)
+
+        if (!success){
+            throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Failed to get users')
+        }
+
+        return res.status(200).json(success)
+    } catch (error) {
+        next(error)
+    }
+}
+
+async function relieveUser(req, res, next){
+    try {
+        const { userId, roleId } = req.body
+
+        const success = await assignmentsService.relieveUser(userId, roleId)
+
+        if (!success){
+            throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Failed to relieve user')
+        }
+
+        return res.status(200).json({ message: 'Relieve user successful' })
+    } catch (error) {
+        next(error)
+    }
+}
+
 module.exports = {
     createAssignment,
     getUsersForRole,
     getUserSchedule,
     getPendingStatusAssignments,
     updateStatus,
-    getAllUserAssignments
+    getAllUserAssignments,
+    getUsersToRelieve,
+    relieveUser
 }

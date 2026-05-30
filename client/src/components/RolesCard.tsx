@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
-import { UserPlus } from 'lucide-react'
+import { UserPlus, UserMinus } from 'lucide-react'
 import { AssignRoleForm } from "./AssignRoleForm"
+import { RelieveRoleForm } from "./RelieveRoleForm"
 
 type RolesCardProps = {
     serviceId: string
@@ -36,6 +37,7 @@ export function RolesCard({ serviceId }: RolesCardProps){
     const [service, setService] = useState<Service | null>(null)
     const [roles, setRoles] = useState<Role[] | null>(null)
     const [assignData, setAssignData] = useState<Assign | null>(null)
+    const [relieveData, setRelieveData] = useState<Assign | null>(null)
 
     useEffect(() => {
         async function fetchService() {
@@ -113,6 +115,16 @@ export function RolesCard({ serviceId }: RolesCardProps){
                             <td className="text-center">
                                 <div className="flex gap-1 items-center justify-center">
                                     <button
+                                    onClick={() => setRelieveData({
+                                        roleId: r._id,
+                                        serviceName: service.name,
+                                        roleName: r.name
+                                    })}
+                                    className="bg-zinc-100 px-1.5 py-1 rounded-lg border border-zinc-400 hover:bg-zinc-300 disabled:bg-red-300 trasition-colors"
+                                    >
+                                        <UserMinus size={16} className="text-slate-900"/>
+                                    </button>  
+                                    <button
                                     disabled={r.spotsFilled >= r.spotsTotal}
                                     onClick={() => setAssignData({
                                         roleId: r._id,
@@ -122,7 +134,7 @@ export function RolesCard({ serviceId }: RolesCardProps){
                                     className="bg-zinc-100 px-1.5 py-1 rounded-lg border border-zinc-400 hover:bg-zinc-300 disabled:bg-red-300 trasition-colors"
                                     >
                                         <UserPlus size={16} className="text-slate-900"/>
-                                    </button>
+                                    </button>    
                                 </div>
                             </td>
                         </tr>
@@ -144,6 +156,27 @@ export function RolesCard({ serviceId }: RolesCardProps){
                         roleName={assignData.roleName}
                         onClose={() => {
                             setAssignData(null)
+                            fetchRoles(serviceId)
+                        }}
+                        />
+                    </div>
+                </div>
+            )}
+            {relieveData && (
+                <div 
+                className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+                onClick={() => setRelieveData(null)}
+                >
+                    <div
+                    onClick={(e) => e.stopPropagation()}
+                    className="max-h-[90vh] overflow-y-auto"
+                    >
+                        <RelieveRoleForm
+                        roleId={relieveData.roleId}
+                        serviceName={relieveData.serviceName}
+                        roleName={relieveData.roleName}
+                        onClose={() => {
+                            setRelieveData(null)
                             fetchRoles(serviceId)
                         }}
                         />
