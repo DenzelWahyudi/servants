@@ -118,7 +118,7 @@ export function Calendar(){
                 <div className="grid grid-cols-7 mt-3 items-center border-1 border-slate-600">
                     {daysInMonth.map((day, idx) => {
                         return (
-                            <div key={idx} className={`${colStartClasses[getDay(day)]} border-r border-b border-slate-600 h-[130px]`}>
+                            <div key={idx} className={`${colStartClasses[getDay(day)]} border-r border-b border-slate-600 h-[130px] overflow-y-auto`}>
                                 <p
                                 className={`cursor-default flex items-center justify-center font-normal h-6 w-6 text-sm mt-1.5 ml-2 rounded-full ${
                                     isSameMonth(day, firstDayOfMonth) ? "text-zinc-100" : "text-zinc-500"
@@ -127,7 +127,7 @@ export function Calendar(){
                                     {format(day, "d")}
                                 </p>
                                 <p
-                                className="mx-3 mt-1 text-sm"
+                                className="mx-3 mt-1 text-sm pb-2"
                                 >
                                     {schedule
                                     ?.filter((s) => isEqual(

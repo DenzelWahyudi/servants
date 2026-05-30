@@ -70,6 +70,24 @@ export function UpcomingServicesAdmin(){
         }
     }
 
+    function handleStatusChange(serviceId: string){
+        return async (e: React.ChangeEvent<HTMLSelectElement>) => {
+            setError(null)
+            const newStatus = e.target.value
+            const response = await fetch(`/api/services/updatestatus/${serviceId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ status: newStatus })
+            })
+            if (!response.ok){
+                setError("Failed to update service status")
+                return
+            }
+            setServices((prev) => 
+            prev?.map((s) => s._id === serviceId ? { ...s, status: newStatus} : s) ?? null)
+        }
+    }
+
     return (
         <section className="bg-white py-4">
             <h2 className="text-3xl font-semibold text-slate-900 text-center mb-3">Upcoming Services</h2>
@@ -81,7 +99,7 @@ export function UpcomingServicesAdmin(){
                             <th>Date</th>
                             <th>Time</th>
                             <th className="pl-3">Roles Needed</th>
-                            <th>Status</th>
+                            <th className="text-center pr-2.5">Status</th>
                             <th className="text-center pr-1">Actions</th>
                         </tr>
                     </thead>
@@ -92,13 +110,16 @@ export function UpcomingServicesAdmin(){
                                 <td>{new Date(s.date).toLocaleDateString("en-GB", { year:"numeric", month: "long", day: "numeric",})}</td>
                                 <td>{s.time}</td>
                                 <td className="pl-3 pr-7 py-3 max-w-[355px] break-words">{s.roles?.map(r => r.name).join(", ") ?? "..."}</td>
-                                <td>
-                                    <span className={`px-3 py-0.5 rounded font-semibold ${s.status === "Fully Staffed"
+                                <td className="text-center">
+                                    <select value={s.status} onChange={handleStatusChange(s._id)}
+                                    className={`px-3 py-0.5 rounded font-semibold inline-block w-33 text-center ${s.status === "Roles Closed"
                                     ? "bg-red-200"
                                     : "bg-green-200"
-                                    }`}>
-                                        {s.status}
-                                    </span>
+                                    }`}
+                                    >
+                                        <option value="Roles Open">Roles Open</option>
+                                        <option value="Roles Closed">Roles Closed</option>
+                                    </select>
                                 </td>
                                 <td>
                                     <div className="flex gap-1 items-center justify-center">

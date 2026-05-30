@@ -147,9 +147,25 @@ async function updateService(req, res, next){
             }
         }
 
-        return res.status(201).json({ message: 'Service updated succesfully' });
+        return res.status(200).json({ message: 'Service updated succesfully' });
     } catch (error) {
         return next(error);
+    }
+}
+
+async function updateStatus(req, res, next){
+    try {
+        const { status } = req.body
+        
+        const success = await servicesService.updateStatus(req.params.serviceId, status)
+
+        if (!success){
+            throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Failed to update service status')
+        }
+
+        return res.status(200).json({ message: "Update service status success!" })
+    } catch (error) {
+        next(error)
     }
 }
 
@@ -158,5 +174,6 @@ module.exports = {
     getServices,
     getService,
     deleteService,
-    updateService
+    updateService,
+    updateStatus
 };

@@ -34,10 +34,15 @@ async function updateService(id, name, date, time, status){
     return Services.updateOne({ _id: id }, { $set: { name, date, time, status } })
 }
 
+async function updateStatus(id, status){
+    return Services.updateOne({ _id: id }, { $set: { status }} )
+}
+
 module.exports = {
     createService,
     getServices,
     getService,
     deleteService,
-    updateService
+    updateService,
+    updateStatus
 };

@@ -131,6 +131,58 @@ async function getPendingStatusAssignments(){
     ])
 }
 
+async function getAllUserAssignments(userId){
+    return Assignments.aggregate([
+        {
+            $match: {
+                userId: new mongoose.Types.ObjectId(userId)
+            }
+        },
+        {
+            $lookup: {
+                from: 'users',
+                localField: 'userId',
+                foreignField: '_id',
+                as: 'users'
+            }
+        },
+        {
+            $lookup: {
+                from: 'roles',
+                localField: 'roleId',
+                foreignField: '_id',
+                as: 'roles'
+            }
+        },
+        {
+            $unwind: '$users'
+        },
+        {
+            $unwind: '$roles'
+        },
+        {
+            $lookup: {
+                from: 'services',
+                localField: 'roles.serviceId',
+                foreignField: '_id',
+                as: 'services'
+            }
+        },
+        {
+            $unwind: '$services'
+        },
+        {
+            $project: {
+                serviceName: '$services.name',
+                roleName: '$roles.name',
+                date: '$services.date',
+                time: '$services.time',
+                status: '$status'
+            }
+        }
+    ])
+}
+
 async function updateStatus(assignmentId, status){
     return Assignments.updateOne({ _id: assignmentId }, { $set: { status } });
 }
@@ -146,5 +198,6 @@ module.exports = {
     getUserSchedule,
     getPendingStatusAssignments,
     updateStatus,
-    deleteAssignmentByRoleId
+    deleteAssignmentByRoleId,
+    getAllUserAssignments
 }

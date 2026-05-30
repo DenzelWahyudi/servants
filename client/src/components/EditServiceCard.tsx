@@ -113,7 +113,7 @@ export function EditServiceCard({ id, onClose, onSave }: EditServiceCardProps){
     }
 
     function addRole(){
-        setRoles((prev) => [...prev, { id: Date.now(), name:"", spotsTotal: 0}])
+        setRoles((prev) => [...prev, { id: Date.now(), name:"", spotsTotal: null}])
     }
 
     function removeRole(id: number){
@@ -126,7 +126,7 @@ export function EditServiceCard({ id, onClose, onSave }: EditServiceCardProps){
 
         try {
             const response = await fetch(`/api/services/update/${id}`, {
-                method: "POST",
+                method: "PUT",
                 headers: { "Content-Type": "application/json"},
                 body: JSON.stringify({ 
                     ...formData, 
@@ -233,7 +233,7 @@ export function EditServiceCard({ id, onClose, onSave }: EditServiceCardProps){
                 className="bg-slate-700 border border-slate-600 focus:border-amber-400 outline-none text-zinc-100 text-sm rounded-lg px-3 py-2 transition-colors"
                 >
                     <option value="Roles Open">Roles Open</option>
-                    <option value="Fully Staffed">Fully Staffed</option>
+                    <option value="Roles Closed">Roles Closed</option>
                 </select>
             </div>
 
