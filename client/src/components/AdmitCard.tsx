@@ -19,7 +19,7 @@ export function AdmitCard({ _id, userName, roleName, serviceName, date, time, on
         setError(null)
 
         const response = await fetch(`/api/assignments/updatestatus/${assigmentId}`, {
-                method: "POST",
+                method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                 },

@@ -126,7 +126,7 @@ export function EditServiceCard({ id, onClose, onSave }: EditServiceCardProps){
 
         try {
             const response = await fetch(`/api/services/update/${id}`, {
-                method: "POST",
+                method: "PUT",
                 headers: { "Content-Type": "application/json"},
                 body: JSON.stringify({ 
                     ...formData, 

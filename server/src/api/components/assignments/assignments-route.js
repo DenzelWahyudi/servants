@@ -10,7 +10,7 @@ module.exports = (app) => {
 
     route.get('/pendingstatus', assignmentsController.getPendingStatusAssignments)
 
-    route.post('/updatestatus/:id', assignmentsController.updateStatus)
+    route.put('/updatestatus/:id', assignmentsController.updateStatus)
 
     route.get('/schedule', authMiddleware, assignmentsController.getUserSchedule)
 
