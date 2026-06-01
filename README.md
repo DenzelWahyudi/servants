@@ -7,6 +7,7 @@
 1. Install the recommended VS Code extensions: `ESLint`.
 2. Copy and rename `.env.example` to `.env`.
 3. Open `.env` and set the variable `DB_CONNECTION` to the database connection string, `JWT_SECRET` to your encription key.
+4. Open `server.js` inside `server/src/core` and paste your vercel link on the `app.use(cors({` comment.
 4. Run `npm install` on server folder to install the project dependencies.
 5. Run `npm run build` on client folder to install the project dependencies.
 6. Run `npm run dev` to start the dev server and dev client.
