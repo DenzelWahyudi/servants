@@ -3,6 +3,7 @@ import { ButtonLink } from "./ButtonLink";
 import { Form } from "./Form";
 import { Heading } from "./Heading";
 import React, { useState } from "react";
+import { API_URL } from "../api"
 
 export function RegisterCard(){
     
@@ -28,7 +29,7 @@ export function RegisterCard(){
         setLoading(true);
 
         try {
-            const response = await fetch("/api/users", {
+            const response = await fetch(`${API_URL}/api/users`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json"},
                 body: JSON.stringify(formData),

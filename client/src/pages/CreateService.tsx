@@ -5,6 +5,7 @@ import { Form } from "../components/Form";
 import { Heading } from "../components/Heading";
 import React, { useState } from "react";
 import { Trash2 } from "lucide-react";
+import { API_URL } from "../api"
 
 type Role = {
     id: number;
@@ -69,7 +70,7 @@ export function CreateService() {
         setLoading(true);
 
         try {
-            const response = await fetch("/api/services/create", {
+            const response = await fetch(`${API_URL}/api/services/create`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json"},
                 body: JSON.stringify({ 

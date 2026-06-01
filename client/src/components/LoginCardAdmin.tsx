@@ -4,6 +4,7 @@ import { Form } from "./Form";
 import { Heading } from "./Heading";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import { API_URL } from "../api"
 
 export function LoginCardAdmin(){
 
@@ -27,7 +28,7 @@ export function LoginCardAdmin(){
         setLoading(true);
 
         try {
-            const response = await fetch("/api/users/login/admin", {
+            const response = await fetch(`${API_URL}/api/users/login/admin`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData),

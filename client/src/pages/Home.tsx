@@ -8,6 +8,7 @@ import user from '../assets/icons/user.svg'
 import { useEffect, useState } from 'react'
 import { useAuth } from "../hooks/useAuth"
 import { startOfToday, isEqual, startOfDay } from "date-fns"
+import { API_URL } from "../api"
 
 interface Schedule {
     roleName: string
@@ -49,7 +50,7 @@ export function Home() {
 
 	useEffect(() => {
 		async function fetchUser() {
-			const response = await fetch('/api/users/name', {
+			const response = await fetch(`${API_URL}/api/users/name`, {
 				method: "GET",
 				headers: {
 					Authorization: `Bearer ${token}`,
@@ -60,7 +61,7 @@ export function Home() {
 			setUserName(data)
 		}
 		async function fetchSchedule() {
-			const response = await fetch(`/api/assignments/schedule`, {
+			const response = await fetch(`${API_URL}/api/assignments/schedule`, {
 				method: "GET",
 				headers: {
 					Authorization: `Bearer ${token}`,
@@ -71,7 +72,7 @@ export function Home() {
 			setSchedule(Array.isArray(data) ? data : [])
 		}
 		async function fetchRoles() {
-			const roles = await fetch('/api/roles', {
+			const roles = await fetch(`${API_URL}/api/roles`, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json"
@@ -88,7 +89,7 @@ export function Home() {
 	}, [token])
 
 	async function getAssignments(){
-		const response = await fetch(`/api/assignments/all`, {
+		const response = await fetch(`${API_URL}/api/assignments/all`, {
 			method: "GET",
 			headers: { 
 				Authorization: `Bearer ${token}`,

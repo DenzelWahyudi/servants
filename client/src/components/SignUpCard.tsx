@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom"
 import { Heading } from "./Heading"
 import { useState } from "react"
+import { API_URL } from "../api"
 
 type SignUpCardProps = {
     userId: string
@@ -20,7 +21,7 @@ export function SignUpCard({ userId, roleId, serviceName, roleName, date, onClos
     async function handleAssign(userId: string, roleId: string){
         setError(null);
         try {
-            const response = await fetch(`/api/assignments`, {
+            const response = await fetch(`${API_URL}/api/assignments`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json"},
                 body: JSON.stringify({

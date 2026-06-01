@@ -1,5 +1,6 @@
 import { format } from "date-fns"
 import { useState } from "react"
+import { API_URL } from "../api"
 
 type AdmitCardProps = {
     _id: string
@@ -18,7 +19,7 @@ export function AdmitCard({ _id, userName, roleName, serviceName, date, time, on
     async function handleUpdateStatus(assigmentId, status :string){
         setError(null)
 
-        const response = await fetch(`/api/assignments/updatestatus/${assigmentId}`, {
+        const response = await fetch(`${API_URL}/api/assignments/updatestatus/${assigmentId}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",

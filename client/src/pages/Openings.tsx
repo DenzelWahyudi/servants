@@ -4,6 +4,7 @@ import { Header } from "../components/Header";
 import { Heading } from "../components/Heading";
 import { OpeningsCard } from "../components/OpeningsCard";
 import { useAuth } from "../hooks/useAuth";
+import { API_URL } from "../api"
 
 interface Service {
     _id: string
@@ -30,7 +31,7 @@ export function Openings() {
 
     useEffect(() => {
         async function fetchRoles() {
-            const roles = await fetch('/api/roles', {
+            const roles = await fetch(`${API_URL}/api/roles`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json"
@@ -39,7 +40,7 @@ export function Openings() {
             const rolesData = await roles.json()
             setRoles(rolesData)
 
-            const services = await fetch('/api/services', {
+            const services = await fetch(`${API_URL}/api/services`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -49,7 +50,7 @@ export function Openings() {
             setServices(servicesData)
         }
         async function fetchUser() {
-            const response = await fetch('/api/users/id', {
+            const response = await fetch(`${API_URL}/api/users/id`, {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -66,7 +67,7 @@ export function Openings() {
     }, [token])
 
     async function fetchRoles() {
-        const roles = await fetch('/api/roles', {
+        const roles = await fetch(`${API_URL}/api/roles`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
@@ -75,7 +76,7 @@ export function Openings() {
         const rolesData = await roles.json()
         setRoles(rolesData)
 
-        const services = await fetch('/api/services', {
+        const services = await fetch(`${API_URL}/api/services`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
