@@ -15,7 +15,12 @@ const app = express();
 app.enable('trust proxy');
 
 // Enable cross origin resource sharing to all origins by default
-app.use(cors());
+app.use(cors(
+  // {
+  // origin: 'your actual Vercel URL',
+  // credentials: true
+  // }
+));
 
 // Let you use HTTP verbs such as PUT or DELETE in places where the client doesn't support it
 app.use(require('method-override')());
