@@ -3,6 +3,7 @@ import { Sidebar } from "../components/Sidebar";
 import { useEffect, useState } from "react";
 import { Heading } from "../components/Heading";
 import { RolesCard } from "../components/RolesCard";
+import { API_URL } from "../api"
 
 interface Service{
 	_id: string
@@ -15,7 +16,7 @@ export function AdminRoles() {
 
 	useEffect(() => {
 		async function fetchServices(){
-			const response = await fetch('/api/services', {
+			const response = await fetch(`${API_URL}/api/services`, {
 				method: "GET",
 				headers: { "Content-Type": 'application/json'}
 			})

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { Trash2, Pencil } from 'lucide-react';
 import { EditServiceForm } from "./EditServiceForm";
+import { API_URL } from "../api"
 
 interface Role {
     _id: string
@@ -26,7 +27,7 @@ export function UpcomingServicesAdmin(){
     
     useEffect(() => {
         async function fetchServices() {
-            const response = await fetch('/api/services', {
+            const response = await fetch(`${API_URL}/api/services`, {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
             })
@@ -34,7 +35,7 @@ export function UpcomingServicesAdmin(){
 
             const serviceWithRoles = await Promise.all(
                 data.map(async (service) => {
-                    const roleRes = await fetch(`/api/roles/${service._id}`, {
+                    const roleRes = await fetch(`${API_URL}/api/roles/${service._id}`, {
                         method: "GET",
                         headers: { "Content-Type": "application/json" },
                     })
@@ -53,7 +54,7 @@ export function UpcomingServicesAdmin(){
     async function handleDelete(serviceId: string){
         setError(null);
         try {
-            const response = await fetch(`/api/services/delete/${serviceId}`, {
+            const response = await fetch(`${API_URL}/api/services/delete/${serviceId}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
             });
@@ -74,7 +75,7 @@ export function UpcomingServicesAdmin(){
         return async (e: React.ChangeEvent<HTMLSelectElement>) => {
             setError(null)
             const newStatus = e.target.value
-            const response = await fetch(`/api/services/updatestatus/${serviceId}`, {
+            const response = await fetch(`${API_URL}/api/services/updatestatus/${serviceId}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ status: newStatus })

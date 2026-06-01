@@ -3,6 +3,7 @@ import { Form } from "./Form";
 import { Heading } from "./Heading";
 import React, { useEffect, useState } from "react";
 import { Trash2 } from "lucide-react";
+import { API_URL } from "../api"
 
 type Role = {
     id: number
@@ -55,7 +56,7 @@ export function EditServiceForm({ id, onClose, onSave }: EditServiceFormProps){
 
     useEffect(() => {
         async function fetchService(){
-            const response = await fetch(`/api/services/${id}`, {
+            const response = await fetch(`${API_URL}/api/services/${id}`, {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
             });
@@ -69,7 +70,7 @@ export function EditServiceForm({ id, onClose, onSave }: EditServiceFormProps){
                 status: service.status
             });
 
-            const roleRes = await fetch(`/api/roles/${service._id}`, {
+            const roleRes = await fetch(`${API_URL}/api/roles/${service._id}`, {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
             });
@@ -125,7 +126,7 @@ export function EditServiceForm({ id, onClose, onSave }: EditServiceFormProps){
         setLoading(true);
 
         try {
-            const response = await fetch(`/api/services/update/${id}`, {
+            const response = await fetch(`${API_URL}/api/services/update/${id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json"},
                 body: JSON.stringify({ 

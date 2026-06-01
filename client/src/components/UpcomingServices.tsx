@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { API_URL } from "../api"
 
 interface Role {
     _id: string
@@ -22,7 +23,7 @@ export function UpcomingServices(){
     
     useEffect(() => {
         async function fetchServices() {
-            const response = await fetch('/api/services', {
+            const response = await fetch(`${API_URL}/api/services`, {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
             })
@@ -30,7 +31,7 @@ export function UpcomingServices(){
 
             const serviceWithRoles = await Promise.all(
                 data.map(async (service) => {
-                    const roleRes = await fetch(`/api/roles/${service._id}`, {
+                    const roleRes = await fetch(`${API_URL}/api/roles/${service._id}`, {
                         method: "GET",
                         headers: { "Content-Type": "application/json" },
                     })

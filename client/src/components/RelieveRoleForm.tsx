@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom"
 import React, { useEffect, useState } from "react"
+import { API_URL } from "../api"
 
 type RelieveRoleFormProps = {
     userId?: string
@@ -23,7 +24,7 @@ export function RelieveRoleForm({ roleId, serviceName, roleName, onClose }: Reli
 
     useEffect(() => {
         async function fetchUsers(){
-            const usersRes = await fetch(`/api/assignments/relieve/${roleId}`, {
+            const usersRes = await fetch(`${API_URL}/api/assignments/relieve/${roleId}`, {
                 method: "GET",
                 headers: { "Content-Type": "application/json" }
             })
@@ -40,7 +41,7 @@ export function RelieveRoleForm({ roleId, serviceName, roleName, onClose }: Reli
     async function handleRemove(userId, roleId){
         setError(null)
         {console.log(userId)}
-        const response = await fetch(`/api/assignments/relieve`, {
+        const response = await fetch(`${API_URL}/api/assignments/relieve`, {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ userId, roleId })

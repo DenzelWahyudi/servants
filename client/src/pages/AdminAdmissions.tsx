@@ -3,6 +3,7 @@ import { Header } from "../components/Header";
 import { Heading } from "../components/Heading";
 import { Sidebar } from "../components/Sidebar";
 import { AdmitCard } from "../components/AdmitCard";
+import { API_URL } from "../api"
 
 interface Assignment {
     _id: string
@@ -19,7 +20,7 @@ export function AdminAdmissions(){
 
     useEffect(() => {
         async function fetchPendingAssignments() {
-            const response = await fetch(`/api/assignments/pendingstatus`, {
+            const response = await fetch(`${API_URL}/api/assignments/pendingstatus`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -32,7 +33,7 @@ export function AdminAdmissions(){
     }, [])
 
     async function fetchPendingAssignments() {
-        const response = await fetch(`/api/assignments/pendingstatus`, {
+        const response = await fetch(`${API_URL}/api/assignments/pendingstatus`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom"
 import { Heading } from "./Heading"
 import React, { useEffect, useState } from "react"
+import { API_URL } from "../api"
 
 type AssignRoleFormProps = {
     userId?: string
@@ -24,7 +25,7 @@ export function AssignRoleForm({ roleId, serviceName, roleName, onClose }: Assig
 
     useEffect(() => {
         async function fetchUsers(){
-            const response = await fetch('/api/users', {
+            const response = await fetch(`${API_URL}/api/users`, {
                 method: "GET",
                 headers: { "Content-Type": "application/json" }
             })
@@ -37,7 +38,7 @@ export function AssignRoleForm({ roleId, serviceName, roleName, onClose }: Assig
     async function handleAssign(userId: string, roleId: string){
         setError(null);
         try {
-            const response = await fetch(`/api/assignments`, {
+            const response = await fetch(`${API_URL}/api/assignments`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json"},
                 body: JSON.stringify({

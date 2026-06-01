@@ -18,6 +18,7 @@ import { capitalizeFirstLetter } from "../utils/functions";
 import { useEffect, useState } from "react"
 import { useAuth } from "../hooks/useAuth";
 import { Heading } from "./Heading";
+import { API_URL } from "../api"
 
 interface Schedule {
     roleName: string
@@ -34,7 +35,7 @@ export function Calendar(){
 
     useEffect(() => {
         async function fetchSchedule() {
-            const response = await fetch(`/api/assignments/schedule`, {
+            const response = await fetch(`${API_URL}/api/assignments/schedule`, {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${token}`,

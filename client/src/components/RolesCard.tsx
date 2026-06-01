@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { UserPlus, UserMinus } from 'lucide-react'
 import { AssignRoleForm } from "./AssignRoleForm"
 import { RelieveRoleForm } from "./RelieveRoleForm"
+import { API_URL } from "../api"
 
 type RolesCardProps = {
     serviceId: string
@@ -41,20 +42,20 @@ export function RolesCard({ serviceId }: RolesCardProps){
 
     useEffect(() => {
         async function fetchService() {
-            const serviceResponse = await fetch(`/api/services/${serviceId}`, {
+            const serviceResponse = await fetch(`${API_URL}/api/services/${serviceId}`, {
                 method: "GET",
                 headers: { "Content-Type": "application/json" }
             })
             const serviceData: Service = await serviceResponse.json()
             
-            const rolesResponse = await fetch(`/api/roles/${serviceId}`, {
+            const rolesResponse = await fetch(`${API_URL}/api/roles/${serviceId}`, {
                 method: "GET",
                 headers: { "Content-Type": "applicaton/json" }
             })
             const rolesData: Role[] = await rolesResponse.json()
 
             const rolesWithNamesResponse = await Promise.all(rolesData?.map(async (r) => {
-                    const usersNameRes = await fetch(`/api/assignments/${r._id}`, {
+                    const usersNameRes = await fetch(`${API_URL}/api/assignments/${r._id}`, {
                         method: "GET",
                         headers: { "Content-Type": "application/json" }
                     })
@@ -70,14 +71,14 @@ export function RolesCard({ serviceId }: RolesCardProps){
     if(!service) return <div>Loading...</div>
 
     async function fetchRoles(serviceId: string){
-        const rolesResponse = await fetch(`/api/roles/${serviceId}`, {
+        const rolesResponse = await fetch(`${API_URL}/api/roles/${serviceId}`, {
             method: "GET",
             headers: { "Content-Type": "applicaton/json" }
         })
         const rolesData: Role[] = await rolesResponse.json()
 
         const rolesWithNamesResponse = await Promise.all(rolesData?.map(async (r) => {
-                const usersNameRes = await fetch(`/api/assignments/${r._id}`, {
+                const usersNameRes = await fetch(`${API_URL}/api/assignments/${r._id}`, {
                     method: "GET",
                     headers: { "Content-Type": "application/json" }
                 })
