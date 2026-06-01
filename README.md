@@ -12,3 +12,4 @@
 5. Run `npm run build` on client folder to install the project dependencies.
 6. Run `npm run dev` to start the dev server and dev client.
 7. In the `package.json` file inside client folder, there should be "build": "tsc -b && vite build". But `tsc -b` is removed since it stops vercel from running because of the typescript check.
+8. Run `cloudflared tunnel --url http://localhost:5000` in terminal to get Enviroment Variable `VITE_API_URL` for vercel.
