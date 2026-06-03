@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react'
 import { useAuth } from "../hooks/useAuth"
 import { startOfToday, isEqual, startOfDay } from "date-fns"
 import { API_URL } from "../api"
+import { UpcomingServicesMobile } from "../components/UpcomingServicesMobile"
 
 interface Schedule {
     roleName: string
@@ -101,10 +102,10 @@ export function Home() {
 	}
 
 	return (
-		<div className="mx-auto px-12 py-5 flex flex-col gap-15">
+		<div className="mx-auto px-4 sm:px-12 py-5 flex flex-col gap-15">
 			<Header variant="home"/>
 
-			<header className="flex flex-col gap-5 items-center justify-center w-full">
+			<header className="hidden sm:flex flex-col gap-5 items-center justify-center w-full">
 				<div className="flex gap-2 items-center">
 					<h1 className="text-4xl font-bold">Home</h1>
 					<h1 className="text-4xl font-semibold"> - </h1>
@@ -117,7 +118,19 @@ export function Home() {
 				</div>
 			</header>
 
-			<div className="-mx-12 -my-8 bg-white px-12 pb-10 min-h-90">
+			<div className="sm:hidden flex flex-col items-center gap-6">
+				<h1 className="text-3xl text-amber-400 font-semibold">Hello, <span className="text-zinc-100">{userName ?? '...'}</span></h1>
+				<StatsCard onClick={getAssignments} icon={<img src={user} width={40} />} title="Pending Sign-ups" buttonLabel="Review Now" ></StatsCard>
+				<div className="min-h-130 bg-white w-screen">
+					<UpcomingServicesMobile />
+				</div>
+			</div>
+
+			<div className="hidden sm:block lg:hidden bg-white -mx-12 -my-8 min-h-130">
+					<UpcomingServicesMobile />
+			</div>
+
+			<div className="hidden lg:block bg-white -mx-12 -my-8 px-12 pb-10 min-h-90">
 					<UpcomingServices />
 			</div>
 			<Footer />
