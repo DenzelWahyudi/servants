@@ -207,7 +207,7 @@ export function Calendar(){
                         className="flex flex-col bg-slate-800 rounded-lg mt-4 absolute top-full right-0 left-0"
                         >
                             <h1 className="px-5 py-3 font-semibold text-lg text-start">{format(chosenSchedule[1].date.toString(), 'dd MMMM yyyy')}</h1>
-                            <hr className=""/>
+                            <hr className="text-zinc-300"/>
                             <div className="flex flex-col w-full px-5 py-3 gap-2.5">
                                 {chosenSchedule?.map((s) => (
                                     <div className="flex text-sm justify-between items-center">
