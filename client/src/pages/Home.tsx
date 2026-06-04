@@ -147,14 +147,14 @@ export function Home() {
 					className="max-h-[90vh] overflow-y-auto"
 					>
 						<div className="rounded-lg overflow-hidden shadow-lg border border-slate-900">
-                <table className="w-120 sm:w-150 table-fixed text-sm text-left text-zinc-200 bg-slate-800">
+                <table className="hidden sm:table w-150 table-fixed text-sm text-left text-zinc-200 bg-slate-800">
                     <thead className="text-zinc-100 border-amber-400 border-b-2 border-t-2">
                         <tr>
                             <th className="px-3 py-3 w-[23%]">Service</th>
                             <th className="px-3 w-[18%]">Date</th>
-                            <th className="px-3 w-[14%] sm:w-[13%]">Time</th>
-                            <th className="px-3 w-[26%]">Roles</th>
-                            <th className="px-3 w-[13%] sm:w-[20%] text-center">Status</th>
+                            <th className="px-3 w-[13%]">Time</th>
+                            <th className="px-3 w-[26%]">Role</th>
+                            <th className="px-3 w-[20%] text-center">Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -164,7 +164,7 @@ export function Home() {
                                 <td className="px-3">{new Date(a.date).toLocaleDateString("en-GB", { year:"numeric", month: "long", day: "numeric",})}</td>
                                 <td className="px-3">{a.time}</td>
                                 <td className="px-3 py-2 break-words">{a.roleName}</td>
-                                <td className="hidden sm:table-cell px-3 text-center">
+                                <td className="px-3 text-center">
                                     <span className={`px-3 py-0.5 rounded font-semibold text-zinc-950 inline-block w-23 ${
 										a.status === "confirmed"
                                     	? "bg-green-200" :
@@ -175,15 +175,40 @@ export function Home() {
                                         {a.status}
                                     </span>
                                 </td>
-								<td className="sm:hidden px-3 text-center">
-                                    <span className={`px-2 py-0.5 rounded font-semibold text-zinc-950 inline-block w-9 ${
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+				<table className="sm:hidden w-85 table-fixed text-xs text-left text-zinc-200 bg-slate-800">
+                    <thead className="text-zinc-100 bg-slate-900/60">
+                        <tr>
+                            <th className="px-1 py-3 w-[23%]">Service</th>
+                            <th className="px-1 w-[23%]">Date</th>
+                            <th className="px-1 w-[15%]">Time</th>
+                            <th className="px-1 w-[25%]">Role</th>
+                            <th className="px-1 w-[14%] text-center">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {assignments?.map((a) => (
+                            <tr key={a._id} className="border-b border-zinc-500 text-zinc-100">
+                                <td className="px-1 py-2 font-medium break-words">{a.serviceName}</td>
+                                <td className="px-1">{new Date(a.date).toLocaleDateString("en-GB", { year:"numeric", month: "long", day: "numeric",})}</td>
+                                <td className="px-1">{a.time}</td>
+                                <td className="px-1 py-2 break-words">{a.roleName}</td>
+                                <td className="px-1 text-center">
+                                    <span className={`px-1.5 py-1.7 rounded font-semibold text-zinc-950 inline-block ${
 										a.status === "confirmed"
                                     	? "bg-green-200" :
 										a.status === "pending" ?
 										"bg-zinc-300"
                                     	: "bg-red-200"
                                     }`}>
-                                        {a.status === "confirmed" ? "OK" : a.status === "pending" ? "..." : "NO"}
+                                        {a.status === "confirmed"
+                                    	? "OK" :
+										a.status === "pending" ?
+										".."
+                                    	: "NO"}
                                     </span>
                                 </td>
                             </tr>
