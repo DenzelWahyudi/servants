@@ -87,7 +87,7 @@ export function Openings() {
     }
     
     return(
-        <div className="mx-auto px-12 py-5 flex flex-col gap-13">
+        <div className="mx-auto p-4 sm:px-12 py-5 flex flex-col gap-13">
             <Header variant="openings" />
             <Heading>Openings</Heading>
             <div className="min-h-130">

@@ -45,7 +45,7 @@ export function SignUpCard({ userId, roleId, serviceName, roleName, date, onClos
     }
 
     return (
-        <div className="flex flex-col gap-3 bg-slate-900 rounded-lg p-4.5 w-110 text-zinc-100">
+        <div className="flex flex-col gap-3 bg-slate-900 rounded-lg p-4.5 w-85 sm:w-110 text-zinc-100">
             <div className="pb-2.5">
                 <Heading>Sign Up</Heading>
             </div>
@@ -59,7 +59,7 @@ export function SignUpCard({ userId, roleId, serviceName, roleName, date, onClos
             <div className="flex flex-col gap-1">
                 <h3 className="text-sm text-zinc-100 font-light">Role</h3>
                 <span className="text-base text-left p-1 pl-2 border border-zinc-600 rounded w-full">
-                    {roleName}
+                    { roleName.length > 30 ? roleName.slice(0, 30) + "...": roleName}
                 </span>
             </div>
             <div className="flex flex-col gap-1">
