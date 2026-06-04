@@ -52,7 +52,7 @@ export function RegisterCard(){
     }
 
     return (
-        <div className="flex flex-col gap-1.5 p-7 bg-slate-800 items-center rounded-xl w-100 h-146">
+        <div className="flex flex-col gap-1.5 p-6 sm:p-7 bg-slate-800 items-center rounded-xl w-85 sm:w-100 h-151 sm:h-146">
             <div className="mt-2">
                 <Heading>Create Account</Heading>
             </div>

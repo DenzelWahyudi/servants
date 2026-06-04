@@ -120,7 +120,10 @@ export function Home() {
 
 			<div className="sm:hidden flex flex-col items-center gap-6">
 				<h1 className="text-3xl text-amber-400 font-semibold">Hello, <span className="text-zinc-100">{userName ?? '...'}</span></h1>
-				<StatsCard onClick={getAssignments} icon={<img src={user} width={40} />} title="Pending Sign-ups" buttonLabel="Review Now" ></StatsCard>
+				<div className="flex gap-2">
+					<StatsCard linkTo="/schedule" icon={<img src={bell} width={40} />} title={`${todayServiceCount} Service Reminders Sent Today`} buttonLabel="View Schedule" ></StatsCard>
+					<StatsCard onClick={getAssignments} icon={<img src={user} width={40} />} title="Pending Sign-ups" buttonLabel="Review Now" ></StatsCard>
+				</div>
 				<div className="min-h-130 bg-white w-screen">
 					<UpcomingServicesMobile />
 				</div>
@@ -144,24 +147,24 @@ export function Home() {
 					className="max-h-[90vh] overflow-y-auto"
 					>
 						<div className="rounded-lg overflow-hidden shadow-lg border border-slate-900">
-                <table className="w-160 text-sm text-left text-zinc-200 bg-slate-800">
+                <table className="w-120 sm:w-150 table-fixed text-sm text-left text-zinc-200 bg-slate-800">
                     <thead className="text-zinc-100 border-amber-400 border-b-2 border-t-2">
                         <tr>
-                            <th className="py-2 px-3">Service</th>
-                            <th>Date</th>
-                            <th>Time</th>
-                            <th className="pl-2">Roles</th>
-                            <th className="text-center pr-2.5">Status</th>
+                            <th className="px-3 py-3 w-[23%]">Service</th>
+                            <th className="px-3 w-[18%]">Date</th>
+                            <th className="px-3 w-[14%] sm:w-[13%]">Time</th>
+                            <th className="px-3 w-[26%]">Roles</th>
+                            <th className="px-3 w-[13%] sm:w-[20%] text-center">Status</th>
                         </tr>
                     </thead>
                     <tbody>
                         {assignments?.map((a) => (
                             <tr key={a._id} className="border-b border-zinc-500 text-zinc-100">
-                                <td className="py-3 px-3 font-medium">{a.serviceName}</td>
-                                <td>{new Date(a.date).toLocaleDateString("en-GB", { year:"numeric", month: "long", day: "numeric",})}</td>
-                                <td>{a.time}</td>
-                                <td className="px-2 w-[140px] break-words">{a.roleName}</td>
-                                <td className="text-center">
+                                <td className="px-3 py-3 font-medium">{a.serviceName}</td>
+                                <td className="px-3">{new Date(a.date).toLocaleDateString("en-GB", { year:"numeric", month: "long", day: "numeric",})}</td>
+                                <td className="px-3">{a.time}</td>
+                                <td className="px-3 py-2 break-words">{a.roleName}</td>
+                                <td className="hidden sm:table-cell px-3 text-center">
                                     <span className={`px-3 py-0.5 rounded font-semibold text-zinc-950 inline-block w-23 ${
 										a.status === "confirmed"
                                     	? "bg-green-200" :
@@ -170,6 +173,17 @@ export function Home() {
                                     	: "bg-red-200"
                                     }`}>
                                         {a.status}
+                                    </span>
+                                </td>
+								<td className="sm:hidden px-3 text-center">
+                                    <span className={`px-2 py-0.5 rounded font-semibold text-zinc-950 inline-block w-9 ${
+										a.status === "confirmed"
+                                    	? "bg-green-200" :
+										a.status === "pending" ?
+										"bg-zinc-300"
+                                    	: "bg-red-200"
+                                    }`}>
+                                        {a.status === "confirmed" ? "OK" : a.status === "pending" ? "..." : "NO"}
                                     </span>
                                 </td>
                             </tr>
