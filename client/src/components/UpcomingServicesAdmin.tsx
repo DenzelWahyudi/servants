@@ -92,14 +92,14 @@ export function UpcomingServicesAdmin(){
     return (
         <section className="bg-white py-4">
             <h2 className="text-3xl font-semibold text-slate-900 text-center mb-3">Upcoming Services</h2>
-            <div className="rounded-lg overflow-hidden shadow-lg border border-zinc-200">
-                <table className="w-full text-sm text-left text-zinc-300">
+            <div className="rounded-lg overflow-y-auto max-h-130 shadow-lg border border-zinc-200">
+                <table className="w-full table-fixed text-sm text-left text-zinc-300">
                     <thead className="text-zinc-950 border-amber-400 border-b-2 border-t-2">
                         <tr>
                             <th className="py-2 pl-3">Upcoming Service</th>
                             <th>Date</th>
                             <th>Time</th>
-                            <th className="pl-3">Roles Needed</th>
+                            <th className="pl-3 w-70">Roles Needed</th>
                             <th className="text-center pr-2.5">Status</th>
                             <th className="text-center pr-1">Actions</th>
                         </tr>
@@ -107,10 +107,10 @@ export function UpcomingServicesAdmin(){
                     <tbody>
                         {services?.map((s) => (
                             <tr key={s._id} className="border-b border-zinc-400 text-zinc-950">
-                                <td className="pl-3 font-medium">{s.name}</td>
+                                <td className="pl-3 py-3 font-medium break-words">{s.name}</td>
                                 <td>{new Date(s.date).toLocaleDateString("en-GB", { year:"numeric", month: "long", day: "numeric",})}</td>
                                 <td>{s.time}</td>
-                                <td className="pl-3 pr-7 py-3 max-w-[355px] break-words">{s.roles?.map(r => r.name).join(", ") ?? "..."}</td>
+                                <td className="pl-3 pr-7 py-3 break-words">{s.roles?.map(r => r.name).join(", ") ?? "..."}</td>
                                 <td className="text-center">
                                     <select value={s.status} onChange={handleStatusChange(s._id)}
                                     className={`px-3 py-0.5 rounded font-semibold inline-block w-33 text-center ${s.status === "Roles Closed"
