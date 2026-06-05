@@ -6,7 +6,9 @@ export function Footer(){
             <div className="flex justify-between">
                 <div className="flex flex-col gap-2">
                     <h3 className="text-zinc-300 font-semibold">Location</h3>
-                    <h4 className="text-sm text-zinc-400">Indonesia, Jakarta Utara</h4>
+                    <h4 className="hidden sm:block text-sm text-zinc-400">Indonesia, Jakarta Utara</h4>
+                    <h4 className="sm:hidden text-sm text-zinc-400">Indonesia, </h4>
+                    <h4 className="sm:hidden text-sm text-zinc-400">Jakarta Utara</h4>
                 </div>
                 <div className="flex flex-col gap-2">
                     <h3 className="text-zinc-300 font-semibold">Contact us</h3>
