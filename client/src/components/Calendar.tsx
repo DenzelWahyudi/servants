@@ -32,6 +32,7 @@ export function Calendar(){
     const { token } = useAuth()
     const [schedule, setSchedule] = useState<Schedule[] | null>(null)
     const [roleInfo, setRoleInfo] = useState<Schedule | null>(null)
+    const [chosenSchedule, setChosenSchedule] = useState<Schedule[] | null>(null)
 
     useEffect(() => {
         async function fetchSchedule() {
@@ -116,7 +117,7 @@ export function Calendar(){
                         )
                     })}
                 </div>
-                <div className="grid grid-cols-7 mt-3 items-center border-1 border-slate-600">
+                <div className="hidden lg:grid grid-cols-7 mt-3 items-center border-1 border-slate-600">
                     {daysInMonth.map((day, idx) => {
                         return (
                             <div key={idx} className={`${colStartClasses[getDay(day)]} border-r border-b border-slate-600 h-[130px] overflow-y-auto`}>
@@ -159,6 +160,73 @@ export function Calendar(){
                         )
                     })}
                 </div>
+
+                {/* For Mobile and Tablet */}
+                <div className="relative">
+                    <div className="lg:hidden grid grid-cols-7 mt-3 border-1 border-slate-600">
+                        {daysInMonth.map((day, idx) => {
+                            return (
+                                <div key={idx} className={`${colStartClasses[getDay(day)]} border-r border-b border-slate-600 h-[67px] flex flex-col items-center`}>
+                                    <button
+                                    className={`cursor-pointer hover:text-indigo-300 flex items-center justify-center font-normal h-6 w-6 text-sm mt-1.5 rounded-full ${
+                                        isSameMonth(day, firstDayOfMonth) ? "text-zinc-100" : "text-zinc-500"
+                                    } ${ isToday(day) && "bg-indigo-500 text-white" }`}
+                                    onClick={() => setChosenSchedule(schedule?.filter((s) => isEqual(
+                                            startOfDay(s.date),
+                                            startOfDay(new Date(day))
+                                        )) ?? null
+                                    )}
+                                    disabled={!schedule?.some((s) => isEqual(startOfDay(s.date), startOfDay(new Date(day))))}
+                                    >
+                                        {format(day, "d")}
+                                    </button>
+                                    <div
+                                    className="flex flex-wrap gap-0.5 text-[0.5rem] px-2 overflow-y-auto pb-1"
+                                    >
+                                        {schedule
+                                        ?.filter((s) => isEqual(
+                                            startOfDay(s.date),
+                                            startOfDay(new Date(day))
+                                        ))
+                                        ?.map((s) => 
+                                            <div key = {s.roleName}>
+                                                <p
+                                                className="text-amber-400"
+                                                >
+                                                    ●
+                                                </p>
+                                            </div>
+                                            )
+                                        }
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>
+                    {chosenSchedule && (
+                        <div
+                        className="lg:hidden flex flex-col bg-slate-800 rounded-lg mt-4 absolute top-full right-0 left-0 h-60 overflow-y-auto"
+                        >
+                            <h1 className="px-5 py-3 font-semibold text-lg text-start">{format(chosenSchedule[1].date.toString(), 'EEEE, dd MMMM yyyy')}</h1>
+                            <hr className="text-zinc-300"/>
+                            <div className="flex flex-col w-full px-5 py-3 gap-2.5">
+                                {chosenSchedule?.map((s) => (
+                                    <div className="flex text-sm justify-between items-center">
+                                        <div className="flex gap-4 items-center">
+                                            <span className="text-amber-400">●</span>
+                                            <div className="flex flex-col gap-0.5">
+                                                <span className="font-medium">{ s.roleName.length > 17 ? s.roleName.slice(0, 17) + "...": s.roleName}</span>
+                                                <span className="text-slate-300">{s.serviceName}</span>
+                                            </div>
+                                        </div>
+                                        <span>{s.time}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
+
             </div>
             {roleInfo && (
                 <div 

@@ -52,7 +52,7 @@ export function LoginCard(){
     }
     
     return (
-        <div className="flex flex-col gap-1.5 p-7 bg-slate-800 items-center rounded-xl w-100 h-118">
+        <div className="flex flex-col gap-1.5 p-6 sm:p-7 bg-slate-800 items-center rounded-xl w-80 sm:w-100 h-123 sm:h-118">
             <div className="mt-2">
                 <Heading>Login</Heading>
             </div>
