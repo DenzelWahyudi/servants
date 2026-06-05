@@ -65,7 +65,7 @@ export function UpcomingServicesMobile(){
                         </div>
                         {s.roles?.map((r) => (
                             <span key={r._id} className="text-zinc-950 max-w-80 break-words">{r.name}</span>))}
-                        <span className={`text-end -mt-6.5 ${s.status === "Roles Closed"
+                        <span className={`text-end -mt-7 ${s.status === "Roles Closed"
                                     ? "text-red-600"
                                     : "text-green-600"
                                     }`}>{s.status}</span>
