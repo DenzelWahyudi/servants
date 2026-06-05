@@ -91,7 +91,7 @@ export function Openings() {
             <Header variant="openings" />
             <Heading>Openings</Heading>
             <div className="min-h-130">
-                <div className="-mt-7 flex flex-wrap gap-4 ">
+                <div className="-mt-7 flex flex-wrap gap-2 sm:gap-4 ">
                     {roles?.map((role) => {
                         if (role.spotsFilled < role.spotsTotal){
                             const service = services?.find(s => s._id === role.serviceId && s.status == "Roles Open")
