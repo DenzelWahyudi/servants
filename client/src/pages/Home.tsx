@@ -207,7 +207,7 @@ export function Home() {
                                         {a.status === "confirmed"
                                     	? "OK" :
 										a.status === "pending" ?
-										".."
+										"..."
                                     	: "NO"}
                                     </span>
                                 </td>
