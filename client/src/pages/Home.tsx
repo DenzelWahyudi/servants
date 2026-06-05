@@ -121,7 +121,7 @@ export function Home() {
 			<div className="sm:hidden flex flex-col items-center gap-6">
 				<h1 className="text-3xl text-amber-400 font-semibold">Hello, <span className="text-zinc-100">{userName ?? '...'}</span></h1>
 				<div className="flex gap-2">
-					<StatsCard linkTo="/schedule" icon={<img src={bell} width={40} />} title={`${todayServiceCount} Service Reminders Sent Today`} buttonLabel="View Schedule" ></StatsCard>
+					<StatsCard linkTo="/schedule" icon={<img src={bell} width={40} />} title={`${todayServiceCount} Service Reminders Today`} buttonLabel="View Schedule" ></StatsCard>
 					<StatsCard onClick={getAssignments} icon={<img src={user} width={40} />} title="Pending Sign-ups" buttonLabel="Review Now" ></StatsCard>
 				</div>
 				<div className="min-h-130 bg-white w-screen">

@@ -176,11 +176,12 @@ export function Calendar(){
                                             startOfDay(new Date(day))
                                         )) ?? null
                                     )}
+                                    disabled={!schedule?.some((s) => isEqual(startOfDay(s.date), startOfDay(new Date(day))))}
                                     >
                                         {format(day, "d")}
                                     </button>
                                     <div
-                                    className="flex gap-0.5 text-[0.5rem] break-words"
+                                    className="flex flex-wrap gap-0.5 text-[0.5rem] px-2 overflow-y-auto pb-1"
                                     >
                                         {schedule
                                         ?.filter((s) => isEqual(
@@ -204,7 +205,7 @@ export function Calendar(){
                     </div>
                     {chosenSchedule && (
                         <div
-                        className="flex flex-col bg-slate-800 rounded-lg mt-4 absolute top-full right-0 left-0"
+                        className="lg:hidden flex flex-col bg-slate-800 rounded-lg mt-4 absolute top-full right-0 left-0 h-60 overflow-y-auto"
                         >
                             <h1 className="px-5 py-3 font-semibold text-lg text-start">{format(chosenSchedule[1].date.toString(), 'dd MMMM yyyy')}</h1>
                             <hr className="text-zinc-300"/>
