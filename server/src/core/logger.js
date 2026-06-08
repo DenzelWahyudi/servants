@@ -27,5 +27,5 @@ module.exports = (appName) =>
         censor: '[REDACTED]',
       },
     },
-    pino.transport(pinoPretty)
+    process.env.NODE_ENV !== 'production' ? pino.transport(pinoPretty) : undefined
   );
