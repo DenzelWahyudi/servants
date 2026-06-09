@@ -17,9 +17,11 @@ export function SignUpCard({ userId, roleId, serviceName, roleName, date, onClos
 
     const navigate = useNavigate()
     const [error, setError] = useState<string | null>(null)
+    const [loading, setLoading] = useState(false)
 
     async function handleAssign(userId: string, roleId: string){
         setError(null);
+        setLoading(true)
         try {
             const response = await fetch(`${API_URL}/api/assignments`, {
                 method: "POST",
@@ -41,6 +43,8 @@ export function SignUpCard({ userId, roleId, serviceName, roleName, date, onClos
             else navigate('/openings')
         } catch {
             setError("Could not connect to server")
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -78,7 +82,7 @@ export function SignUpCard({ userId, roleId, serviceName, roleName, date, onClos
                 <button
                 onClick={() => handleAssign(userId, roleId)}
                 className="bg-amber-400 rounded-lg px-3 py-1.5 text-slate-900 text-base hover:bg-amber-500">
-                    Sign Up
+                    {loading ? "Loading..." : "Sign Up"}
                 </button>
             </div>
         </div>
