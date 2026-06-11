@@ -5,7 +5,7 @@ import { ButtonLink } from './ButtonLink'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 
-type Variant = "home" | "schedule" | "openings" | "register" | "login" | "registeradmin" | "loginadmin" | "admin"
+type Variant = "home" | "schedule" | "openings" | "chats" | "register" | "login" | "registeradmin" | "loginadmin" | "admin"
 
 type HeaderProps = {
     variant?: Variant
@@ -52,6 +52,7 @@ export function Header({
                 {getVariantStyles(variant, handleLogout, handleLogoutAdmin, loading)}
             </div>
 
+            {/* mobile view */}
             <button
             className='sm:hidden flex flex-col gap-1.5 p-2 hover:bg-amber-400/70 rounded-lg'
             onClick={() => setMenuOpen(!menuOpen)}
@@ -74,8 +75,8 @@ export function Header({
 
 function getVariantStyles(variant: Variant, onLogout: () => void, onLogoutAdmin: () => void, isLoading: boolean, isMobile: boolean = false) {
     const wrapperClass = isMobile
-    ? "flex flex-col gap-5 items-start"
-    : "flex gap-6 items-center"
+    ? "cursor-pointer flex flex-col gap-5 items-start"
+    : "flex gap-4 items-center"
     switch (variant) {
         case "home":
             return (
@@ -83,6 +84,7 @@ function getVariantStyles(variant: Variant, onLogout: () => void, onLogoutAdmin:
                     <Button variant='secondary'>Home</Button>
                     <ButtonLink to="/schedule" variant='secondary'>Schedule</ButtonLink>
                     <ButtonLink to="/openings" variant='secondary'>Openings</ButtonLink>
+                    <ButtonLink to="/chats" variant='secondary'>Chats</ButtonLink>
                     <button
                     onClick={onLogout}
                     disabled={isLoading}
@@ -99,6 +101,7 @@ function getVariantStyles(variant: Variant, onLogout: () => void, onLogoutAdmin:
                     <ButtonLink to="/" variant='secondary'>Home</ButtonLink>
                     <Button variant='secondary'>Schedule</Button>
                     <ButtonLink to="/openings" variant='secondary'>Openings</ButtonLink>
+                    <ButtonLink to="/chats" variant='secondary'>Chats</ButtonLink>
                     <button
                     onClick={onLogout}
                     disabled={isLoading}
@@ -114,6 +117,23 @@ function getVariantStyles(variant: Variant, onLogout: () => void, onLogoutAdmin:
                     <ButtonLink to="/" variant='secondary'>Home</ButtonLink>
                     <ButtonLink to="/schedule" variant='secondary'>Schedule</ButtonLink>
                     <Button variant='secondary'>Openings</Button>
+                    <ButtonLink to="/chats" variant='secondary'>Chats</ButtonLink>
+                    <button
+                    onClick={onLogout}
+                    disabled={isLoading}
+                    className="bg-slate-900 hover:bg-amber-400 border border-amber-400 py-1.5 px-4 transition-colors rounded-lg disabled:opacity-30 disabled:cursor-not-allowed"
+                    >
+                        {isLoading ? "Logging out..." : "Logout"}
+                    </button>
+                </div>
+            )
+        case "chats":
+            return (
+                <div className={wrapperClass}>
+                    <ButtonLink to="/" variant='secondary'>Home</ButtonLink>
+                    <ButtonLink to="/schedule" variant='secondary'>Schedule</ButtonLink>
+                    <ButtonLink to="/openings" variant='secondary'>Openings</ButtonLink>
+                    <Button variant='secondary'>Chats</Button>
                     <button
                     onClick={onLogout}
                     disabled={isLoading}
