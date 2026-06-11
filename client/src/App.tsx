@@ -12,19 +12,20 @@ import { LoginAdmin } from "./pages/LoginAdmin";
 import { AdminServices } from "./pages/AdminServices";
 import { AdminRoles } from "./pages/AdminRoles";
 import { AdminAdmissions } from "./pages/AdminAdmissions";
+import { Chats } from "./pages/Chats";
 
 export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          {/* Public routes — anyone can access */}
+          {/* Public routes */}
           <Route path="/register" element={<Register />} />
           <Route path="/admin/register" element={<RegisterAdmin />} />
           <Route path="/login" element={<Login />} />
           <Route path="/admin/login" element={<LoginAdmin />} />
 
-          {/* Protected routes — must be logged in */}
+          {/* Protected routes */}
           <Route path="/" element={
             <ProtectedRoute><Home /></ProtectedRoute>
           } />
@@ -33,6 +34,9 @@ export default function App() {
           } />
           <Route path="/openings" element={
             <ProtectedRoute><Openings /></ProtectedRoute>
+          } />
+          <Route path="/chats" element={
+            <ProtectedRoute><Chats /></ProtectedRoute>
           } />
           <Route path="/admin/services" element={
             <ProtectedRoute requiredRole="admin"><AdminServices /></ProtectedRoute>

@@ -89,7 +89,9 @@ export function Openings() {
     return(
         <div className="mx-auto p-4 sm:px-12 py-5 flex flex-col gap-13">
             <Header variant="openings" />
-            <Heading>Openings</Heading>
+            <div className="-mt-8">
+                <Heading>Openings</Heading>
+            </div>
             <div className="min-h-130">
                 <div className="-mt-7 flex flex-wrap gap-2 sm:gap-4 ">
                     {roles?.map((role) => {
