@@ -38,6 +38,10 @@ async function relieveUser(userId, roleId){
     return assignmentsRepository.relieveUser(userId, roleId)
 }
 
+async function getAllUserAssignedServices(userId){
+    return assignmentsRepository.getAllUserAssignedServices(userId)
+}
+
 module.exports = {
     createAssignment,
     getUsersForRole,
@@ -47,5 +51,6 @@ module.exports = {
     updateStatus,
     getAllUserAssignments,
     getUsersToRelieve,
-    relieveUser
+    relieveUser,
+    getAllUserAssignedServices
 }

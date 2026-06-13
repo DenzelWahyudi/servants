@@ -151,6 +151,21 @@ async function relieveUser(req, res, next){
     }
 }
 
+async function getAllUserAssignedServices(req, res, next){
+    try {
+        const userId = req.user.id
+
+        const success = await assignmentsService.getAllUserAssignedServices(userId)
+        if (!success){
+            throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Failed to get assigned services.')
+        }
+
+        return res.status(200).json(success)
+    } catch (error) {
+        next(error)
+    }
+}
+
 module.exports = {
     createAssignment,
     getUsersForRole,
@@ -159,5 +174,6 @@ module.exports = {
     updateStatus,
     getAllUserAssignments,
     getUsersToRelieve,
-    relieveUser
+    relieveUser,
+    getAllUserAssignedServices
 }

@@ -224,6 +224,58 @@ async function relieveUser(userId, roleId){
     return Assignments.deleteOne({ userId, roleId })
 }
 
+async function getAllUserAssignedServices(userId){
+    return Assignments.aggregate([
+        {
+            $match: {
+                userId: new mongoose.Types.ObjectId(userId),
+                status: 'confirmed'
+            }
+        },
+        {
+            $lookup: {
+                from: 'roles',
+                localField: 'roleId',
+                foreignField: '_id',
+                as: 'roles'
+            }
+        },
+        {
+            $unwind: '$roles'
+        },
+        {
+            $lookup: {
+                from: 'services',
+                localField: 'roles.serviceId',
+                foreignField: '_id',
+                as: 'services'
+            }
+        },
+        {
+            $unwind: '$services'
+        },
+        {
+            $group: {
+                _id: { 
+                    serviceName: '$services.name',
+                    date: '$services.date',
+                    time: '$services.time'
+                },
+                serviceId: { $first: '$services._id' },
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                serviceId: 1,
+                serviceName: '$_id.serviceName',
+                date: '$_id.date',
+                time: '$_id.time'
+            }
+        }
+    ])
+}
+
 module.exports = {
     createAssignment,
     getUsersForRole,
@@ -234,5 +286,6 @@ module.exports = {
     deleteAssignmentByRoleId,
     getAllUserAssignments,
     getUsersToRelieve,
-    relieveUser
+    relieveUser,
+    getAllUserAssignedServices
 }
