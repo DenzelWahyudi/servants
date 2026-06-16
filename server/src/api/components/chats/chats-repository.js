@@ -1,7 +1,7 @@
 const { Chats } = require('../../../models');
 
-async function sendChat(serviceId, userId, message, status){
-    return Chats.create({ serviceId, userId, message, status })
+async function sendChat(serviceId, userId, userName, message, status){
+    return Chats.create({ serviceId, userId, userName, message, status })
 }
 
 async function getAllChats(serviceId){

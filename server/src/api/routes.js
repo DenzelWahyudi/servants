@@ -4,6 +4,7 @@ const users = require('./components/users/users-route');
 const services = require('./components/services/services-route');
 const roles = require('./components/roles/roles-route');
 const assignment = require('./components/assignments/assignments-route');
+const chats = require('./components/chats/chats-route');
 
 module.exports = () => {
   const app = express.Router();
@@ -12,6 +13,7 @@ module.exports = () => {
   services(app);
   roles(app);
   assignment(app);
+  chats(app);
   
   return app;
 };
