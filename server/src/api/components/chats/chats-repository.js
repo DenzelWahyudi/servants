@@ -8,7 +8,12 @@ async function getAllChats(serviceId){
     return Chats.find({ serviceId })
 }
 
+async function deleteChats(serviceId){
+    return Chats.deleteMany({ serviceId })
+}
+
 module.exports = {
     sendChat,
-    getAllChats
+    getAllChats,
+    deleteChats
 }

@@ -8,6 +8,7 @@ import { ChevronLeftIcon } from "@heroicons/react/24/solid";
 import { SendHorizontal } from 'lucide-react';
 import { format } from 'date-fns';
 import { useLayoutEffect, useRef } from 'react';
+import { useChatSocket } from "../hooks/useChatSocket";
 
 interface Service {
     serviceId: string
@@ -16,20 +17,12 @@ interface Service {
     time: string
 }
 
-interface Chat {
-    userId: string
-    userName: string
-    message: string
-    status: string
-    createdAt: string
-}
-
 export function Chats() {
 
     const { token } = useAuth()
     const [assignedServices, setAssignedServices] = useState<Service[] | null>([])
-    const [chats, setChats] = useState<Chat[] | null>(null)
     const [chosenService, setChosenService] = useState<Service | null>(null)
+    const { chats } = useChatSocket(chosenService?.serviceId)
     const [message, setMessage] = useState({
         serviceId: "",
         message: "",
@@ -56,17 +49,6 @@ export function Chats() {
             setAssignedServices(data)
         }
 
-        async function fetchChats(serviceId){
-            const response = await fetch(`${API_URL}/api/chats/${serviceId}`, {
-                method: "GET",
-                headers: { 
-                    "Content-Type": "application/json"
-                }
-            })
-            const data: Chat[] = await response.json();
-            setChats(data)
-        }
-
         async function fetchUserName() {
 			const response = await fetch(`${API_URL}/api/users/id`, {
 				method: "GET",
@@ -79,19 +61,9 @@ export function Chats() {
 			setUserId({ _id: data })
 		}
 
-        if(chosenService){
-            fetchChats(chosenService.serviceId)
-
-            const interval = setInterval(() => {
-                fetchChats(chosenService.serviceId)
-            }, 3000)
-
-            return () => clearInterval(interval);
-        }
-
         fetchAssignedServices()
         fetchUserName()
-    }, [token, chosenService])
+    }, [token])
 
     const handleScroll = () => {
         const el = containerRef.current;
@@ -134,6 +106,7 @@ export function Chats() {
 
             if (!response.ok){
                 setError(data.message || "Failed to send message.")
+                return
             }
 
             setMessage((prev) => ({...prev, message:""}))
@@ -141,6 +114,7 @@ export function Chats() {
             setError("Could not connect to the server. Please try again.")
         }
     }
+
     return(
         <div className="flex flex-col gap-5 mx-auto p-4 sm:px-12 py-5">
             <Header variant="chats" />
@@ -200,11 +174,11 @@ export function Chats() {
                     onScroll={handleScroll}
                     className="flex flex-col gap-2.5 w-full h-full overflow-y-auto py-2 px-2.5">
                         {chats?.map((c) => (
-                            <div className={`relative ${c.userId === userId._id ? "self-end bg-green-600" : "self-start bg-zinc-700"} max-w-3/4 px-1.5 py-1 
+                            <div className={`relative ${c.userId === userId._id ? "self-end bg-sky-700" : "self-start bg-neutral-800"} max-w-3/4 px-1.5 py-1 
                             gap-2.5 items-end rounded rounded-lg`}
-                            key={c.createdAt}>
+                            key={c._id}>
                                 <span className={`${c.userId === userId._id ? "hidden" : ""}
-                                text-[13.5px] text-amber-400 font-semibold`}>{c.userName}</span>
+                                text-[13.5px] text-rose-300 font-semibold`}>{c.userName}</span>
                                 <div className="text-sm break-words whitespace-pre-wrap">
                                     {c.message}
                                     <span className="invisible inline-block text-[10px] ml-2.5 whitespace-nowrap">
