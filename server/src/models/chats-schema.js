@@ -10,11 +10,12 @@ db.model(
             type: db.Schema.Types.ObjectId,
             ref: 'User',
         },
+        userName: String,
         message: String,
         status: {
             type: String,
             default: 'pending',
-            enum: ['confirmed', 'pending', 'declined'],
+            enum: ['success', 'pending', 'failed'],
         },
     }, { timestamps : true })
 );

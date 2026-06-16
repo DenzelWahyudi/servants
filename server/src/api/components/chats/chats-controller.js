@@ -1,4 +1,5 @@
 const chatsService = require('./chats-service')
+const usersService = require('../users/users-service')
 const { errorResponder, errorTypes } = require('../../../core/errors');
 
 async function sendChat(req, res, next){
@@ -10,7 +11,9 @@ async function sendChat(req, res, next){
             throw errorResponder(errorTypes.EMPTY_BODY, 'No message was sent.')
         }
 
-        const success = await chatsService.sendChat(serviceId, userId, message, status)
+        const userName = await usersService.getUserName(userId)
+
+        const success = await chatsService.sendChat(serviceId, userId, userName, message, status)
         if (!success){
             throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Failed to send message!')
         }
