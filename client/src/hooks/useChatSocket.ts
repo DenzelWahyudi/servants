@@ -1,0 +1,64 @@
+import { useEffect, useRef, useState } from 'react';
+import { API_URL } from '../api';
+
+interface Chat {
+    _id: string
+    userId: string
+    userName: string
+    message: string
+    status: string
+    createdAt: string
+}
+
+// Derives ws:// or wss:// from your existing API_URL automatically
+const WS_URL = API_URL.replace(/^http/, 'ws');
+
+export function useChatSocket(serviceId: string | undefined) {
+    const [chats, setChats] = useState<Chat[]>([]);
+    const wsRef = useRef<WebSocket | null>(null);
+
+    useEffect(() => {
+        let cancelled = false;
+
+        if (!serviceId) return;
+
+        // Initial load via REST
+        fetch(`${API_URL}/api/chats/${serviceId}`, {
+            headers: { 'Content-Type': 'application/json' }
+        })
+            .then(res => res.json())
+            .then((data: Chat[]) => {if (!cancelled) setChats(data)})
+            .catch(err => {
+                if (!cancelled) console.error('Failed to load chats:', err);
+            });
+
+        // Live updates via WebSocket
+        function connect() {
+            const ws = new WebSocket(`${WS_URL}/ws/chats/${serviceId}`);
+            wsRef.current = ws;
+
+            ws.onmessage = (event) => {
+                const { type, data } = JSON.parse(event.data);
+                if (type === 'NEW_CHAT') {
+                    setChats(prev => [...prev, data]);
+                }
+            };
+
+            ws.onerror = () => ws.close();
+
+            ws.onclose = () => {
+                if (!cancelled) setTimeout(connect, 3000); // ← only retry if still active
+            };
+        }
+
+        connect();
+
+        return () => {
+            cancelled = true;
+            wsRef.current?.close();
+            wsRef.current = null;
+        };
+    }, [serviceId]);
+
+    return { chats };
+}

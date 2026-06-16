@@ -1,8 +1,9 @@
 const { env, port } = require('./core/config');
 const logger = require('./core/logger')('app');
-const server = require('./core/server');
+const app = require('./core/app');
+const { initWebSocket } = require('./core/websocket');
 
-const app = server.listen(port, (err) => {
+const httpServer = app.listen(port, (err) => {
   if (err) {
     logger.fatal(err, 'Failed to start the server.');
     process.exit(1);
@@ -11,11 +12,13 @@ const app = server.listen(port, (err) => {
   }
 });
 
+initWebSocket(httpServer);
+
 process.on('uncaughtException', (err) => {
   logger.fatal(err, 'Uncaught exception.');
 
   // Shutdown the server gracefully
-  app.close(() => process.exit(1));
+  httpServer.close(() => process.exit(1));
 
   // If a graceful shutdown is not achieved after 1 second,
   // shut down the process completely

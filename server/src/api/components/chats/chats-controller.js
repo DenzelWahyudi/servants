@@ -1,6 +1,7 @@
 const chatsService = require('./chats-service')
 const usersService = require('../users/users-service')
-const { errorResponder, errorTypes } = require('../../../core/errors');
+const { errorResponder, errorTypes } = require('../../../core/errors')
+const { broadcastToService } = require('../../../core/websocket');
 
 async function sendChat(req, res, next){
     try {
@@ -18,7 +19,9 @@ async function sendChat(req, res, next){
             throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Failed to send message!')
         }
 
-        return res.status(201).json({ message: 'Message sent!' })
+        broadcastToService(serviceId, { type: 'NEW_CHAT', data: success });
+
+        return res.status(201).json(success)
     } catch (error) {
         next(error)
     }

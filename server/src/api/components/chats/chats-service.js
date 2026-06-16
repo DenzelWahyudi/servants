@@ -8,7 +8,13 @@ async function getAllChats(serviceId){
     return chatsRepository.getAllChats(serviceId)
 }
 
+async function deleteChats(serviceId){
+    return chatsRepository.deleteChats(serviceId)
+}
+
+
 module.exports = {
     sendChat,
-    getAllChats
+    getAllChats,
+    deleteChats
 }
