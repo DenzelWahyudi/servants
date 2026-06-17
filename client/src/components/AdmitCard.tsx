@@ -15,8 +15,10 @@ type AdmitCardProps = {
 export function AdmitCard({ _id, userName, roleName, serviceName, date, time, onSave }:AdmitCardProps){
 
     const [error, setError] = useState<string | null>(null)
+    const [loading, setLoading] = useState(false)
 
     async function handleUpdateStatus(assigmentId, status :string){
+        setLoading(true)
         setError(null)
 
         const response = await fetch(`${API_URL}/api/assignments/updatestatus/${assigmentId}`, {
@@ -30,8 +32,13 @@ export function AdmitCard({ _id, userName, roleName, serviceName, date, time, on
 
         if (!response.ok){
             setError(data)
+            setLoading(false)
+            return
         }
-        else onSave()
+
+        setLoading(false)
+
+        onSave()
     }
 
     return (
@@ -52,14 +59,14 @@ export function AdmitCard({ _id, userName, roleName, serviceName, date, time, on
                     className="bg-red-400 text-blue-950 text-sm font-semibold py-1 px-2 rounded w-22
                     mt-auto hover:bg-red-500 flex justify-center transition-colors rounded-lg px-2 py-1"
                     >
-                        Decline
+                        {loading ? "Loading" : "Decline"}
                     </button>
                     <button
                     onClick={() => { handleUpdateStatus(_id, "confirmed")}}
                     className="bg-green-400 text-blue-950 text-sm font-semibold py-1 px-2 rounded w-22
                     mt-auto hover:bg-green-500 flex justify-center transition-colors rounded-lg px-2 py-1"
                     >
-                        Confirm
+                        {loading ? "Loading" : "Confirm"}
                     </button>
                 </div>
                 { error && ( <p className="text-red-400 text-sm text-center w-full">{error}</p>) }

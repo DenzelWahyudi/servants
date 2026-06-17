@@ -22,6 +22,7 @@ export function AssignRoleForm({ roleId, serviceName, roleName, onClose }: Assig
     const [error, setError] = useState<string | null>(null)
     const [users, setUsers] = useState<User[] | null>(null)
     const [user, setUser] = useState<string | null>("")
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         async function fetchUsers(){
@@ -36,6 +37,7 @@ export function AssignRoleForm({ roleId, serviceName, roleName, onClose }: Assig
     }, [])
 
     async function handleAssign(userId: string, roleId: string){
+        setLoading(true);
         setError(null);
         try {
             const response = await fetch(`${API_URL}/api/assignments`, {
@@ -51,8 +53,11 @@ export function AssignRoleForm({ roleId, serviceName, roleName, onClose }: Assig
             const data = await response.json()
             if (!response.ok){
                 setError(data.message || "Assigning failed!")
+                setLoading(false)
                 return
             }
+
+            setLoading(false)
 
             if (onClose) onClose()
             else navigate('/admin/roles')
@@ -107,7 +112,7 @@ export function AssignRoleForm({ roleId, serviceName, roleName, onClose }: Assig
                 onClick={() => handleAssign(user!, roleId)}
                 disabled={!user}
                 className="bg-amber-400 rounded-lg px-3 py-1.5 text-slate-900 text-base hover:bg-amber-500 disabled:bg-zinc-500">
-                    Assign
+                    {loading ? "Assigning..." : "Assign"}
                 </button>
             </div>
         </div>

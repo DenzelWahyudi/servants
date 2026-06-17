@@ -21,6 +21,7 @@ export function RelieveRoleForm({ roleId, serviceName, roleName, onClose }: Reli
     const [error, setError] = useState<string | null>(null)
     const [users, setUsers] = useState<User[] | null>(null)
     const [user, setUser] = useState<string | null>("")
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         async function fetchUsers(){
@@ -39,6 +40,7 @@ export function RelieveRoleForm({ roleId, serviceName, roleName, onClose }: Reli
     }
 
     async function handleRemove(userId, roleId){
+        setLoading(true)
         setError(null)
         {console.log(userId)}
         const response = await fetch(`${API_URL}/api/assignments/relieve`, {
@@ -49,7 +51,11 @@ export function RelieveRoleForm({ roleId, serviceName, roleName, onClose }: Reli
         const data = await response.json()
         if (!response.ok){
             setError( data.message || "Failed to relieve user")
+            setLoading(false)
+            return
         }
+
+        setLoading(false)
         if (onClose) onClose()
     }
 
@@ -95,7 +101,7 @@ export function RelieveRoleForm({ roleId, serviceName, roleName, onClose }: Reli
                 onClick={() => handleRemove(user!, roleId)}
                 disabled={!user}
                 className="bg-amber-400 rounded-lg px-3 py-1.5 text-slate-900 text-base hover:bg-amber-500 disabled:bg-zinc-500">
-                    Remove
+                    {loading ? "Removing..." : "Remove"}
                 </button>
             </div>
         </div>
