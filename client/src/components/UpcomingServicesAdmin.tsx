@@ -97,9 +97,9 @@ export function UpcomingServicesAdmin(){
                 <thead className="text-zinc-950 border-amber-400 border-b-2 border-t-2">
                     <tr>
                         <th className="w-[18%] pl-3 py-2">Upcoming Service</th>
-                        <th className="w-[13%]">Date</th>
-                        <th className="w-[12%]">Time</th>
-                        <th className="w-[35%]">Roles Needed</th>
+                        <th className="w-[14%]">Date</th>
+                        <th className="w-[13%]">Time</th>
+                        <th className="w-[33%]">Roles Needed</th>
                         <th className="w-[11%] text-center">Status</th>
                         <th className="w-[11%] text-center">Actions</th>
                     </tr>
@@ -110,11 +110,11 @@ export function UpcomingServicesAdmin(){
                             <td className="pl-3 font-medium break-words">{s.name}</td>
                             <td>{format(new Date(s.date), 'dd MMMM yyyy')}</td>
                             <td>{s.time}</td>
-                            <td className="py-3 pr-3 break-words">{s.roles?.map(r => r.name).join(", ") ?? "..."}</td>
+                            <td className="py-3 pr-4 break-words">{s.roles?.map(r => r.name).join(", ") ?? "..."}</td>
                             <td>
                                 <div className="flex items-center justify-center">
                                     <select value={s.status} onChange={handleStatusChange(s._id)}
-                                    className={`py-0.5 rounded font-semibold inline-block w-33 text-center ${s.status === "Roles Closed"
+                                    className={`py-1 rounded font-semibold text-[13.5px] inline-block w-27 text-center ${s.status === "Roles Closed"
                                     ? "bg-red-200"
                                     : "bg-green-200"
                                     }`}
@@ -129,12 +129,12 @@ export function UpcomingServicesAdmin(){
                                     <button
                                     onClick={() => setEditingId(s._id)}
                                     className="bg-zinc-100 px-2 py-1.5 rounded-lg border border-zinc-400 hover:bg-zinc-300 transition-colors">
-                                        <Pencil size={18} className="text-slate-900" />
+                                        <Pencil size={15} className="text-slate-900" />
                                     </button>
                                     <button
                                     onClick={() => handleDelete(s._id)}
                                     className="bg-red-100 px-2 py-1.5 rounded-lg border border-zinc-400 hover:bg-red-300 transition-colors">
-                                        <Trash2 size={18} className="text-red-900" />
+                                        <Trash2 size={15} className="text-red-900" />
                                     </button>
                                     {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
                                 </div>
