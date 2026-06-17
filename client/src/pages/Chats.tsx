@@ -9,6 +9,7 @@ import { SendHorizontal } from 'lucide-react';
 import { format } from 'date-fns';
 import { useLayoutEffect, useRef } from 'react';
 import { useChatSocket } from "../hooks/useChatSocket";
+import React from "react";
 
 interface Service {
     serviceId: string
@@ -173,23 +174,37 @@ export function Chats() {
                     ref={containerRef}
                     onScroll={handleScroll}
                     className="flex flex-col gap-2.5 w-full h-full overflow-y-auto py-2 px-2.5">
-                        {chats?.map((c) => (
-                            <div className={`relative ${c.userId === userId._id ? "self-end bg-sky-700" : "self-start bg-neutral-800"} max-w-3/4 px-1.5 py-1 
-                            gap-2.5 items-end rounded rounded-lg`}
-                            key={c._id}>
-                                <span className={`${c.userId === userId._id ? "hidden" : ""}
-                                text-[13.5px] text-rose-300 font-semibold`}>{c.userName}</span>
-                                <div className="text-sm break-words whitespace-pre-wrap">
-                                    {c.message}
-                                    <span className="invisible inline-block text-[10px] ml-2.5 whitespace-nowrap">
-                                        {format(new Date(c.createdAt), 'HH:mm')
-                                    }</span>
-                                </div>
-                                <span className="absolute bottom-1 right-1.5 text-[10px] text-zinc-300 whitespace-nowrap select-none">
-                                    {format(new Date(c.createdAt), 'HH:mm')}
-                                </span>
-                            </div>
-                        ))}
+                        {chats?.map((c, index) => {
+                            const currentDate = new Date(c.createdAt)
+                            const prevDate = index > 0 ? new Date(chats[index-1].createdAt) : null
+                            const showDateSeperator = 
+                                !prevDate ||
+                                currentDate.toDateString() !== prevDate.toDateString()
+                            
+                            return (
+                                <React.Fragment key={c._id}>
+                                    {showDateSeperator && (
+                                        <div className="flex justify-center my-1">
+                                            <span className="bg-zinc-900 rounded rounded-md text-[10.5px] px-2 font-medium">{format(currentDate, 'EEE, d MMMM')}</span>
+                                        </div>
+                                    )}
+                                    <div className={`relative ${c.userId === userId._id ? "self-end bg-sky-700" : "self-start bg-zinc-800"} max-w-3/4 px-1.5 py-1 
+                                    gap-2.5 items-end rounded rounded-lg`}>
+                                        <span className={`${c.userId === userId._id ? "hidden" : ""}
+                                        text-[12px] text-rose-300 font-semibold`}>{c.userName}</span>
+                                        <div className="text-sm break-words whitespace-pre-wrap">
+                                            {c.message}
+                                            <span className="invisible inline-block text-[10px] ml-2.5 whitespace-nowrap">
+                                                {format(new Date(c.createdAt), 'HH:mm')
+                                            }</span>
+                                        </div>
+                                        <span className="absolute bottom-1 right-1.5 text-[10px] text-zinc-300 whitespace-nowrap select-none">
+                                            {format(new Date(c.createdAt), 'HH:mm')}
+                                        </span>
+                                    </div>
+                                </React.Fragment>
+                            )
+                        })}
                     </div>
 
                     <div className="flex items-center py-2 gap-1.5 px-2.5 mt-auto bg-slate-700">
