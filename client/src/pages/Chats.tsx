@@ -18,6 +18,13 @@ interface Service {
     time: string
 }
 
+interface Group {
+    userId: string
+    userName: string
+    phoneNumber: string
+    roleName: string[]
+}
+
 export function Chats() {
 
     const { token } = useAuth()
@@ -36,6 +43,7 @@ export function Chats() {
     const [userId, setUserId] = useState({
         _id: ""
     })
+    const [groupDetails, setGroupDetails] = useState<Group[] | null>(null)
 
     useEffect(() => {
         async function fetchAssignedServices(){
@@ -116,6 +124,23 @@ export function Chats() {
         }
     }
 
+    async function fetchGroupDetails(serviceId){
+        setError(null)
+
+        const response = await fetch(`${API_URL}/api/assignments/group/${serviceId}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json'}
+        })
+
+        const data: Group[] = await response.json()
+
+        if(!response.ok){
+            setError("Failed to get group details")
+        }
+
+        setGroupDetails(data)
+    }
+
     return(
         <div className="flex flex-col gap-5 mx-auto p-4 sm:px-12 py-5">
             <Header variant="chats" />
@@ -161,7 +186,12 @@ export function Chats() {
                             onClick={() => setChosenService(null)}
                             />
                             <div className="flex flex-col gap-0.5">
-                                <h2 className="text-[13.5px] font-medium leading-none">{chosenService?.serviceName}</h2>
+                                <button 
+                                className="text-[13.5px] font-medium leading-none hover:text-zinc-300"
+                                onClick={() => fetchGroupDetails(chosenService.serviceId)}
+                                >
+                                    {chosenService?.serviceName}
+                                </button>
                                 <h2 className="text-zinc-300 text-[10px] leading-none">
                                     {chosenService ? format(new Date(chosenService.date), 'd MMMM yyyy') : null}
                                     </h2>
@@ -225,6 +255,36 @@ export function Chats() {
                         </button>
                     </div>
                     {error && (<span className="text-center text-sm text-red-500 py-0.5">{error}</span>)}
+                </div>
+
+
+                {/* group description view */}
+                <div className={`absolute bg-slate-800 w-full h-full py-3.5 px-2.5
+                transition-transform duration-300 ease-in-out overflow-y-auto
+                ${groupDetails && chosenService ? 'translate-x-0' : 'translate-x-full'}`}>
+                    <ChevronLeftIcon
+                    className="-ml-2 h-6.5 cursor-pointer hover:text-slate-600 transition-colors"
+                    onClick={() => setGroupDetails(null)}
+                    />
+                    <div className="flex flex-col gap-1 items-center">
+                        <h1 className="font-semibold text-xl">{chosenService?.serviceName}</h1>
+                        <h3 className="text-sm text-zinc-300">Group ⋅ {groupDetails?.length} members</h3>
+                        <div className="flex flex-col w-83 mt-2 px-3 border rounded-lg">
+                            {groupDetails?.map((g, index) => (
+                                <div key={g.userId} className={`flex justify-between py-3 ${index < groupDetails.length-1 ? "border-b" : ""}`}>
+                                    <div className="flex flex-col w-54">
+                                        <span className="break-words">{g.userName}</span>
+                                        <span className="text-sm text-zinc-300">{g.phoneNumber}</span>
+                                    </div>
+                                    <div className="flex flex-col w-29">
+                                        {g.roleName?.map((e) => (
+                                            <span className="break-words">{e}</span>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 </div>
             </div>
             
