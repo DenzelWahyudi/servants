@@ -19,7 +19,7 @@ export function AdminServices() {
 							<ButtonLink to='/admin/service/create'variant="card" className="text-lg text-semibold py-1.5 rounded-lg text-slate-900">+ Add New Service</ButtonLink>
 						</div>
 					</div>
-					<div className="rounded-lg overflow-hidden">
+					<div className="rounded-lg overflow-y-auto">
 						<UpcomingServicesAdmin />
 					</div>
 				</div>

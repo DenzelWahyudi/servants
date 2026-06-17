@@ -41,9 +41,9 @@ export function AdminRoles() {
 						<Heading>Manage Roles</Heading>
 					</div>
 					{services?.map((service) => 
-					<div className="rounded-lg overflow-hidden pb-4.5">
-						<RolesCard serviceId={service._id} />
-					</div>
+						<div className="pb-4.5">
+							<RolesCard serviceId={service._id} />
+						</div>
 					)}
 				</div>
 			</div>

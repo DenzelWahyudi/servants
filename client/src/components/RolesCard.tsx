@@ -3,6 +3,7 @@ import { UserPlus, UserMinus } from 'lucide-react'
 import { AssignRoleForm } from "./AssignRoleForm"
 import { RelieveRoleForm } from "./RelieveRoleForm"
 import { API_URL } from "../api"
+import { format } from "date-fns"
 
 type RolesCardProps = {
     serviceId: string
@@ -89,23 +90,23 @@ export function RolesCard({ serviceId }: RolesCardProps){
     }
 
     return (
-        <div className="bg-white rounded-lg overflow-hidden p-2.5">
-            <table className="w-full text-sm text-left text-zinc-300 rounded-lg overflow-hidden">
-                <caption className="bg-slate-900 text-lg font-semibold text-zinc-100 text-left py-1.5 px-2.5">{service.name} - {new Date(service.date).toLocaleDateString("en-GB", { year:"numeric", month: "long", day: "numeric",})}, {service.time}</caption>
+        <div className="bg-white rounded-lg p-2.5">
+            <table className="table-fixed w-full text-sm text-left text-zinc-300 rounded-lg overflow-hidden">
+                <caption className="bg-slate-900 text-lg font-semibold text-zinc-100 text-left py-1.5 px-2.5">{service.name} - {format(new Date(service.date), 'd MMMM yyyy')}, {service.time}</caption>
                 <thead className="text-zinc-950 font-medium bg-zinc-200">
                     <tr>
-                        <th className="px-2.5 py-2">Role</th>
-                        <th>Assigned To</th>
-                        <th className="text-center">Slots Filled</th>
-                        <th className="text-center">Status</th>
-                        <th className="text-center">Actions</th>
+                        <th className="w-[25%] px-2.5 py-2">Role</th>
+                        <th className="w-[48%]">Assigned To</th>
+                        <th className="w-[11%] text-center">Slots Filled</th>
+                        <th className="w-[7%] text-center">Status</th>
+                        <th className="w-[9%] text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {roles?.map((r) => (
                         <tr key={r._id} className="border-b border-zinc-200 text-zinc-900">
-                            <td className="px-2.5 py-2  w-[200px]">{r.name}</td>
-                            <td className="w-[570px] break-words">{r.usersNames?.map(userName => userName.name).join(", ") ?? "..."}</td>
+                            <td className="px-2.5 py-2 break-words">{r.name}</td>
+                            <td className="py-2 break-words">{r.usersNames?.map(userName => userName.name).join(", ") ?? "..."}</td>
                             <td className="text-center">{r.spotsFilled}/{r.spotsTotal}</td>
                             <td className="text-center">
                                 <span className={`py-1 px-2.5 text-xs rounded-xl text-zinc-100 font-light shadow
@@ -113,8 +114,8 @@ export function RolesCard({ serviceId }: RolesCardProps){
                                     {r.spotsFilled >= r.spotsTotal ? "Filled" : "Open"}
                                 </span>
                             </td>
-                            <td className="text-center">
-                                <div className="flex gap-1 items-center justify-center">
+                            <td>
+                                <div className="flex gap-1 py-2 items-center justify-center">
                                     <button
                                     onClick={() => setRelieveData({
                                         roleId: r._id,

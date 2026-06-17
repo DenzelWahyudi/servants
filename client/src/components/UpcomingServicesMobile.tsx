@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { API_URL } from "../api"
+import { format } from "date-fns"
 
 interface Role {
     _id: string
@@ -56,7 +57,7 @@ export function UpcomingServicesMobile(){
                         <div className="flex items-center justify-between">
                             <div className="flex flex-col gap-1">
                                 <h3 className="text-zinc-950 font-semibold">{s.name}</h3>
-                                <h3 className="text-zinc-950">{new Date(s.date).toLocaleDateString("en-GB", { year:"numeric", month: "long", day: "numeric",})}</h3>
+                                <h3 className="text-zinc-950">{format(new Date(s.date), 'd MMMM yyyy')}</h3>
                             </div>
                             <span className="text-zinc-950">{s.time}</span>
                         </div>

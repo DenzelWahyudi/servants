@@ -5,6 +5,7 @@ import { Heading } from "../components/Heading";
 import { OpeningsCard } from "../components/OpeningsCard";
 import { useAuth } from "../hooks/useAuth";
 import { API_URL } from "../api"
+import { format } from "date-fns";
 
 interface Service {
     _id: string
@@ -101,7 +102,7 @@ export function Openings() {
 
                             return (
                                 <OpeningsCard key={role._id} serviceName={service.name} 
-                                date={new Date(service.date).toLocaleDateString("en-GB", { year:"numeric", month: "long", day: "numeric",})} 
+                                date={format(new Date(service.date), 'd MMMM yyyy')} 
                                 time={service.time} 
                                 role={role.name} 
                                 roleId={role._id}

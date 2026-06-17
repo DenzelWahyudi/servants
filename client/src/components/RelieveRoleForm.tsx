@@ -21,6 +21,7 @@ export function RelieveRoleForm({ roleId, serviceName, roleName, onClose }: Reli
     const [error, setError] = useState<string | null>(null)
     const [users, setUsers] = useState<User[] | null>(null)
     const [user, setUser] = useState<string | null>("")
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         async function fetchUsers(){
@@ -39,6 +40,7 @@ export function RelieveRoleForm({ roleId, serviceName, roleName, onClose }: Reli
     }
 
     async function handleRemove(userId, roleId){
+        setLoading(true)
         setError(null)
         {console.log(userId)}
         const response = await fetch(`${API_URL}/api/assignments/relieve`, {
@@ -49,7 +51,11 @@ export function RelieveRoleForm({ roleId, serviceName, roleName, onClose }: Reli
         const data = await response.json()
         if (!response.ok){
             setError( data.message || "Failed to relieve user")
+            setLoading(false)
+            return
         }
+
+        setLoading(false)
         if (onClose) onClose()
     }
 
@@ -67,7 +73,7 @@ export function RelieveRoleForm({ roleId, serviceName, roleName, onClose }: Reli
             </div>
             <div className="flex flex-col gap-1">
                 <h3 className="text-sm text-zinc-100 font-light">Role</h3>
-                <span className="text-base text-left p-1 pl-2 border border-zinc-600 rounded w-full">
+                <span className="text-base text-left p-1 pl-2 border border-zinc-600 rounded w-full overflow-x-auto">
                     {roleName}
                 </span>
             </div>
@@ -78,7 +84,7 @@ export function RelieveRoleForm({ roleId, serviceName, roleName, onClose }: Reli
                     onChange={handleChange}
                     className={`border border-zinc-600 focus:border-amber-400 outline-none text-base 
                     text-left p-1 pl-2 rounded w-full transition-colors ${user ? '' : 'text-zinc-500 font-medium'}`}>
-                        <option value="" disabled className="text-zinc-900">Select a user</option>
+                        <option value="" disabled>Select a user</option>
                         {users?.map((user) => (
                             <option key={user.userId} value={user.userId}>{user.name}</option>
                         ))}
@@ -95,7 +101,7 @@ export function RelieveRoleForm({ roleId, serviceName, roleName, onClose }: Reli
                 onClick={() => handleRemove(user!, roleId)}
                 disabled={!user}
                 className="bg-amber-400 rounded-lg px-3 py-1.5 text-slate-900 text-base hover:bg-amber-500 disabled:bg-zinc-500">
-                    Remove
+                    {loading ? "Removing..." : "Remove"}
                 </button>
             </div>
         </div>

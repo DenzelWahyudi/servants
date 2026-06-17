@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { Trash2, Pencil } from 'lucide-react';
 import { EditServiceForm } from "./EditServiceForm";
 import { API_URL } from "../api"
+import { format } from "date-fns";
 
 interface Role {
     _id: string
@@ -90,30 +91,30 @@ export function UpcomingServicesAdmin(){
     }
 
     return (
-        <section className="bg-white py-4">
+        <section className="bg-white py-4 border-b border-zinc-200">
             <h2 className="text-3xl font-semibold text-slate-900 text-center mb-3">Upcoming Services</h2>
-            <div className="rounded-lg overflow-y-auto max-h-130 shadow-lg border border-zinc-200">
-                <table className="w-full table-fixed text-sm text-left text-zinc-300">
-                    <thead className="text-zinc-950 border-amber-400 border-b-2 border-t-2">
-                        <tr>
-                            <th className="py-2 pl-3">Upcoming Service</th>
-                            <th>Date</th>
-                            <th>Time</th>
-                            <th className="pl-3 w-70">Roles Needed</th>
-                            <th className="text-center pr-2.5">Status</th>
-                            <th className="text-center pr-1">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {services?.map((s) => (
-                            <tr key={s._id} className="border-b border-zinc-400 text-zinc-950">
-                                <td className="pl-3 py-3 font-medium break-words">{s.name}</td>
-                                <td>{new Date(s.date).toLocaleDateString("en-GB", { year:"numeric", month: "long", day: "numeric",})}</td>
-                                <td>{s.time}</td>
-                                <td className="pl-3 pr-7 py-3 break-words">{s.roles?.map(r => r.name).join(", ") ?? "..."}</td>
-                                <td className="text-center">
+            <table className="w-full table-fixed text-sm text-left text-zinc-300">
+                <thead className="text-zinc-950 border-amber-400 border-b-2 border-t-2">
+                    <tr>
+                        <th className="w-[18%] pl-3 py-2">Upcoming Service</th>
+                        <th className="w-[14%]">Date</th>
+                        <th className="w-[13%]">Time</th>
+                        <th className="w-[33%]">Roles Needed</th>
+                        <th className="w-[11%] text-center">Status</th>
+                        <th className="w-[11%] text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {services?.map((s) => (
+                        <tr key={s._id} className="border-b border-zinc-400 text-zinc-950">
+                            <td className="pl-3 font-medium break-words">{s.name}</td>
+                            <td>{format(new Date(s.date), 'dd MMMM yyyy')}</td>
+                            <td>{s.time}</td>
+                            <td className="py-3 pr-4 break-words">{s.roles?.map(r => r.name).join(", ") ?? "..."}</td>
+                            <td>
+                                <div className="flex items-center justify-center">
                                     <select value={s.status} onChange={handleStatusChange(s._id)}
-                                    className={`px-3 py-0.5 rounded font-semibold inline-block w-33 text-center ${s.status === "Roles Closed"
+                                    className={`py-1 rounded font-semibold text-[13.5px] inline-block w-27 text-center ${s.status === "Roles Closed"
                                     ? "bg-red-200"
                                     : "bg-green-200"
                                     }`}
@@ -121,46 +122,47 @@ export function UpcomingServicesAdmin(){
                                         <option value="Roles Open">Roles Open</option>
                                         <option value="Roles Closed">Roles Closed</option>
                                     </select>
-                                </td>
-                                <td>
-                                    <div className="flex gap-1 items-center justify-center">
-                                        <button
-                                        onClick={() => setEditingId(s._id)}
-                                        className="bg-zinc-100 px-2 py-1.5 rounded-lg border border-zinc-400 hover:bg-zinc-300 transition-colors">
-                                            <Pencil size={18} className="text-slate-900" />
-                                        </button>
-                                        <button
-                                        onClick={() => handleDelete(s._id)}
-                                        className="bg-red-100 px-2 py-1.5 rounded-lg border border-zinc-400 hover:bg-red-300 transition-colors">
-                                            <Trash2 size={18} className="text-red-900" />
-                                        </button>
-                                        {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-            {editingId && (
-                <div
-                className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-                onClick={() => setEditingId(null)}
+                                </div>
+                            </td>
+                            <td>
+                                <div className="flex gap-1 items-center justify-center">
+                                    <button
+                                    onClick={() => setEditingId(s._id)}
+                                    className="bg-zinc-100 px-2 py-1.5 rounded-lg border border-zinc-400 hover:bg-zinc-300 transition-colors">
+                                        <Pencil size={15} className="text-slate-900" />
+                                    </button>
+                                    <button
+                                    onClick={() => handleDelete(s._id)}
+                                    className="bg-red-100 px-2 py-1.5 rounded-lg border border-zinc-400 hover:bg-red-300 transition-colors">
+                                        <Trash2 size={15} className="text-red-900" />
+                                    </button>
+                                    {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
+                                </div>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+
+        {editingId && (
+            <div
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+            onClick={() => setEditingId(null)}
+            >
+                <div 
+                onClick={(e) => e.stopPropagation()}
+                className="max-h-[90vh] overflow-y-auto"
                 >
-                    <div 
-                    onClick={(e) => e.stopPropagation()}
-                    className="max-h-[90vh] overflow-y-auto"
-                    >
-                        <EditServiceForm 
-                        id={editingId} 
-                        onClose={() =>{setEditingId(null)}}
-                        onSave={(updated) => {
-                            setServices(prev => prev?.map(s => s._id === updated._id ? { ...s, ...updated, roles: updated.roles } : s)?? null)
-                        }}
-                        />
-                    </div>
+                    <EditServiceForm 
+                    id={editingId} 
+                    onClose={() =>{setEditingId(null)}}
+                    onSave={(updated) => {
+                        setServices(prev => prev?.map(s => s._id === updated._id ? { ...s, ...updated, roles: updated.roles } : s)?? null)
+                    }}
+                    />
                 </div>
-            )}
+            </div>
+        )}
         </section>
     )
 }
