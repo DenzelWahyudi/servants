@@ -142,7 +142,7 @@ export function Chats() {
                             >
                                 <div className="flex flex-col text-left">
                                     <span>{s.serviceName}</span>
-                                    <span className="text-zinc-300 font-normal">{new Date(s.date).toLocaleDateString("en-GB", { year:"numeric", month: "long", day: "numeric",})}</span>
+                                    <span className="text-zinc-300 font-normal">{format(new Date(s.date), 'd MMMM yyyy')}</span>
                                 </div>
                                 <span>{s.time}</span>
                             </button>
@@ -163,7 +163,7 @@ export function Chats() {
                             <div className="flex flex-col gap-0.5">
                                 <h2 className="text-[13.5px] font-medium leading-none">{chosenService?.serviceName}</h2>
                                 <h2 className="text-zinc-300 text-[10px] leading-none">
-                                    {new Date(chosenService?.date).toLocaleDateString("en-GB", { year:"numeric", month: "long", day: "numeric",})}
+                                    {chosenService ? format(new Date(chosenService.date), 'd MMMM yyyy') : null}
                                     </h2>
                             </div>
                         </div>

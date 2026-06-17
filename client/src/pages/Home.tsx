@@ -7,7 +7,7 @@ import calendar from '../assets/icons/calendar.svg'
 import user from '../assets/icons/user.svg'
 import { useEffect, useState } from 'react'
 import { useAuth } from "../hooks/useAuth"
-import { startOfToday, isEqual, startOfDay } from "date-fns"
+import { startOfToday, isEqual, startOfDay, format } from "date-fns"
 import { API_URL } from "../api"
 import { UpcomingServicesMobile } from "../components/UpcomingServicesMobile"
 
@@ -161,7 +161,7 @@ export function Home() {
                         {assignments?.map((a) => (
                             <tr key={a._id} className="border-b border-zinc-500 text-zinc-100">
                                 <td className="px-3 py-3 font-medium">{a.serviceName}</td>
-                                <td className="px-3">{new Date(a.date).toLocaleDateString("en-GB", { year:"numeric", month: "long", day: "numeric",})}</td>
+                                <td className="px-3">{format(new Date(a.date), 'd MMM yyyy')}</td>
                                 <td className="px-3">{a.time}</td>
                                 <td className="px-3 py-2 break-words">{a.roleName}</td>
                                 <td className="px-3 text-center">
@@ -193,7 +193,7 @@ export function Home() {
                         {assignments?.map((a) => (
                             <tr key={a._id} className="border-b border-zinc-500 text-zinc-100">
                                 <td className="px-1 py-2 font-medium break-words">{a.serviceName}</td>
-                                <td className="px-1">{new Date(a.date).toLocaleDateString("en-GB", { year:"numeric", month: "long", day: "numeric",})}</td>
+                                <td className="px-1">{format(new Date(a.date), 'd MMM yyyy')}</td>
                                 <td className="px-1 break-words">{a.time}</td>
                                 <td className="px-1 py-2 break-words">{a.roleName}</td>
                                 <td className="px-1 text-center">

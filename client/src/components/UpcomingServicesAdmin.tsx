@@ -96,12 +96,12 @@ export function UpcomingServicesAdmin(){
                 <table className="w-full table-fixed text-sm text-left text-zinc-300">
                     <thead className="text-zinc-950 border-amber-400 border-b-2 border-t-2">
                         <tr>
-                            <th className="py-2 pl-3">Upcoming Service</th>
+                            <th className="pl-3 py-2">Upcoming Service</th>
                             <th>Date</th>
                             <th>Time</th>
-                            <th className="pl-3 w-70">Roles Needed</th>
-                            <th className="text-center pr-2.5">Status</th>
-                            <th className="text-center pr-1">Actions</th>
+                            <th className="">Roles Needed</th>
+                            <th className="text-center">Status</th>
+                            <th className="text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -110,10 +110,10 @@ export function UpcomingServicesAdmin(){
                                 <td className="pl-3 py-3 font-medium break-words">{s.name}</td>
                                 <td>{new Date(s.date).toLocaleDateString("en-GB", { year:"numeric", month: "long", day: "numeric",})}</td>
                                 <td>{s.time}</td>
-                                <td className="pl-3 pr-7 py-3 break-words">{s.roles?.map(r => r.name).join(", ") ?? "..."}</td>
+                                <td className="py-3 break-words">{s.roles?.map(r => r.name).join(", ") ?? "..."}</td>
                                 <td className="text-center">
                                     <select value={s.status} onChange={handleStatusChange(s._id)}
-                                    className={`px-3 py-0.5 rounded font-semibold inline-block w-33 text-center ${s.status === "Roles Closed"
+                                    className={`py-0.5 rounded font-semibold inline-block w-33 text-center ${s.status === "Roles Closed"
                                     ? "bg-red-200"
                                     : "bg-green-200"
                                     }`}
@@ -122,7 +122,7 @@ export function UpcomingServicesAdmin(){
                                         <option value="Roles Closed">Roles Closed</option>
                                     </select>
                                 </td>
-                                <td>
+                                <td className="text-center">
                                     <div className="flex gap-1 items-center justify-center">
                                         <button
                                         onClick={() => setEditingId(s._id)}

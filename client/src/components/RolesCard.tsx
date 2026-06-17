@@ -3,6 +3,7 @@ import { UserPlus, UserMinus } from 'lucide-react'
 import { AssignRoleForm } from "./AssignRoleForm"
 import { RelieveRoleForm } from "./RelieveRoleForm"
 import { API_URL } from "../api"
+import { format } from "date-fns"
 
 type RolesCardProps = {
     serviceId: string
@@ -91,7 +92,7 @@ export function RolesCard({ serviceId }: RolesCardProps){
     return (
         <div className="bg-white rounded-lg overflow-hidden p-2.5">
             <table className="w-full text-sm text-left text-zinc-300 rounded-lg overflow-hidden">
-                <caption className="bg-slate-900 text-lg font-semibold text-zinc-100 text-left py-1.5 px-2.5">{service.name} - {new Date(service.date).toLocaleDateString("en-GB", { year:"numeric", month: "long", day: "numeric",})}, {service.time}</caption>
+                <caption className="bg-slate-900 text-lg font-semibold text-zinc-100 text-left py-1.5 px-2.5">{service.name} - {format(new Date(service.date), 'd MMMM yyyy')}, {service.time}</caption>
                 <thead className="text-zinc-950 font-medium bg-zinc-200">
                     <tr>
                         <th className="px-2.5 py-2">Role</th>
