@@ -1,7 +1,7 @@
 const chatsService = require('./chats-service')
 const usersService = require('../users/users-service')
 const { errorResponder, errorTypes } = require('../../../core/errors')
-const { broadcastToService } = require('../../../core/websocket');
+const { broadcastToService } = require('../../../core/webSocket');
 
 async function sendChat(req, res, next){
     try {
