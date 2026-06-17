@@ -166,6 +166,21 @@ async function getAllUserAssignedServices(req, res, next){
     }
 }
 
+async function getGroupDetails(req, res, next){
+    try {
+        const serviceId = req.params.serviceId
+
+        const success = await assignmentsService.getGroupDetails(serviceId)
+        if (!success){
+            throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Failed to get group details.')
+        }
+
+        return res.status(200).json(success)
+    } catch (error) {
+        next(error)
+    }
+}
+
 module.exports = {
     createAssignment,
     getUsersForRole,
@@ -175,5 +190,6 @@ module.exports = {
     getAllUserAssignments,
     getUsersToRelieve,
     relieveUser,
-    getAllUserAssignedServices
+    getAllUserAssignedServices,
+    getGroupDetails
 }

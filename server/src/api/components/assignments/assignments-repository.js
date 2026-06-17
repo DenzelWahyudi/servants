@@ -276,6 +276,55 @@ async function getAllUserAssignedServices(userId){
     ])
 }
 
+async function getGroupDetails(serviceId){
+    return Assignments.aggregate([
+        {
+            $lookup: {
+                from: 'roles',
+                localField: 'roleId',
+                foreignField: '_id',
+                as: 'roles'
+            }
+        },
+        {
+            $unwind: '$roles'
+        },
+        {
+            $match: {
+                'roles.serviceId': new mongoose.Types.ObjectId(serviceId)
+            }
+        },
+        {
+            $lookup: {
+                from: 'users',
+                localField: 'userId',
+                foreignField: '_id',
+                as: 'users'
+            }
+        },
+        {
+            $unwind: '$users'
+        },
+        {
+            $group: {
+                _id: '$users._id',
+                userName: { $first: '$users.name' },
+                phoneNumber: { $first: '$users.phoneNumber'},
+                roleName: { $push: '$roles.name'}
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                userId: '$_id',
+                userName: 1,
+                phoneNumber: 1,
+                roleName: 1
+            }
+        }
+    ])
+}
+
 module.exports = {
     createAssignment,
     getUsersForRole,
@@ -287,5 +336,6 @@ module.exports = {
     getAllUserAssignments,
     getUsersToRelieve,
     relieveUser,
-    getAllUserAssignedServices
+    getAllUserAssignedServices,
+    getGroupDetails
 }

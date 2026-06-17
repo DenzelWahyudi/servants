@@ -42,6 +42,10 @@ async function getAllUserAssignedServices(userId){
     return assignmentsRepository.getAllUserAssignedServices(userId)
 }
 
+async function getGroupDetails(serviceId){
+    return assignmentsRepository.getGroupDetails(serviceId)
+}
+
 module.exports = {
     createAssignment,
     getUsersForRole,
@@ -52,5 +56,6 @@ module.exports = {
     getAllUserAssignments,
     getUsersToRelieve,
     relieveUser,
-    getAllUserAssignedServices
+    getAllUserAssignedServices,
+    getGroupDetails
 }
