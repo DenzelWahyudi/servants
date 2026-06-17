@@ -44,6 +44,8 @@ export function Chats() {
         _id: ""
     })
     const [groupDetails, setGroupDetails] = useState<Group[] | null>(null)
+    const [loading, setLoading] = useState(false)
+    const [loadingDetails, setLoadingDetails] = useState(false)
 
     useEffect(() => {
         async function fetchAssignedServices(){
@@ -99,6 +101,7 @@ export function Chats() {
     }
 
     async function handleSend(){
+        setLoading(true)
         setError(null)
 
         try {
@@ -119,12 +122,15 @@ export function Chats() {
             }
 
             setMessage((prev) => ({...prev, message:""}))
+
+            setLoading(false)
         } catch {
             setError("Could not connect to the server. Please try again.")
         }
     }
 
     async function fetchGroupDetails(serviceId){
+        setLoadingDetails(true)
         setError(null)
 
         const response = await fetch(`${API_URL}/api/assignments/group/${serviceId}`, {
@@ -139,6 +145,7 @@ export function Chats() {
         }
 
         setGroupDetails(data)
+        setLoadingDetails(false)
     }
 
     return(
@@ -187,7 +194,8 @@ export function Chats() {
                             />
                             <div className="flex flex-col gap-0.5">
                                 <button 
-                                className="text-[13.5px] font-medium leading-none hover:text-zinc-300"
+                                disabled={loadingDetails}
+                                className="text-[13.5px] font-medium leading-none hover:text-zinc-300 disabled:text-zinc-300"
                                 onClick={() => fetchGroupDetails(chosenService.serviceId)}
                                 >
                                     {chosenService?.serviceName}
@@ -248,7 +256,7 @@ export function Chats() {
                         />
                         <button
                         onClick={() => handleSend()}
-                        disabled={message.message === ""}
+                        disabled={message.message === "" || loading}
                         className="flex items-center justify-center w-5.5 h-5.5 bg-green-600 rounded-xl text-zinc-950 hover:bg-green-950 disabled:bg-green-800"
                         >
                             <SendHorizontal size={15}/>
@@ -272,7 +280,7 @@ export function Chats() {
                         <div className="flex flex-col w-83 mt-2 px-3 border rounded-lg">
                             {groupDetails?.map((g, index) => (
                                 <div key={g.userId} className={`flex justify-between py-3 ${index < groupDetails.length-1 ? "border-b" : ""}`}>
-                                    <div className="flex flex-col w-54">
+                                    <div className="flex flex-col w-49">
                                         <span className="break-words">{g.userName}</span>
                                         <span className="text-sm text-zinc-300">{g.phoneNumber}</span>
                                     </div>
