@@ -21,7 +21,7 @@ export function AssignRoleForm({ roleId, serviceName, roleName, onClose }: Assig
     const navigate = useNavigate()
     const [error, setError] = useState<string | null>(null)
     const [users, setUsers] = useState<User[] | null>(null)
-    const [user, setUser] = useState<string | null>(null)
+    const [user, setUser] = useState<string | null>("")
 
     useEffect(() => {
         async function fetchUsers(){
@@ -79,7 +79,7 @@ export function AssignRoleForm({ roleId, serviceName, roleName, onClose }: Assig
             </div>
             <div className="flex flex-col gap-1">
                 <h3 className="text-sm text-zinc-100 font-light">Role</h3>
-                <span className="text-base text-left p-1 pl-2 border border-zinc-600 rounded w-full">
+                <span className="text-base text-left p-1 pl-2 border border-zinc-600 rounded w-full overflow-x-auto">
                     {roleName}
                 </span>
             </div>
@@ -88,7 +88,9 @@ export function AssignRoleForm({ roleId, serviceName, roleName, onClose }: Assig
                 <select
                     value={user}
                     onChange={handleChange}
-                    className="border border-zinc-600 focus:border-amber-400 outline-none text-base text-left p-1 pl-2 rounded w-full transition-colors">
+                    className={`border border-zinc-600 focus:border-amber-400 outline-none text-base 
+                    text-left p-1 pl-2 rounded w-full transition-colors ${user ? '' : 'text-zinc-500 font-medium'}`}>
+                        <option value="" disabled>Select a user</option>
                         {users?.map((user) => (
                             <option key={user._id} value={user._id}>{user.name}</option>
                         ))}
