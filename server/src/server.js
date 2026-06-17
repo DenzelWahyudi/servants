@@ -1,7 +1,7 @@
 const { env, port } = require('./core/config');
 const logger = require('./core/logger')('app');
 const app = require('./core/app');
-const { initWebSocket } = require('./core/websocket');
+const { initWebSocket } = require('./core/webSocket');
 
 const httpServer = app.listen(port, (err) => {
   if (err) {
