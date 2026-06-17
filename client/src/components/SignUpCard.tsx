@@ -81,6 +81,7 @@ export function SignUpCard({ userId, roleId, serviceName, roleName, date, onClos
                 </button>
                 <button
                 onClick={() => handleAssign(userId, roleId)}
+                disabled={loading}
                 className="bg-amber-400 rounded-lg px-3 py-1.5 text-slate-900 text-base hover:bg-amber-500">
                     {loading ? "Loading..." : "Sign Up"}
                 </button>
