@@ -56,6 +56,7 @@ export function AdmitCard({ _id, userName, roleName, serviceName, date, time, on
                         handleUpdateStatus(_id, "declined")
                         onSave()
                     }}
+                    disabled={loading}
                     className="bg-red-400 text-blue-950 text-sm font-semibold py-1 px-2 rounded w-22
                     mt-auto hover:bg-red-500 flex justify-center transition-colors rounded-lg px-2 py-1"
                     >
@@ -63,6 +64,7 @@ export function AdmitCard({ _id, userName, roleName, serviceName, date, time, on
                     </button>
                     <button
                     onClick={() => { handleUpdateStatus(_id, "confirmed")}}
+                    disabled={loading}
                     className="bg-green-400 text-blue-950 text-sm font-semibold py-1 px-2 rounded w-22
                     mt-auto hover:bg-green-500 flex justify-center transition-colors rounded-lg px-2 py-1"
                     >

@@ -110,7 +110,7 @@ export function AssignRoleForm({ roleId, serviceName, roleName, onClose }: Assig
                 </button>
                 <button
                 onClick={() => handleAssign(user!, roleId)}
-                disabled={!user}
+                disabled={!user || loading}
                 className="bg-amber-400 rounded-lg px-3 py-1.5 text-slate-900 text-base hover:bg-amber-500 disabled:bg-zinc-500">
                     {loading ? "Assigning..." : "Assign"}
                 </button>
