@@ -150,7 +150,7 @@ export function UpcomingServicesAdmin(){
                                                     <div className={`absolute ${index < services.length-1 ? "top-full mt-1" : "bottom-full mb-1" } right-0 w-24 z-50 
                                                     flex flex-col gap-1 items-center bg-slate-800 text-white text-xs rounded-lg p-2 shadow-lg`}>
                                                         <span>Are you sure?</span>
-                                                        <div className="flex gap-3">
+                                                        <div className="flex gap-3 items-center">
                                                             <button 
                                                             disabled={loading}
                                                             onClick={() => handleDelete(toBeDelete)}
