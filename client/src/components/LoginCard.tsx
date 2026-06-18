@@ -52,12 +52,12 @@ export function LoginCard(){
     }
     
     return (
-        <div className="flex flex-col gap-1.5 p-6 sm:p-7 bg-slate-800 items-center rounded-xl w-80 sm:w-100 h-123 sm:h-118">
+        <div className="flex flex-col gap-0.5 sm:gap-1.5 p-6 sm:p-7 bg-slate-800 items-center rounded-xl w-80 sm:w-100 h-104 sm:h-118">
             <div className="mt-2">
                 <Heading>Login</Heading>
             </div>
             <div className="mt-4 mb-4">
-                <h2 className="text-zinc-400 text-lg">No one comes to help, no one comes to contribute, everybody comes to learn and to serve - Stephen Tong
+                <h2 className="text-zinc-400 sm:text-lg">No one comes to help, no one comes to contribute, everybody comes to learn and to serve - Stephen Tong
                 </h2>
             </div>
             <Form label="Phone number"  value={formData.phoneNumber}    onChange={handleChange("phoneNumber")} />
