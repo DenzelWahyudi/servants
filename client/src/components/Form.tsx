@@ -15,7 +15,7 @@ export function Form({ label, className, id, ...props }: FormProps){
                 {...props}
                 className={twMerge(
                     "bg-slate-700 border border-slate-600 focus:border-amber-400 outline-none",
-                    "text-zinc-100 text-sm rounded-lg px-3 py-2 transition-colors",
+                    "text-zinc-100 text-sm rounded-lg px-3 py-1 sm:py-2 transition-colors",
                     className
                 )}
             />

@@ -52,12 +52,12 @@ export function RegisterCard(){
     }
 
     return (
-        <div className="flex flex-col gap-1.5 p-6 sm:p-7 bg-slate-800 items-center rounded-xl w-85 sm:w-100 h-151 sm:h-146">
+        <div className="flex flex-col gap-1 sm:gap-1.5 p-6 sm:p-7 bg-slate-800 items-center rounded-xl w-85 sm:w-100 h-135 sm:h-146">
             <div className="mt-2">
                 <Heading>Create Account</Heading>
             </div>
-            <div className="mb-4">
-                <h2 className="text-zinc-400 text-lg">Join the servants team</h2>
+            <div className="mb-3 sm:mb-4">
+                <h2 className="text-zinc-400 sm:text-lg">Join the servants team</h2>
             </div>
 
             <Form label="Full Name"         value={formData.name}               onChange={handleChange("name")} />
