@@ -25,6 +25,8 @@ export function UpcomingServicesAdmin(){
     const [services, setServices] = useState<Service[] | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [editingId, setEditingId] = useState<string | null>(null);
+    const [toBeDelete, setToBeDelete] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
     
     useEffect(() => {
         async function fetchServices() {
@@ -53,6 +55,7 @@ export function UpcomingServicesAdmin(){
     }, [])
 
     async function handleDelete(serviceId: string){
+        setLoading(true)
         setError(null);
         try {
             const response = await fetch(`${API_URL}/api/services/delete/${serviceId}`, {
@@ -67,6 +70,7 @@ export function UpcomingServicesAdmin(){
             }
 
             setServices(prev => prev?.filter(s => s._id !== serviceId) ?? null)
+            setLoading(false)
         } catch {
             setError("Could not connect to the server. Please try again.")
         }
@@ -105,7 +109,7 @@ export function UpcomingServicesAdmin(){
                     </tr>
                 </thead>
                 <tbody>
-                    {services?.map((s) => (
+                    {services?.map((s, index) => (
                         <tr key={s._id} className="border-b border-zinc-400 text-zinc-950">
                             <td className="pl-3 font-medium break-words">{s.name}</td>
                             <td>{format(new Date(s.date), 'dd MMMM yyyy')}</td>
@@ -131,11 +135,38 @@ export function UpcomingServicesAdmin(){
                                     className="bg-zinc-100 px-2 py-1.5 rounded-lg border border-zinc-400 hover:bg-zinc-300 transition-colors">
                                         <Pencil size={15} className="text-slate-900" />
                                     </button>
-                                    <button
-                                    onClick={() => handleDelete(s._id)}
-                                    className="bg-red-100 px-2 py-1.5 rounded-lg border border-zinc-400 hover:bg-red-300 transition-colors">
-                                        <Trash2 size={15} className="text-red-900" />
-                                    </button>
+                                    <div className="relative">
+                                        <button
+                                        onClick={() => setToBeDelete(s._id)}
+                                        className="bg-red-100 px-2 py-1.5 rounded-lg border border-zinc-400 hover:bg-red-300 transition-colors">
+                                            <Trash2 size={15} className="text-red-900" />
+                                        </button>
+                                        {toBeDelete === s._id && (
+                                            <>
+                                                <div 
+                                                className="fixed inset-0 z-40"
+                                                onClick={() => setToBeDelete(null)}
+                                                />
+                                                    <div className={`absolute ${index < services.length-1 ? "top-full mt-1" : "bottom-full mb-1" } right-0 w-24 z-50 
+                                                    flex flex-col gap-1 items-center bg-slate-800 text-white text-xs rounded-lg p-2 shadow-lg`}>
+                                                        <span>Are you sure?</span>
+                                                        <div className="flex gap-3">
+                                                            <button 
+                                                            disabled={loading}
+                                                            onClick={() => handleDelete(toBeDelete)}
+                                                            className="hover:text-amber-400 disabled:text-amber-400">
+                                                                Yes
+                                                            </button>
+                                                            <button 
+                                                            onClick={() => setToBeDelete(null)}
+                                                            className="hover:text-amber-400">
+                                                                No
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                            </>
+                                        )}
+                                    </div>
                                     {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
                                 </div>
                             </td>
