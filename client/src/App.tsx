@@ -13,6 +13,7 @@ import { AdminServices } from "./pages/AdminServices";
 import { AdminRoles } from "./pages/AdminRoles";
 import { AdminAdmissions } from "./pages/AdminAdmissions";
 import { Chats } from "./pages/Chats";
+import { AdminUsers } from "./pages/AdminUsers";
 
 export default function App() {
   return (
@@ -49,6 +50,9 @@ export default function App() {
           } />
           <Route path="/admin/admissions" element={
             <ProtectedRoute requiredRole="admin"><AdminAdmissions /></ProtectedRoute>
+          } />
+          <Route path="/admin/users" element={
+            <ProtectedRoute requiredRole="admin"><AdminUsers /></ProtectedRoute>
           } />
         </Routes>
       </AuthProvider>

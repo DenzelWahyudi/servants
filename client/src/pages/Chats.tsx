@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Footer } from "../components/Footer";
 import { Header } from "../components/Header";
-import { Heading } from "../components/Heading";
 import { API_URL } from "../api";
 import { useAuth } from "../hooks/useAuth";
 import { ChevronLeftIcon } from "@heroicons/react/24/solid";
@@ -151,7 +150,6 @@ export function Chats() {
     return(
         <div className="flex flex-col gap-5 mx-auto p-4 sm:px-12 py-5">
             <Header variant="chats" />
-            <Heading>Chats</Heading>
 
             <div className="flex justify-center relative h-147 w-full overflow-hidden mx-auto">
                 <div className={`absolute flex flex-col gap-4 py-4 overflow-y-auto bg-slate-800 w-full h-full 
