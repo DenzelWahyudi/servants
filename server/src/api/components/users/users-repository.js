@@ -24,8 +24,16 @@ async function createUser(name, email, phoneNumber, passwordHash, role) {
   return Users.create({ name, email, phoneNumber, passwordHash, role });
 }
 
-async function updateUser(id, email, phoneNumber) {
-  return Users.updateOne({ _id: id }, { $set: { email, phoneNumber } });
+async function updateEmail(id, email) {
+  return Users.updateOne({ _id: id }, { $set: { email } });
+}
+
+async function updatePhoneNumber(id, phoneNumber) {
+  return Users.updateOne({ _id: id }, { $set: { phoneNumber } });
+}
+
+async function updateName(id, name) {
+  return Users.updateOne({ _id: id }, { $set: { name } });
 }
 
 async function changePassword(id, passwordHash) {
@@ -48,7 +56,9 @@ module.exports = {
   getUserByPhoneNumber,
   getUserByName,
   createUser,
-  updateUser,
+  updateEmail,
+  updatePhoneNumber,
+  updateName,
   changePassword,
   deleteUser,
   getUserName,

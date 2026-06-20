@@ -28,14 +28,16 @@ module.exports = (app) => {
   
   route.get('/name', authMiddleware, usersController.getUserName);
 
-  route.put('/update/email', authMiddleware, usersController.updateUserEmail);
-
-  route.put('/update/phonenumber', authMiddleware, usersController.updateUserPhoneNumber);
-
   route.put('/update/password', authMiddleware, usersController.changePassword);
+
+  route.put('/update/email/:id', usersController.updateEmail);
+
+  route.put('/update/phonenumber/:id', usersController.updatePhoneNumber);
+
+  route.put('/update/name/:id', usersController.updateName);
 
   // generic dynamic routes
   route.get('/', authMiddleware, usersController.getUser);
 
-  route.delete('/', authMiddleware, usersController.deleteUser);
+  route.delete('/:id', usersController.deleteUser);
 };

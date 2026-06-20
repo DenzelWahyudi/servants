@@ -31,8 +31,16 @@ async function createUser(name, email, phoneNumber, passwordHash, role) {
   return usersRepository.createUser(name, email, phoneNumber, passwordHash, role);
 }
 
-async function updateUser(id, email, phoneNumber) {
-  return usersRepository.updateUser(id, email, phoneNumber);
+async function updateEmail(id, email) {
+  return usersRepository.updateEmail(id, email);
+}
+
+async function updatePhoneNumber(id, phoneNumber) {
+  return usersRepository.updatePhoneNumber(id, phoneNumber);
+}
+
+async function updateName(id, name) {
+  return usersRepository.updateName(id, name);
 }
 
 async function changePassword(id, passwordHash) {
@@ -55,7 +63,9 @@ module.exports = {
   nameExists,
   phoneNumberExists,
   createUser,
-  updateUser,
+  updateEmail,
+  updatePhoneNumber,
+  updateName,
   changePassword,
   deleteUser,
   getUserName,

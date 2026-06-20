@@ -33,7 +33,7 @@ function getVariantStyles(variant: Variant) {
                     </Button>
                     <ButtonLink to="/admin/roles" variant="sidebar">
                         <div className="flex gap-2">
-                            <span>👤</span>
+                            <span>🗓️</span>
                             <span>Roles</span>
                         </div>
                     </ButtonLink>
@@ -62,7 +62,7 @@ function getVariantStyles(variant: Variant) {
                     </ButtonLink>
                     <Button variant="sidebar">
                         <div className="flex gap-2">
-                            <span>👤</span>
+                            <span>🗓️</span>
                             <span>Roles</span>
                         </div>
                     </Button>
@@ -91,7 +91,7 @@ function getVariantStyles(variant: Variant) {
                     </ButtonLink>
                     <ButtonLink to="/admin/roles" variant="sidebar">
                         <div className="flex gap-2">
-                            <span>👤</span>
+                            <span>🗓️</span>
                             <span>Roles</span>
                         </div>
                     </ButtonLink>
@@ -120,7 +120,7 @@ function getVariantStyles(variant: Variant) {
                     </ButtonLink>
                     <ButtonLink to="/admin/roles" variant="sidebar">
                         <div className="flex gap-2">
-                            <span>👤</span>
+                            <span>🗓️</span>
                             <span>Roles</span>
                         </div>
                     </ButtonLink>
