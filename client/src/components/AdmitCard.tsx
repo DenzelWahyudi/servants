@@ -16,9 +16,11 @@ export function AdmitCard({ _id, userName, roleName, serviceName, date, time, on
 
     const [error, setError] = useState<string | null>(null)
     const [loading, setLoading] = useState(false)
+    const [declineLoading, setDeclineLoading] = useState(false)
 
     async function handleUpdateStatus(assigmentId, status :string){
-        setLoading(true)
+        if (status === "declined") setDeclineLoading(true)
+        else setLoading(true)
         setError(null)
 
         const response = await fetch(`${API_URL}/api/assignments/updatestatus/${assigmentId}`, {
@@ -33,10 +35,12 @@ export function AdmitCard({ _id, userName, roleName, serviceName, date, time, on
         if (!response.ok){
             setError(data)
             setLoading(false)
+            setDeclineLoading(false)
             return
         }
 
         setLoading(false)
+        setDeclineLoading(false)
 
         onSave()
     }
@@ -56,11 +60,11 @@ export function AdmitCard({ _id, userName, roleName, serviceName, date, time, on
                         handleUpdateStatus(_id, "declined")
                         onSave()
                     }}
-                    disabled={loading}
+                    disabled={declineLoading}
                     className="bg-zinc-500 text-zinc-100 text-sm font py-1 px-2 rounded w-22
                     mt-auto hover:bg-zinc-600 flex justify-center transition-colors rounded-lg px-2 py-1"
                     >
-                        {loading ? "Loading" : "Decline"}
+                        {declineLoading ? "Loading" : "Decline"}
                     </button>
                     <button
                     onClick={() => { handleUpdateStatus(_id, "confirmed")}}
