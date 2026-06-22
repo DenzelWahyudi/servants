@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Heading } from "../components/Heading";
 import { API_URL } from "../api"
 import { Check, Pencil, Trash2 } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
 
 interface User {
     _id: string
@@ -29,6 +30,9 @@ export function AdminUsers() {
     const [toBeDelete, setToBeDelete] = useState<string | null>(null)
     const [submitLoading, setSubmitLoading] = useState(false)
     const [deleteLoading, setDeleteLoading] = useState(false)
+    const [searchParams, setSearchParams] = useSearchParams({ q: "newest" })
+    const q = searchParams.get("q")
+    const [refreshKey, setRefreshKey] = useState(0)
 
     useEffect(() => {
         async function fetchUsers(){
@@ -41,25 +45,43 @@ export function AdminUsers() {
 
             const data: User[] = await response.json()
 
-            setUsers(data)
+            if (q === "newest"){
+                const sorted = data.sort(
+                    (a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+                );
+                setUsers(sorted)
+            }
+            else if (q === "oldest"){
+                const sorted = data.sort(
+                    (a,b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+                );
+                setUsers(sorted)
+            }
+            else if (q === "name"){
+                const sorted = data.sort(
+                    (a,b) => a.name.localeCompare(b.name)
+                );
+                setUsers(sorted)
+            }
+            else if (q === "email"){
+                const sorted = data.sort(
+                    (a,b) => a.email.localeCompare(b.email)
+                );
+                setUsers(sorted)
+            }
+            else if (q === "number"){
+                const sorted = data.sort(
+                    (a,b) => a.phoneNumber.localeCompare(b.phoneNumber)
+                );
+                setUsers(sorted)
+            }
+            else {
+                setUsers(data)
+            }
             setLoading(false)
         }
         fetchUsers()
-    }, [])
-
-    async function fetchUsers(){
-        setLoading(true)
-
-        const response = await fetch(`${API_URL}/api/users`, {
-            method: "GET",
-            headers: {"Content-Type": "application/json"}
-        })
-
-        const data: User[] = await response.json()
-
-        setUsers(data)
-        setLoading(false)
-    }
+    }, [q, refreshKey])
 
     function handleNameChange(field: keyof typeof chosenName){
         return (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -96,7 +118,7 @@ export function AdminUsers() {
 
         setChosenName(null)
         setSubmitLoading(false)
-        fetchUsers()
+        setRefreshKey(k => k + 1)
     }
 
     async function handleEmailSubmit(){
@@ -119,7 +141,7 @@ export function AdminUsers() {
 
         setChosenEmail(null)
         setSubmitLoading(false)
-        fetchUsers()
+        setRefreshKey(k => k + 1)
     }
 
     async function handlePhoneNumberSubmit(){
@@ -142,7 +164,7 @@ export function AdminUsers() {
 
         setChosenPhoneNumber(null)
         setSubmitLoading(false)
-        fetchUsers()
+        setRefreshKey(k => k + 1)
     }
 
     async function handleDelete(userId){
@@ -163,7 +185,7 @@ export function AdminUsers() {
         }
 
         setDeleteLoading(false)
-        fetchUsers()
+        setRefreshKey(k => k + 1)
     }
 
 	return (
@@ -174,8 +196,20 @@ export function AdminUsers() {
 			<div className="flex flex-1">
 				<Sidebar variant="users" />
 				<div className="flex flex-col bg-zinc-100/2 px-10 w-full h-full">
-					<div className="flex justify-between py-7 items-center">
+					<div className="flex justify-between py-7 items-end">
 						<Heading>Manage Users</Heading>
+                        <select value={q} 
+                        className="px-1 py-0.5 rounded border border-zinc-400 outline-none"
+                        onChange={e => setSearchParams(prev => {
+                            prev.set("q", e.target.value)
+                            return prev
+                        }, { replace: true })}>
+                            <option value="newest">Newest</option>
+                            <option value="oldest">Oldest</option>
+                            <option value="name">Name</option>
+                            <option value="email">Email</option>
+                            <option value="number">Phone Number</option>
+                        </select>
 					</div>
                     <div className="px-3 py-1 rounded rounded-lg bg-zinc-100">
                         <table className="table-fixed w-full max-h-137 overflow-y-auto text-left text-zinc-950">
