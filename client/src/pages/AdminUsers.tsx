@@ -211,8 +211,8 @@ export function AdminUsers() {
                             <option value="number">Phone Number</option>
                         </select>
 					</div>
-                    <div className="px-3 py-1 rounded rounded-lg bg-zinc-100">
-                        <table className="table-fixed w-full max-h-137 overflow-y-auto text-left text-zinc-950">
+                    <div className="px-3 py-1 max-h-137  overflow-y-auto rounded rounded-lg bg-zinc-100">
+                        <table className="table-fixed w-full h-full text-left text-zinc-950">
                             <thead className="border-b border-amber-400">
                                 <tr>
                                     <th className="pl-2 py-2">Full Name</th>
@@ -227,7 +227,7 @@ export function AdminUsers() {
                                 ) : (
                                     users?.map((u, index) => (
                                         <tr key={u._id} className={`${users.length-1 > index ? "border-b border-zinc-300" : ""} 
-                                        text-sm hover:bg-amber-400/10 transition-colors`}>
+                                        text-sm bg-zinc-100 hover:bg-amber-400/10 transition-colors`}>
                                             <td className="pl-2 py-2">
                                                 <div className="flex justify-between items-center">
                                                     {chosenName?._id === u._id ? (

@@ -57,16 +57,16 @@ export function AdmitCard({ _id, userName, roleName, serviceName, date, time, on
                         onSave()
                     }}
                     disabled={loading}
-                    className="bg-red-400 text-blue-950 text-sm font-semibold py-1 px-2 rounded w-22
-                    mt-auto hover:bg-red-500 flex justify-center transition-colors rounded-lg px-2 py-1"
+                    className="bg-zinc-500 text-zinc-100 text-sm font py-1 px-2 rounded w-22
+                    mt-auto hover:bg-zinc-600 flex justify-center transition-colors rounded-lg px-2 py-1"
                     >
                         {loading ? "Loading" : "Decline"}
                     </button>
                     <button
                     onClick={() => { handleUpdateStatus(_id, "confirmed")}}
                     disabled={loading}
-                    className="bg-green-400 text-blue-950 text-sm font-semibold py-1 px-2 rounded w-22
-                    mt-auto hover:bg-green-500 flex justify-center transition-colors rounded-lg px-2 py-1"
+                    className="bg-amber-400 text-slate-900 text-sm font-medium py-1 px-2 rounded w-22
+                    mt-auto hover:bg-amber-500 flex justify-center transition-colors rounded-lg px-2 py-1"
                     >
                         {loading ? "Loading" : "Confirm"}
                     </button>
