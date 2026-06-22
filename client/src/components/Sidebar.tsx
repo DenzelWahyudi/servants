@@ -1,7 +1,7 @@
 import { Button } from "./Button";
 import { ButtonLink } from "./ButtonLink";
 
-type Variant = "services" | "roles" | "admissions"
+type Variant = "services" | "roles" | "admissions" | "users"
 
 type SidebarProps = {
     variant?: Variant
@@ -33,7 +33,7 @@ function getVariantStyles(variant: Variant) {
                     </Button>
                     <ButtonLink to="/admin/roles" variant="sidebar">
                         <div className="flex gap-2">
-                            <span>👤</span>
+                            <span>🗓️</span>
                             <span>Roles</span>
                         </div>
                     </ButtonLink>
@@ -41,6 +41,12 @@ function getVariantStyles(variant: Variant) {
                         <div className="flex gap-2">
                             <span>🎟️</span>
                             <span>Admissions</span>
+                        </div>
+                    </ButtonLink>
+                    <ButtonLink to="/admin/users" variant="sidebar">
+                        <div className="flex gap-2">
+                            <span>👥</span>
+                            <span>Users</span>
                         </div>
                     </ButtonLink>
                 </>
@@ -56,7 +62,7 @@ function getVariantStyles(variant: Variant) {
                     </ButtonLink>
                     <Button variant="sidebar">
                         <div className="flex gap-2">
-                            <span>👤</span>
+                            <span>🗓️</span>
                             <span>Roles</span>
                         </div>
                     </Button>
@@ -64,6 +70,12 @@ function getVariantStyles(variant: Variant) {
                         <div className="flex gap-2">
                             <span>🎟️</span>
                             <span>Admissions</span>
+                        </div>
+                    </ButtonLink>
+                    <ButtonLink to="/admin/users" variant="sidebar">
+                        <div className="flex gap-2">
+                            <span>👥</span>
+                            <span>Users</span>
                         </div>
                     </ButtonLink>
                 </>
@@ -79,7 +91,7 @@ function getVariantStyles(variant: Variant) {
                     </ButtonLink>
                     <ButtonLink to="/admin/roles" variant="sidebar">
                         <div className="flex gap-2">
-                            <span>👤</span>
+                            <span>🗓️</span>
                             <span>Roles</span>
                         </div>
                     </ButtonLink>
@@ -87,6 +99,41 @@ function getVariantStyles(variant: Variant) {
                         <div className="flex gap-2">
                             <span>🎟️</span>
                             <span>Admissions</span>
+                        </div>
+                    </Button>
+                    <ButtonLink to="/admin/users" variant="sidebar">
+                        <div className="flex gap-2">
+                            <span>👥</span>
+                            <span>Users</span>
+                        </div>
+                    </ButtonLink>
+                </>
+            )
+        case "users":
+            return (
+                <>
+                    <ButtonLink to="/admin/services" variant="sidebar">
+                        <div className="flex gap-2">
+                            <span>🛠️</span>
+                            <span>Services</span>
+                        </div>
+                    </ButtonLink>
+                    <ButtonLink to="/admin/roles" variant="sidebar">
+                        <div className="flex gap-2">
+                            <span>🗓️</span>
+                            <span>Roles</span>
+                        </div>
+                    </ButtonLink>
+                    <ButtonLink to="/admin/admissions" variant="sidebar">
+                        <div className="flex gap-2">
+                            <span>🎟️</span>
+                            <span>Admissions</span>
+                        </div>
+                    </ButtonLink>
+                    <Button variant="sidebar">
+                        <div className="flex gap-2">
+                            <span>👥</span>
+                            <span>Users</span>
                         </div>
                     </Button>
                 </>

@@ -114,34 +114,13 @@ async function createUser(request, response, next) {
   }
 }
 
-async function updateUserEmail(request, response, next) {
+async function updateEmail(req, res, next){
   try {
-    const { email, password, newEmail } = request.body;
-
-    const user = await usersService.getUser(request.user.id);
-
-    if (!user) {
-      throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'User not found');
-    }
-
-    if (!email) {
-      throw errorResponder(errorTypes.VALIDATION_ERROR, 'Email is required');
-    }
+    const id = req.params.id
+    const { newEmail } = req.body
 
     if (!newEmail) {
-      throw errorResponder(errorTypes.VALIDATION_ERROR, 'New email is required');
-    }
-
-    if (!password){
-      throw errorResponder(errorTypes.VALIDATION_ERROR, 'Password is required');
-    }
-
-    const isMatch = await passwordMatched(password, user.passwordHash);
-    if (!isMatch) {
-      throw errorResponder(
-        errorTypes.VALIDATION_ERROR,
-        'Password is incorrect'
-      );
+      throw errorResponder(errorTypes.VALIDATION_ERROR, 'Email is required');
     }
 
     if (await usersService.emailExists(newEmail)) {
@@ -151,53 +130,24 @@ async function updateUserEmail(request, response, next) {
       );
     }
 
-    const success = await usersService.updateUser(
-      request.user.id,
-      newEmail,
-      user.phoneNumber
-    );
-
-    if (!success) {
-      throw errorResponder(
-        errorTypes.UNPROCESSABLE_ENTITY,
-        'Failed to update user email'
-      );
+    const success = await usersService.updateEmail(id, newEmail)
+    if(!success){
+      throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, "Failed to update email")
     }
 
-    return response.status(200).json({ message: 'Email updated successfully' });
+    return res.status(200).json( { message: "Email updated." })
   } catch (error) {
-    return next(error);
+    next(error)
   }
 }
 
-async function updateUserPhoneNumber(request, response, next) {
+async function updatePhoneNumber(req, res, next){
   try {
-    const { email, password, newPhoneNumber } = request.body;
-
-    const user = await usersService.getUser(request.user.id);
-
-    if (!user) {
-      throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'User not found');
-    }
-
-    if (!email) {
-      throw errorResponder(errorTypes.VALIDATION_ERROR, 'Email is required');
-    }
+    const id = req.params.id
+    const { newPhoneNumber } = req.body
 
     if (!newPhoneNumber) {
-      throw errorResponder(errorTypes.VALIDATION_ERROR, 'New phone number is required');
-    }
-
-    if (!password){
-      throw errorResponder(errorTypes.VALIDATION_ERROR, 'Password is required');
-    }
-
-    const isMatch = await passwordMatched(password, user.passwordHash);
-    if (!isMatch) {
-      throw errorResponder(
-        errorTypes.VALIDATION_ERROR,
-        'Password is incorrect'
-      );
+      throw errorResponder(errorTypes.VALIDATION_ERROR, 'Phone number is required')
     }
 
     if (await usersService.phoneNumberExists(newPhoneNumber)) {
@@ -207,22 +157,44 @@ async function updateUserPhoneNumber(request, response, next) {
       );
     }
 
-    const success = await usersService.updateUser(
-      request.user.id,
-      user.email,
-      newPhoneNumber
-    );
+    const success = await usersService.updatePhoneNumber(id, newPhoneNumber)
+    if(!success){
+      throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, "Failed to update phone number")
+    }
 
-    if (!success) {
+    return res.status(200).json( { message: "Phone number updated." })
+  } catch (error) {
+    next(error)
+  }
+}
+
+async function updateName(req, res, next){
+  try {
+    const id = req.params.id
+    const { newName } = req.body
+
+    if (!newName) {
       throw errorResponder(
-        errorTypes.UNPROCESSABLE_ENTITY,
-        'Failed to update user phone number'
+        errorTypes.VALIDATION_ERROR,
+        'Full name is required'
       );
     }
 
-    return response.status(200).json({ message: 'Phone number updated successfully' });
+    if (await usersService.nameExists(newName)) {
+      throw errorResponder(
+        errorTypes.EMAIL_ALREADY_TAKEN,
+        'Name already exists'
+      );
+    }
+
+    const success = await usersService.updateName(id, newName)
+    if(!success){
+      throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, "Failed to update name")
+    }
+
+    return res.status(200).json( { message: "Name updated." })
   } catch (error) {
-    return next(error);
+    next(error)
   }
 }
 
@@ -287,7 +259,7 @@ async function changePassword(request, response, next) {
 
 async function deleteUser(request, response, next) {
   try {
-    const success = await usersService.deleteUser(request.user.id);
+    const success = await usersService.deleteUser(request.params.id);
 
     if (!success) {
       throw errorResponder(
@@ -447,8 +419,9 @@ module.exports = {
   getUser,
   getUsers,
   createUser,
-  updateUserEmail,
-  updateUserPhoneNumber,
+  updateEmail,
+  updatePhoneNumber,
+  updateName,
   changePassword,
   deleteUser,
   getUserName,

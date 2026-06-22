@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Footer } from "../components/Footer";
 import { Header } from "../components/Header";
-import { Heading } from "../components/Heading";
 import { API_URL } from "../api";
 import { useAuth } from "../hooks/useAuth";
 import { ChevronLeftIcon } from "@heroicons/react/24/solid";
@@ -151,7 +150,6 @@ export function Chats() {
     return(
         <div className="flex flex-col gap-5 mx-auto p-4 sm:px-12 py-5">
             <Header variant="chats" />
-            <Heading>Chats</Heading>
 
             <div className="flex justify-center relative h-147 w-full overflow-hidden mx-auto">
                 <div className={`absolute flex flex-col gap-4 py-4 overflow-y-auto bg-slate-800 w-full h-full 
@@ -277,16 +275,19 @@ export function Chats() {
                     <div className="flex flex-col gap-1 items-center">
                         <h1 className="font-semibold text-xl">{chosenService?.serviceName}</h1>
                         <h3 className="text-sm text-zinc-300">Group ⋅ {groupDetails?.length} members</h3>
-                        <div className="flex flex-col w-83 mt-2 px-3 border rounded-lg">
+                        <h1 className="text-sm">{chosenService ? 
+                            format(new Date(chosenService.date), 'EEEE dd MMMM yyyy, HH:mm') : null}
+                        </h1>
+                        <div className="flex flex-col w-83 mt-2 px-3 border rounded-lg border-zinc-400">
                             {groupDetails?.map((g, index) => (
                                 <div key={g.userId} className={`flex justify-between py-3 ${index < groupDetails.length-1 ? "border-b" : ""}`}>
-                                    <div className="flex flex-col w-49">
+                                    <div className="flex flex-col">
                                         <span className="break-words">{g.userName}</span>
                                         <span className="text-sm text-zinc-300">{g.phoneNumber}</span>
                                     </div>
-                                    <div className="flex flex-col w-29">
-                                        {g.roleName?.map((e) => (
-                                            <span className="break-words">{e}</span>
+                                    <div className="flex flex-col w-33">
+                                        {g.roleName?.map((e, index) => (
+                                            <span className={`break-words rounded bg-indigo-400/30 px-2 py-0.5 ${index > 0 ? "mt-2" : ""} text-sm`}>{e}</span>
                                         ))}
                                     </div>
                                 </div>
