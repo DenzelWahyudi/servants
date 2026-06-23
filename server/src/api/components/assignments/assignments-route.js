@@ -23,6 +23,4 @@ module.exports = (app) => {
     route.get('/all', authMiddleware, assignmentsController.getAllUserAssignments)
 
     route.get('/assignedservices', authMiddleware, assignmentsController.getAllUserAssignedServices)
-
-    route.get('/:roleId', assignmentsController.getUsersForRole)
 }

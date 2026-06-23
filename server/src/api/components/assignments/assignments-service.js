@@ -5,10 +5,6 @@ async function createAssignment(userId, roleId, status){
     return assignmentsRepository.createAssignment(userId, roleId, status)
 }
 
-async function getUsersForRole(roleId){
-    return assignmentsRepository.getUsersForRole(roleId)
-}
-
 async function hasUserBeenAssigned(roleId, userId){
     return assignmentsRepository.hasUserBeenAssigned(roleId, userId)
 }
@@ -48,7 +44,6 @@ async function getGroupDetails(serviceId){
 
 module.exports = {
     createAssignment,
-    getUsersForRole,
     hasUserBeenAssigned,
     getUserSchedule,
     getPendingStatusAssignments,

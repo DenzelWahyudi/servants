@@ -42,7 +42,7 @@ export default function App() {
           <Route path="/admin/services" element={
             <ProtectedRoute requiredRole="admin"><AdminServices /></ProtectedRoute>
           } />
-          <Route path="/admin/service/create" element={
+          <Route path="/admin/services/create" element={
             <ProtectedRoute requiredRole="admin"><CreateService /></ProtectedRoute>
           } />
           <Route path="/admin/roles" element={
