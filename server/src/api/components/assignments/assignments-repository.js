@@ -5,34 +5,6 @@ async function createAssignment(userId, roleId, status){
     return Assignments.create({ userId, roleId, status })
 }
 
-async function getUsersForRole(roleId){
-    return Assignments.aggregate([
-        {
-            $match: {
-                roleId: new mongoose.Types.ObjectId(roleId),
-                status: 'confirmed'
-            }
-        },
-        {
-            $lookup: {
-                from: 'users',
-                localField: 'userId',
-                foreignField: '_id',
-                as: 'user'
-            }
-        },
-        {
-            $unwind: '$user'
-        },
-        {
-            $project: {
-                _id: 0,
-                name: '$user.name'
-            }
-        }
-    ])
-}
-
 async function hasUserBeenAssigned(roleId, userId){
     return Assignments.findOne({ roleId, userId })
 }
@@ -122,6 +94,7 @@ async function getPendingStatusAssignments(){
         {
             $project: {
                 userName: '$users.name',
+                roleId: 1,
                 roleName: '$roles.name',
                 serviceName: '$services.name',
                 date: '$services.date',
@@ -327,7 +300,6 @@ async function getGroupDetails(serviceId){
 
 module.exports = {
     createAssignment,
-    getUsersForRole,
     hasUserBeenAssigned,
     getUserSchedule,
     getPendingStatusAssignments,

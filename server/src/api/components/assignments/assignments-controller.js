@@ -21,7 +21,7 @@ async function createAssignment(req, res, next){
             throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Already signed up!')
         }
 
-        await rolesService.increaseRoleSpotsFilled(roleId)
+        if (status === "confirmed") await rolesService.increaseRoleSpotsFilled(roleId)
 
         const success = await assignmentsService.createAssignment(userId, roleId, status)
         if (!success){
@@ -29,22 +29,6 @@ async function createAssignment(req, res, next){
         }
 
         return res.status(201).json({ message: "Create assignment success!" })
-    } catch (error) {
-        next(error)
-    }
-}
-
-async function getUsersForRole(req, res, next){
-    try {
-        const roleId = req.params.roleId
-
-        const success = await assignmentsService.getUsersForRole(roleId)
-
-        if (!success){
-            throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Failed to get users name')
-        }
-
-        return res.status(200).json(success)
     } catch (error) {
         next(error)
     }
@@ -83,7 +67,7 @@ async function getPendingStatusAssignments(req, res, next){
 async function updateStatus(req, res, next){
     try {
         const assignmentId = req.params.id
-        const { status } = req.body
+        const { status, roleId } = req.body
 
         if (!assignmentId){
             throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Assignment id empty')
@@ -92,6 +76,8 @@ async function updateStatus(req, res, next){
         if (!status){
             throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Status type empty')
         }
+
+        if (status === "confirmed") await rolesService.increaseRoleSpotsFilled(roleId)
 
         const success = await assignmentsService.updateStatus(assignmentId, status)
 
@@ -183,7 +169,6 @@ async function getGroupDetails(req, res, next){
 
 module.exports = {
     createAssignment,
-    getUsersForRole,
     getUserSchedule,
     getPendingStatusAssignments,
     updateStatus,

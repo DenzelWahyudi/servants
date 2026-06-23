@@ -7,5 +7,7 @@ module.exports = (app) => {
 
     route.get('/', rolesController.getAllRoles);
     
+    route.get('/assignedusersforroles/:serviceId', rolesController.getAssignedUsersForRoles);
+
     route.get('/:serviceId', rolesController.getRoles);
 };

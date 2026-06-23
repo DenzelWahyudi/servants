@@ -7,7 +7,9 @@ import { API_URL } from "../api"
 
 interface Service{
 	_id: string
+	name: string
 	date: string
+	time: string
 }
 
 export function AdminRoles() {
@@ -42,7 +44,9 @@ export function AdminRoles() {
 					</div>
 					{services?.map((service) => 
 						<div className="pb-4.5">
-							<RolesCard serviceId={service._id} />
+							<RolesCard 
+							serviceId={service._id} serviceName={service.name} serviceDate={service.date} serviceTime={service.time} 
+							/>
 						</div>
 					)}
 				</div>

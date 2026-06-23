@@ -31,6 +31,10 @@ async function increaseRoleSpotsFilled(id){
     return rolesRepository.increaseRoleSpotsFilled(id)
 }
 
+async function getAssignedUsersForRoles(serviceId){
+    return rolesRepository.getAssignedUsersForRoles(serviceId)
+}
+
 module.exports = {
   createRoles,
   createRole,
@@ -38,5 +42,6 @@ module.exports = {
   getAllRoles,
   getRole,
   deleteRoles,
-  increaseRoleSpotsFilled
+  increaseRoleSpotsFilled,
+  getAssignedUsersForRoles
 };

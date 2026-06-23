@@ -8,6 +8,7 @@ import { format } from "date-fns";
 
 type AdmitCardProps = {
     _id: string
+    roleId: string
     userName: string
     roleName: string
     serviceName: string
@@ -16,7 +17,7 @@ type AdmitCardProps = {
     onSave: () => void
 }
 
-function AdmitCard({ _id, userName, roleName, serviceName, date, time, onSave }:AdmitCardProps){
+function AdmitCard({ _id, userName, roleId, roleName, serviceName, date, time, onSave }:AdmitCardProps){
 
     const [error, setError] = useState<string | null>(null)
     const [loading, setLoading] = useState(false)
@@ -32,7 +33,7 @@ function AdmitCard({ _id, userName, roleName, serviceName, date, time, onSave }:
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ status })
+                body: JSON.stringify({ status, roleId })
             })
         const data = await response.json()
 
@@ -88,6 +89,7 @@ function AdmitCard({ _id, userName, roleName, serviceName, date, time, onSave }:
 interface Assignment {
     _id: string
     userName: string
+    roleId: string
     roleName: string
     serviceName: string
     date: string
@@ -135,7 +137,7 @@ export function AdminAdmissions(){
                     <Heading>Manage Admissions</Heading>
                 </div>
                 <div className="flex flex-wrap gap-4">
-                    {assignments?.map((a) => <AdmitCard _id={a._id} userName={a.userName} roleName={a.roleName} 
+                    {assignments?.map((a) => <AdmitCard _id={a._id} userName={a.userName} roleId={a.roleId} roleName={a.roleName} 
                     serviceName={a.serviceName} date={a.date} time={a.time} onSave={() => {fetchPendingAssignments()}}/>)}
                 </div>
             </div>
