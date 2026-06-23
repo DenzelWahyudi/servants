@@ -6,15 +6,7 @@ import { useNavigate } from "react-router-dom"
 import { Heading } from "./Heading"
 
 
-type RelieveRoleFormProps = {
-    userId?: string
-    roleId: string
-    serviceName: string
-    roleName: string
-    onClose: () => void
-}
-
-type AssignRoleFormProps = {
+type RoleFormProps = {
     userId?: string
     roleId: string
     serviceName: string
@@ -180,7 +172,7 @@ export function RolesCard({ serviceId, serviceName, serviceTime, serviceDate }: 
 }
 
 
-function RelieveRoleForm({ roleId, serviceName, roleName, onClose }: RelieveRoleFormProps){
+function RelieveRoleForm({ roleId, serviceName, roleName, onClose }: RoleFormProps){
 
     const navigate = useNavigate()
     const [error, setError] = useState<string | null>(null)
@@ -204,10 +196,10 @@ function RelieveRoleForm({ roleId, serviceName, roleName, onClose }: RelieveRole
             setUser(e.target.value)
     }
 
-    async function handleRemove(userId, roleId){
+    async function handleRemove(userId: string, roleId: string){
         setLoading(true)
         setError(null)
-        {console.log(userId)}
+
         const response = await fetch(`${API_URL}/api/assignments/relieve`, {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
@@ -274,7 +266,7 @@ function RelieveRoleForm({ roleId, serviceName, roleName, onClose }: RelieveRole
 }
 
 
-function AssignRoleForm({ roleId, serviceName, roleName, onClose }: AssignRoleFormProps){
+function AssignRoleForm({ roleId, serviceName, roleName, onClose }: RoleFormProps){
 
     const navigate = useNavigate()
     const [error, setError] = useState<string | null>(null)
