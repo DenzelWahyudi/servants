@@ -11,7 +11,7 @@ interface User {
     name: string
     email: string
     phoneNumber: string
-    createdAt?: Date
+    createdAt?: string
 }
 
 interface Chosen {
@@ -47,13 +47,13 @@ export function AdminUsers() {
 
             if (q === "newest"){
                 const sorted = data.sort(
-                    (a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+                    (a,b) => new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime()
                 );
                 setUsers(sorted)
             }
             else if (q === "oldest"){
                 const sorted = data.sort(
-                    (a,b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+                    (a,b) => new Date(a.createdAt ?? 0).getTime() - new Date(b.createdAt ?? 0).getTime()
                 );
                 setUsers(sorted)
             }
@@ -83,22 +83,24 @@ export function AdminUsers() {
         fetchUsers()
     }, [q, refreshKey])
 
-    function handleNameChange(field: keyof typeof chosenName){
+    function handleNameChange(field: keyof Chosen){
         return (e: React.ChangeEvent<HTMLInputElement>) =>
-            setChosenName((prev) => ({ ...prev, [field]: e.target.value }))
+            setChosenName((prev) => (prev ? { ...prev, [field]: e.target.value } : prev))
     }
 
-    function handleEmailChange(field: keyof typeof chosenEmail){
+    function handleEmailChange(field: keyof Chosen){
         return (e: React.ChangeEvent<HTMLInputElement>) =>
-            setChosenEmail((prev) => ({ ...prev, [field]: e.target.value }))
+            setChosenEmail((prev) => (prev ? { ...prev, [field]: e.target.value } : prev))
     }
 
-    function handlePhoneNumberChange(field: keyof typeof chosenPhoneNumber){
+    function handlePhoneNumberChange(field: keyof Chosen){
         return (e: React.ChangeEvent<HTMLInputElement>) =>
-            setChosenPhoneNumber((prev) => ({ ...prev, [field]: e.target.value }))
+            setChosenPhoneNumber((prev) => (prev ? { ...prev, [field]: e.target.value } : prev))
     }
 
     async function handleNameSubmit(){
+        if (!chosenName) return
+
         setSubmitLoading(true)
         setError(null)
         
@@ -122,6 +124,8 @@ export function AdminUsers() {
     }
 
     async function handleEmailSubmit(){
+        if (!chosenEmail) return
+
         setSubmitLoading(true)
         setError(null)
         
@@ -145,6 +149,8 @@ export function AdminUsers() {
     }
 
     async function handlePhoneNumberSubmit(){
+        if (!chosenPhoneNumber) return
+
         setSubmitLoading(true)
         setError(null)
         
@@ -167,7 +173,7 @@ export function AdminUsers() {
         setRefreshKey(k => k + 1)
     }
 
-    async function handleDelete(userId){
+    async function handleDelete(userId: string){
         setDeleteLoading(true)
         setError(null)
 
@@ -198,7 +204,7 @@ export function AdminUsers() {
 				<div className="flex flex-col bg-zinc-100/2 px-10 w-full h-full">
 					<div className="flex justify-between py-7 items-end">
 						<Heading>Manage Users</Heading>
-                        <select value={q} 
+                        <select value={q ?? "newest"} 
                         className="px-1 py-0.5 rounded border border-zinc-400 outline-none"
                         onChange={e => setSearchParams(prev => {
                             prev.set("q", e.target.value)
@@ -230,7 +236,7 @@ export function AdminUsers() {
                                         text-sm bg-zinc-100 hover:bg-amber-400/10 transition-colors`}>
                                             <td className="pl-2 py-2">
                                                 <div className="flex justify-between items-center">
-                                                    {chosenName?._id === u._id ? (
+                                                    {chosenName && chosenName._id === u._id ? (
                                                         <>
                                                             <div className="fixed inset-0 z-50" onClick={() => setChosenName(null)}/>
                                                             <input className="relative z-60 w-full h-full -ml-0.5 bg-zinc-100 border-2 border-zinc-400 rounded" 
@@ -239,7 +245,7 @@ export function AdminUsers() {
                                                     ) : <span className="break-words">{u.name}</span>}
 
                                                     <div className="pl-2 pr-3 relative">
-                                                        {chosenName?._id === u._id ? (
+                                                        {chosenName && chosenName._id === u._id ? (
                                                             <button 
                                                             className="relative z-60 text-right bg-green-300 px-1 py-1 border border-zinc-400 
                                                             rounded rounded-lg hover:bg-green-500 disabled:bg-green-500 transition-colors"
@@ -262,7 +268,7 @@ export function AdminUsers() {
                                             </td>
                                             <td className="py-2">
                                                 <div className="flex justify-between items-center">
-                                                    {chosenEmail?._id === u._id ? (
+                                                    {chosenEmail && chosenEmail._id === u._id ? (
                                                         <>
                                                             <div className="fixed inset-0 z-50" onClick={() => setChosenEmail(null)}/>
                                                             <input className="relative z-60 w-full h-full -ml-0.5 bg-zinc-100 border-2 border-zinc-400 rounded" 
@@ -271,7 +277,7 @@ export function AdminUsers() {
                                                     ) : <span className="break-words">{u.email}</span>}
 
                                                     <div className="pl-2 pr-3 relative">
-                                                        {chosenEmail?._id === u._id ? (
+                                                        {chosenEmail && chosenEmail._id === u._id ? (
                                                             <button 
                                                             className="relative z-60 text-right bg-green-300 px-1 py-1 border border-zinc-400 
                                                             rounded rounded-lg hover:bg-green-500 disabled:bg-green-500 transition-colors"
@@ -294,7 +300,7 @@ export function AdminUsers() {
                                             </td>
                                             <td className="py-2">
                                                 <div className="flex justify-between items-center">
-                                                    {chosenPhoneNumber?._id === u._id ? (
+                                                    {chosenPhoneNumber && chosenPhoneNumber._id === u._id ? (
                                                         <>
                                                             <div className="fixed inset-0 z-50" onClick={() => setChosenPhoneNumber(null)}/>
                                                             <input className="relative z-60 w-full h-full -ml-0.5 bg-zinc-100 border-2 border-zinc-400 rounded" 
@@ -303,7 +309,7 @@ export function AdminUsers() {
                                                     ) : <span className="break-words">{u.phoneNumber}</span>}
 
                                                     <div className="pl-2 pr-3 relative">
-                                                        {chosenPhoneNumber?._id === u._id ? (
+                                                        {chosenPhoneNumber && chosenPhoneNumber._id === u._id ? (
                                                             <button 
                                                             className="relative z-60 text-right bg-green-300 px-1 py-1 border border-zinc-400 
                                                             rounded rounded-lg hover:bg-green-500 disabled:bg-green-500 transition-colors"

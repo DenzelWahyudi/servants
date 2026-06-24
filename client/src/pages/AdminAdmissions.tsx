@@ -85,7 +85,7 @@ function AdmitCard({ _id, userName, roleId, roleName, serviceName, date, time, o
     const [loading, setLoading] = useState(false)
     const [declineLoading, setDeclineLoading] = useState(false)
 
-    async function handleUpdateStatus(assigmentId, status :string){
+    async function handleUpdateStatus(assigmentId: string, status: string){
         if (status === "declined") setDeclineLoading(true)
         else setLoading(true)
         setError(null)
