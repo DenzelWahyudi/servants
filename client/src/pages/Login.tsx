@@ -64,7 +64,7 @@ export function Login() {
                     </h2>
                 </div>
                 <Form label="Phone number"  value={formData.phoneNumber}    onChange={handleChange("phoneNumber")} />
-                <Form label="Password"      value={formData.password}       onChange={handleChange("password")} />
+                <Form label="Password"      value={formData.password}       onChange={handleChange("password")} type="password"/>
 
                 {error && (
                     <p className="text-red-400 text-sm text-center w-full">{error}</p>
