@@ -4,81 +4,157 @@
 
 ## Overview
 
-Servants Web App is a comprehensive management system designed for organizations (like churches) to coordinate servants, services, and roles. It provides a streamlined interface for both users and administrators to manage schedules, track service openings, and handle role assignments.
+Servants Web App is a comprehensive management system designed for organizations (like churches) to coordinate servants, services, and roles. It provides a streamlined interface for both users and administrators to manage schedules, track service openings, handle role assignments, and communicate in real time.
 
 ## Tech Stack
 
 ### Frontend
 - **Framework:** React 19 (TypeScript)
-- **Build Tool:** Vite
+- **Build Tool:** Vite 8
 - **Styling:** Tailwind CSS 4
 - **Routing:** React Router 7
 - **Icons:** Lucide React & Heroicons
 - **Date Handling:** date-fns
+- **Utility:** tailwind-merge
 
 ### Backend
 - **Runtime:** Node.js
 - **Framework:** Express 5
 - **Database:** MongoDB with Mongoose ODM
 - **Authentication:** JSON Web Tokens (JWT) & bcryptjs
+- **Real-time:** WebSocket (`ws`)
 - **Logging:** Pino & pino-http
 - **Task Scheduling:** node-cron
 
 ## Features
 
-- **Multi-Level Authentication:** Separate registration and login flows for users and administrators.
+- **Multi-Level Authentication:** Separate registration and login flows for users and administrators, with role-based protected routes.
 - **Dashboard:** At-a-glance view of upcoming services, active roles, and organizational statistics.
 - **Service Management:** Admins can create, edit, and delete services, including specific opening slots.
 - **Role System:** Flexible role management allowing admins to assign or relieve specific responsibilities to servants.
+- **Openings:** Servants can view and sign up for open service slots.
 - **Schedule Tracking:** Comprehensive view of service schedules and volunteer assignments.
+- **Real-time Chat:** Live messaging between users powered by WebSockets, with a dedicated `Chats` page and a `useChatSocket` hook.
+- **Admin Panel:** Dedicated admin pages for managing users, admissions, roles, and services.
 - **Responsive Interface:** Optimized for both desktop and mobile devices.
 
 ## Project Structure
 
 ```text
 servants/
-├── client/                 # React frontend
+├── client/                       # React frontend
 │   ├── src/
-│   │   ├── components/     # Reusable UI components
-│   │   ├── context/        # Auth and global state
-│   │   ├── hooks/          # Custom React hooks
-│   │   ├── pages/          # Full-page components
-│   │   └── utils/          # Helper functions
-├── server/                 # Express backend
+│   │   ├── components/           # Reusable UI components
+│   │   │   ├── Button.tsx
+│   │   │   ├── ButtonLink.tsx
+│   │   │   ├── Footer.tsx
+│   │   │   ├── Form.tsx
+│   │   │   ├── Header.tsx
+│   │   │   ├── Heading.tsx
+│   │   │   ├── ProtectedRoute.tsx
+│   │   │   ├── RolesCard.tsx
+│   │   │   ├── Sidebar.tsx
+│   │   │   ├── UpcomingServices.tsx
+│   │   │   ├── UpcomingServicesAdmin.tsx
+│   │   │   └── UpcomingServicesMobile.tsx
+│   │   ├── context/              # Auth and global state
+│   │   │   ├── AuthContext.tsx
+│   │   │   └── AuthProvider.tsx
+│   │   ├── hooks/                # Custom React hooks
+│   │   │   ├── useAuth.ts
+│   │   │   └── useChatSocket.ts
+│   │   ├── pages/                # Full-page components
+│   │   │   ├── Home.tsx
+│   │   │   ├── Schedule.tsx
+│   │   │   ├── Openings.tsx
+│   │   │   ├── Chats.tsx
+│   │   │   ├── Login.tsx
+│   │   │   ├── Register.tsx
+│   │   │   ├── LoginAdmin.tsx
+│   │   │   ├── RegisterAdmin.tsx
+│   │   │   ├── CreateService.tsx
+│   │   │   ├── AdminServices.tsx
+│   │   │   ├── AdminRoles.tsx
+│   │   │   ├── AdminAdmissions.tsx
+│   │   │   └── AdminUsers.tsx
+│   │   └── utils/                # Helper functions
+│   │       ├── functions.ts
+│   │       └── tokenUtils.ts
+│   └── vercel.json               # Vercel routing config
+├── server/                       # Express backend
 │   ├── src/
-│   │   ├── api/            # Route definitions
-│   │   ├── components/     # Modular business logic (Controller-Service-Repository)
-│   │   ├── core/           # Server configuration and middleware
-│   │   ├── models/         # Mongoose schemas
-│   │   └── utils/          # Security and helper utilities
+│   │   ├── api/
+│   │   │   ├── routes.js         # API router entry point
+│   │   │   └── components/       # Feature modules (Controller-Service-Repository)
+│   │   │       ├── assignments/
+│   │   │       ├── chats/
+│   │   │       ├── roles/
+│   │   │       ├── services/
+│   │   │       └── users/
+│   │   ├── core/                 # Server configuration and middleware
+│   │   │   ├── app.js
+│   │   │   ├── config.js
+│   │   │   ├── errors.js
+│   │   │   ├── logger.js
+│   │   │   ├── webSocket.js
+│   │   │   └── middlewares/
+│   │   │       └── auth.js
+│   │   ├── models/               # Mongoose schemas
+│   │   │   ├── assignments-schema.js
+│   │   │   ├── chats-schema.js
+│   │   │   ├── roles-schema.js
+│   │   │   ├── services-schema.js
+│   │   │   └── users-schema.js
+│   │   ├── utils/                # Security and helper utilities
+│   │   │   └── password.js
+│   │   └── server.js             # Entry point
+│   └── .env.example
 ```
 
 ## Environment Variables
 
 ### Server (`server/.env`)
-- `PORT`: Server port (default: 5000)
-- `DB_CONNECTION`: MongoDB connection string
-- `JWT_SECRET`: Secret key for token signing
-- `CORS_ORIGIN`: Allowed origin for frontend requests
+| Variable | Description |
+|---|---|
+| `NODE_ENV` | Application environment (`development` \| `production`) |
+| `PORT` | Server port (default: `5000`) |
+| `DB_CONNECTION` | MongoDB connection string |
+| `DB_NAME` | MongoDB database name |
+| `JWT_SECRET` | Secret key for JWT signing |
+| `CORS_ORIGIN` | Allowed origin for frontend requests (e.g., your Vercel URL) |
 
 ### Client (`client/.env`)
-- `VITE_API_URL`: The base URL for the backend API
+| Variable | Description |
+|---|---|
+| `VITE_API_URL` | The base URL for the backend API |
 
 ## Getting Started
 
 ### Prerequisites
 - Node.js (Latest LTS recommended)
-- MongoDB instance
+- A running MongoDB instance
 
 ### Installation
 
 1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd servants
+   ```
+
 2. **Install Backend Dependencies**
    ```bash
    cd server
    npm install
    ```
-3. **Install Frontend Dependencies**
+
+3. **Configure Backend Environment**
+   ```bash
+   cp .env.example .env
+   # Fill in the values in .env
+   ```
+
+4. **Install Frontend Dependencies**
    ```bash
    cd ../client
    npm install
@@ -91,21 +167,37 @@ servants/
    cd server
    npm run dev
    ```
+
 2. **Start the Client**
    ```bash
    cd client
    npm run dev
    ```
 
+The client will be available at `http://localhost:5173` and the API at `http://localhost:5000` by default.
+
+## API Routes
+
+The backend exposes a REST API under `/api` with the following resource groups:
+
+| Resource | Description |
+|---|---|
+| `/api/users` | User registration, login, and profile management |
+| `/api/services` | Service creation, retrieval, and management |
+| `/api/roles` | Role assignment and management |
+| `/api/assignments` | Servant-to-service assignment operations |
+| `/api/chats` | Chat message persistence and retrieval |
+
+Real-time chat is handled over a WebSocket connection managed by `webSocket.js`.
+
 ## Deployment
 
 ### Frontend
-The frontend is configured for deployment on **Vercel**. It includes a `vercel.json` for handling client-side routing.
+The frontend is configured for deployment on **Vercel**. A `vercel.json` is included to handle client-side routing rewrites.
 - Ensure `VITE_API_URL` is set in your Vercel project's environment variables.
-- Note: The `tsc -b` check has been removed from the build script to ensure successful Vercel builds.
 
 ### Backend
-The backend can be deployed to any Node.js hosting provider (e.g., Heroku, Render, Railway).
-- Ensure all environment variables from `.env.example` are configured in the hosting environment.
+The backend can be deployed to any Node.js hosting provider (e.g., Render, Railway, Heroku).
+- Ensure all environment variables from `server/.env.example` are configured in the hosting environment.
 - The server includes `trust proxy` configuration for secure operation behind reverse proxies.
-
+- Use `npm start` (runs `node ./src/server.js`) for production instead of `npm run dev`.
