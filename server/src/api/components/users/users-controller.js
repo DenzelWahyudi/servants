@@ -322,7 +322,7 @@ async function login(req, res, next){
     const user = await usersService.getUserByPhoneNumber(phoneNumber);
 
     if (!user){
-      await passwordMatched(password, "$2b$16$H9YjlxIlOV2RmYyEhdXg2ODaGcQz6D4zkkUUnamUi3vrsPSpME0tK");
+      await passwordMatched(password, await hashPassword("this is a decoy password"));
       throw errorResponder(errorTypes.INVALID_CREDENTIALS, 'Invalid phone number or password');
     }
 
