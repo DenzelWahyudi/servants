@@ -55,7 +55,7 @@ export function Openings() {
 
     const [services, setServices] = useState<Service[] | null>(null)
     const [roles, setRoles] = useState<Role[] | null>(null)
-    const [userId, setUserId] = useState<string | null>(null)
+    const [userId, setUserId] = useState("")
     const { token } = useAuth();
 
     useEffect(() => {

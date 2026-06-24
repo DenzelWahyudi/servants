@@ -177,7 +177,7 @@ function RelieveRoleForm({ roleId, serviceName, roleName, onClose }: RoleFormPro
     const navigate = useNavigate()
     const [error, setError] = useState<string | null>(null)
     const [users, setUsers] = useState<RelieveUser[] | null>(null)
-    const [user, setUser] = useState<string | null>("")
+    const [user, setUser] = useState("")
     const [loading, setLoading] = useState(false)
 
     useEffect(() => {
@@ -271,7 +271,7 @@ function AssignRoleForm({ roleId, serviceName, roleName, onClose }: RoleFormProp
     const navigate = useNavigate()
     const [error, setError] = useState<string | null>(null)
     const [users, setUsers] = useState<User[] | null>(null)
-    const [user, setUser] = useState<string | null>("")
+    const [user, setUser] = useState("")
     const [loading, setLoading] = useState(false)
 
     useEffect(() => {
