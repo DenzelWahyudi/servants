@@ -191,15 +191,15 @@ export function Chats() {
                             className="-ml-2 h-6.5 cursor-pointer hover:text-slate-600 transition-colors"
                             onClick={() => setChosenService(null)}
                             />
-                            <div className="flex flex-col gap-0.5">
+                            <div className="flex flex-col gap-0.5 items-start">
                                 <button 
                                 disabled={loadingDetails}
-                                className="text-[13.5px] text-left font-medium leading-none hover:text-zinc-300 disabled:text-zinc-300"
+                                className="text-[13.5px] font-medium leading-none hover:text-zinc-300 disabled:text-zinc-300"
                                 onClick={() => fetchGroupDetails(chosenService!.serviceId)}
                                 >
                                     {chosenService?.serviceName}
                                 </button>
-                                <h2 className="text-left text-zinc-300 text-[10px] leading-none">
+                                <h2 className="text-zinc-300 text-[10px] leading-none">
                                     {chosenService ? format(new Date(chosenService.date), 'd MMMM yyyy') : null}
                                     </h2>
                             </div>
