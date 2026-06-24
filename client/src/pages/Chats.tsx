@@ -91,6 +91,7 @@ export function Chats() {
         if (textarea){
             textarea.style.height = 'auto';
             textarea.style.height = `${textarea.scrollHeight}px`
+            textarea.style.overflowY = textarea.scrollHeight >= 128 ? 'auto' : 'hidden';
         }
     }, [chats, message.message]);
 
@@ -246,8 +247,8 @@ export function Chats() {
                     <div className="flex items-center py-2 gap-1.5 px-2.5 mt-auto bg-slate-700">
                         <textarea 
                         ref={textareaRef}
-                        className="px-3 w-full bg-slate-700 border border-slate-600 focus:border-amber-400 outline-none
-                        text-zinc-100 text-sm rounded-xl transition-colors resize-none max-h-25 overflow-y-auto" 
+                        className="px-3 py-1.5 w-full bg-slate-700 border border-slate-600 focus:border-amber-400 outline-none
+                        text-sm leading-5 text-zinc-100 rounded-2xl transition-colors resize-none max-h-32 overflow-y-hidden" 
                         rows={1}
                         value={message.message}
                         onChange={handleChange("message")}
