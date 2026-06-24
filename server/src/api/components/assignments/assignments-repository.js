@@ -252,6 +252,11 @@ async function getAllUserAssignedServices(userId){
 async function getGroupDetails(serviceId){
     return Assignments.aggregate([
         {
+            $match: {
+                status: 'confirmed'
+            }
+        },
+        {
             $lookup: {
                 from: 'roles',
                 localField: 'roleId',
