@@ -18,6 +18,7 @@ type StatsCardProps = {
 	buttonLabel: string
 	linkTo?: string
 	onClick?: () => void
+	onDisabled?: boolean
 }
 
 interface Schedule {
@@ -49,6 +50,7 @@ export function Home() {
 	const [roles, setRoles] = useState<Role[] | null>(null)
 	const [assignments, setAssignments] = useState<Assignment[] | null>(null)
 	const { token } = useAuth();
+	const [loading, setLoading] = useState(false)
 
 	const todayServiceCount = schedule?.filter((s) => {
 		const serviceDate = startOfDay(new Date(s.date))
@@ -100,6 +102,7 @@ export function Home() {
 	}, [token])
 
 	async function getAssignments(){
+		setLoading(true)
 		const response = await fetch(`${API_URL}/api/assignments/all`, {
 			method: "GET",
 			headers: { 
@@ -109,6 +112,7 @@ export function Home() {
 		})
 		const data: Assignment[] = await response.json()
 		setAssignments(data)
+		setLoading(false)
 	}
 
 	return (
@@ -132,7 +136,7 @@ export function Home() {
 				<h1 className="text-3xl text-amber-400 font-semibold">Hello, <span className="text-zinc-100">{userName ?? '...'}</span></h1>
 				<div className="flex gap-2">
 					<StatsCard linkTo="/schedule" icon={<img src={bell} width={40} />} title={`${todayServiceCount} Service Reminders Today`} buttonLabel="View Schedule" ></StatsCard>
-					<StatsCard onClick={getAssignments} icon={<img src={user} width={40} />} title="Pending Sign-ups" buttonLabel="Review Now" ></StatsCard>
+					<StatsCard onClick={getAssignments} icon={<img src={user} width={40} />} title="Pending Sign-ups" buttonLabel="Review Now" onDisabled={loading}></StatsCard>
 				</div>
 				<div className="min-h-130 bg-white w-screen">
 					<UpcomingServicesMobile />
@@ -234,7 +238,7 @@ export function Home() {
 }
 
 
-function StatsCard({ icon, title, buttonLabel, linkTo, onClick }: StatsCardProps) {
+function StatsCard({ icon, title, buttonLabel, linkTo, onClick, onDisabled }: StatsCardProps) {
 	return (
 		<div className="bg-zinc-100 rounded-lg p-3 flex flex-col w-45.5 sm:w-50 h-35">
 			<div>{icon}</div>
@@ -247,6 +251,7 @@ function StatsCard({ icon, title, buttonLabel, linkTo, onClick }: StatsCardProps
 				:
 					<button
 					onClick={() => onClick?.()}
+					disabled={onDisabled}
 					className="bg-amber-400 text-blue-950 text-xs font-medium py-1 px-2 rounded w-full mt-auto hover:bg-amber-500 flex justify-center
 					transition-colors rounded-lg px-2 py-1 disabled:opacity-30 disabled:cursor-not-allowed"
 					>
