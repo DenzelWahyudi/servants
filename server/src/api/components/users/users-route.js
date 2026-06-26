@@ -28,6 +28,10 @@ module.exports = (app) => {
   
   route.get('/name', authMiddleware, usersController.getUserName);
 
+  route.post('/send-otp', usersController.sendOTP);
+
+  route.post('/verify-otp', usersController.verifyOTP);
+
   route.put('/update/password', authMiddleware, usersController.changePassword);
 
   route.put('/update/email/:id', usersController.updateEmail);
