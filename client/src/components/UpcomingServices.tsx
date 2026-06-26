@@ -67,7 +67,7 @@ export function UpcomingServices(){
                                 <td className="py-3 pl-3 font-medium">{s.name}</td>
                                 <td>{new Date(s.date).toLocaleDateString("en-GB", { year:"numeric", month: "long", day: "numeric",})}</td>
                                 <td>{s.time}</td>
-                                <td className="break-words">{s.roles?.map(r => r.name).join(", ") ?? "..."}</td>
+                                <td className="wrap-break-word">{s.roles?.map(r => r.name).join(", ") ?? "..."}</td>
                                 <td className="text-center">
                                     <span className={`px-3 py-0.5 rounded font-semibold inline-block w-28 text-center ${s.status === "Roles Closed"
                                     ? "bg-red-200"

@@ -128,16 +128,16 @@ function AdmitCard({ _id, userName, roleId, roleName, serviceName, date, time, o
                         onSave()
                     }}
                     disabled={declineLoading}
-                    className="bg-zinc-500 text-zinc-100 text-sm font py-1 px-2 rounded w-22
-                    mt-auto hover:bg-zinc-600 flex justify-center transition-colors rounded-lg px-2 py-1"
+                    className="bg-zinc-500 text-zinc-100 text-sm font px-2 py-1 rounded-lg w-22
+                    mt-auto hover:bg-zinc-600 flex justify-center transition-colors"
                     >
                         {declineLoading ? "Loading" : "Decline"}
                     </button>
                     <button
                     onClick={() => { handleUpdateStatus(_id, "confirmed")}}
                     disabled={loading}
-                    className="bg-amber-400 text-slate-900 text-sm font-medium py-1 px-2 rounded w-22
-                    mt-auto hover:bg-amber-500 flex justify-center transition-colors rounded-lg px-2 py-1"
+                    className="bg-amber-400 text-slate-900 text-sm font-medium px-2 py-1 rounded-lg w-22
+                    mt-auto hover:bg-amber-500 flex justify-center transition-colors"
                     >
                         {loading ? "Loading" : "Confirm"}
                     </button>

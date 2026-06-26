@@ -145,10 +145,10 @@ export function UpcomingServicesAdmin(){
                 <tbody>
                     {services?.map((s, index) => (
                         <tr key={s._id} className="border-b border-zinc-400 text-zinc-950">
-                            <td className="pl-3 font-medium break-words">{s.name}</td>
+                            <td className="pl-3 font-medium wrap-break-word">{s.name}</td>
                             <td>{format(new Date(s.date), 'dd MMMM yyyy')}</td>
                             <td>{s.time}</td>
-                            <td className="py-3 pr-4 break-words">{s.roles?.map(r => r.name).join(", ") ?? "..."}</td>
+                            <td className="py-3 pr-4 wrap-break-word">{s.roles?.map(r => r.name).join(", ") ?? "..."}</td>
                             <td>
                                 <div className="flex items-center justify-center">
                                     <select value={s.status} onChange={handleStatusChange(s._id)}

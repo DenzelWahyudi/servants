@@ -246,8 +246,8 @@ function OpeningsCard({ serviceName, date, time, role, roleId, userId, onSave }:
                     serviceName,
                     roleName: role
                 })}
-                className="bg-amber-400 text-blue-950 text-sm font-medium py-1 px-2 rounded w-full 
-                mt-auto hover:bg-amber-500 flex justify-center transition-colors rounded-lg px-2 py-1"
+                className="bg-amber-400 text-blue-950 text-sm font-medium px-2 py-1 rounded-lg w-full
+                mt-auto hover:bg-amber-500 flex justify-center transition-colors"
                 >
                     Sign Up
                 </button>

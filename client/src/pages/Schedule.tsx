@@ -122,7 +122,7 @@ export function Schedule() {
                                 )
                             })}
                         </div>
-                        <div className="hidden lg:grid grid-cols-7 mt-3 items-center border-1 border-slate-600">
+                        <div className="hidden lg:grid grid-cols-7 mt-3 items-center border border-slate-600">
                             {daysInMonth.map((day, idx) => {
                                 return (
                                     <div key={idx} className={`${colStartClasses[getDay(day)]} border-r border-b border-slate-600 h-[130px] overflow-y-auto`}>
@@ -168,7 +168,7 @@ export function Schedule() {
 
                         {/* For Mobile and Tablet */}
                         <div className="relative">
-                            <div className="lg:hidden grid grid-cols-7 mt-3 border-1 border-slate-600">
+                            <div className="lg:hidden grid grid-cols-7 mt-3 border border-slate-600">
                                 {daysInMonth.map((day, idx) => {
                                     return (
                                         <div key={idx} className={`${colStartClasses[getDay(day)]} border-r border-b border-slate-600 h-[67px] flex flex-col items-center`}>

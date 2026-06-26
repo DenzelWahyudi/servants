@@ -126,17 +126,17 @@ export function Home() {
 					<h1 className="text-4xl font-bold text-amber-400">Welcome Back, {userName ?? '...'}</h1>
 				</div>
 				<div className="flex gap-4 items-center">
-					<StatsCard linkTo="/schedule" icon={<img src={bell} width={40} />} title={`${todayServiceCount} Service Reminders Sent Today`} buttonLabel="View Schedule" ></StatsCard>
-					<StatsCard onClick={getAssignments} icon={<img src={user} width={40} />} title="Pending Sign-ups" buttonLabel="Review Now" ></StatsCard>
-					<StatsCard linkTo="/openings" icon={<img src={calendar} width={40} />} title={`Open Recruitment: ${openRoles}`} buttonLabel="Fill Remaining Roles" ></StatsCard>
+					<StatsCard linkTo="/schedule" icon={<img src={bell} width={40}  alt=""/>} title={`${todayServiceCount} Service Reminders Sent Today`} buttonLabel="View Schedule" ></StatsCard>
+					<StatsCard onClick={getAssignments} icon={<img src={user} width={40}  alt=""/>} title="Pending Sign-ups" buttonLabel="Review Now" ></StatsCard>
+					<StatsCard linkTo="/openings" icon={<img src={calendar} width={40}  alt=""/>} title={`Open Recruitment: ${openRoles}`} buttonLabel="Fill Remaining Roles" ></StatsCard>
 				</div>
 			</header>
 
 			<div className="sm:hidden flex flex-col items-center gap-6">
 				<h1 className="text-3xl text-amber-400 font-semibold">Hello, <span className="text-zinc-100">{userName ?? '...'}</span></h1>
 				<div className="flex gap-2">
-					<StatsCard linkTo="/schedule" icon={<img src={bell} width={40} />} title={`${todayServiceCount} Service Reminders Today`} buttonLabel="View Schedule" ></StatsCard>
-					<StatsCard onClick={getAssignments} icon={<img src={user} width={40} />} title="Pending Sign-ups" buttonLabel="Review Now" onDisabled={loading}></StatsCard>
+					<StatsCard linkTo="/schedule" icon={<img src={bell} width={40} alt=""/>} title={`${todayServiceCount} Service Reminders Today`} buttonLabel="View Schedule" ></StatsCard>
+					<StatsCard onClick={getAssignments} icon={<img src={user} width={40} alt=""/>} title="Pending Sign-ups" buttonLabel="Review Now" onDisabled={loading}></StatsCard>
 				</div>
 				<div className="min-h-130 bg-white w-screen">
 					<UpcomingServicesMobile />
@@ -174,10 +174,10 @@ export function Home() {
                     <tbody>
                         {assignments?.map((a) => (
                             <tr key={a._id} className="border-b border-zinc-500 text-zinc-100">
-                                <td className="px-3 py-3 font-medium break-words">{a.serviceName}</td>
+                                <td className="px-3 py-3 font-medium wrap-break-word">{a.serviceName}</td>
                                 <td className="px-3">{format(new Date(a.date), 'd MMM yyyy')}</td>
-                                <td className="px-3 break-words">{a.time}</td>
-                                <td className="px-3 py-2 break-words">{a.roleName}</td>
+                                <td className="px-3 wrap-break-word">{a.time}</td>
+                                <td className="px-3 py-2 wrap-break-word">{a.roleName}</td>
                                 <td className="px-3 text-center">
                                     <span className={`px-3 py-0.5 rounded font-semibold text-zinc-950 inline-block w-23 ${
 										a.status === "confirmed"
@@ -206,10 +206,10 @@ export function Home() {
                     <tbody>
                         {assignments?.map((a) => (
                             <tr key={a._id} className="border-b border-zinc-500 text-zinc-100">
-                                <td className="px-1 py-2 font-medium break-words">{a.serviceName}</td>
+                                <td className="px-1 py-2 font-medium wrap-break-word">{a.serviceName}</td>
                                 <td className="px-1">{format(new Date(a.date), 'd MMM yyyy')}</td>
-                                <td className="px-1 break-words">{a.time}</td>
-                                <td className="px-1 py-2 break-words">{a.roleName}</td>
+                                <td className="px-1 wrap-break-word">{a.time}</td>
+                                <td className="px-1 py-2 wrap-break-word">{a.roleName}</td>
                                 <td className="px-1 text-center">
                                     <span className={`px-1.5 py-1.7 rounded font-semibold text-zinc-950 inline-block ${
 										a.status === "confirmed"
