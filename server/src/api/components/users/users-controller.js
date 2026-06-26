@@ -291,21 +291,6 @@ async function getUserName(req, res, next){
   }
 }
 
-async function geFullName(req, res, next){
-  try {
-    const user = await usersService.getUser(req.user.id);
-
-    if (!user) {
-      throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'User not found');
-    }
-
-    const name = await usersService.getUserName(req.user.id)
-    return res.status(200).json(name);
-  } catch (error) {
-    return next(error)
-  }
-}
-
 async function login(req, res, next){
 
   try {
@@ -425,7 +410,6 @@ module.exports = {
   changePassword,
   deleteUser,
   getUserName,
-  geFullName,
   login,
   loginAdmin,
   getUserId
