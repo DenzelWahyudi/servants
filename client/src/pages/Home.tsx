@@ -253,7 +253,7 @@ function StatsCard({ icon, title, buttonLabel, linkTo, onClick, onDisabled }: St
 					onClick={() => onClick?.()}
 					disabled={onDisabled}
 					className="bg-amber-400 text-blue-950 text-xs font-medium py-1 px-2 rounded w-full mt-auto hover:bg-amber-500 flex justify-center
-					transition-colors rounded-lg px-2 py-1 disabled:opacity-30 disabled:cursor-not-allowed"
+					transition-colors disabled:bg-amber-500 disabled:cursor-not-allowed"
 					>
 						{buttonLabel}
 					</button>
