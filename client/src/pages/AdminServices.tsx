@@ -16,7 +16,7 @@ export function AdminServices() {
 					<div className="flex justify-between py-7 items-center">
 						<Heading>Manage Services</Heading>
 						<div className="w-47">
-							<ButtonLink to='/admin/services/create'variant="card" className="text-lg text-semibold py-1.5 rounded-lg text-slate-900">+ Add New Service</ButtonLink>
+							<ButtonLink to='/admin/services/create' variant="card" className="text-lg text-semibold py-1.5 rounded-lg text-slate-900">+ Add New Service</ButtonLink>
 						</div>
 					</div>
 					<div className="rounded-lg overflow-y-auto">

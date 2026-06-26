@@ -25,9 +25,7 @@ dist-ssr
 
 
 # server folder
-node_modules
 .env
 desktop.ini
-.DS_Store
 .eslintcache
 .npm

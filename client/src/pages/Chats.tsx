@@ -222,14 +222,14 @@ export function Chats() {
                                 <React.Fragment key={c._id}>
                                     {showDateSeperator && (
                                         <div className="flex justify-center my-1">
-                                            <span className="bg-zinc-900 rounded rounded-md text-[10.5px] px-2 font-medium">{format(currentDate, 'EEE, d MMMM')}</span>
+                                            <span className="bg-zinc-900 rounded-md text-[10.5px] px-2 font-medium">{format(currentDate, 'EEE, d MMMM')}</span>
                                         </div>
                                     )}
                                     <div className={`relative ${c.userId === userId._id ? "self-end bg-sky-700" : "self-start bg-zinc-800"} max-w-3/4 px-1.5 py-1 
-                                    gap-2.5 items-end rounded rounded-lg`}>
+                                    gap-2.5 items-end rounded-lg`}>
                                         <span className={`${c.userId === userId._id ? "hidden" : ""}
                                         text-[12px] text-rose-300 font-semibold`}>{c.userName}</span>
-                                        <div className="text-sm break-words whitespace-pre-wrap">
+                                        <div className="text-sm wrap-break-word whitespace-pre-wrap">
                                             {c.message}
                                             <span className="invisible inline-block text-[10px] ml-2.5 whitespace-nowrap">
                                                 {format(new Date(c.createdAt), 'HH:mm')
@@ -283,12 +283,12 @@ export function Chats() {
                             {groupDetails?.map((g, index) => (
                                 <div key={g.userId} className={`flex justify-between py-3 ${index < groupDetails.length-1 ? "border-b" : ""}`}>
                                     <div className="flex flex-col">
-                                        <span className="break-words">{g.userName}</span>
+                                        <span className="wrap-break-word">{g.userName}</span>
                                         <span className="text-sm text-zinc-300">{g.phoneNumber}</span>
                                     </div>
                                     <div className="flex flex-col w-33">
                                         {g.roleName?.map((e, index) => (
-                                            <span className={`break-words rounded bg-indigo-400/30 px-2 py-0.5 ${index > 0 ? "mt-2" : ""} text-sm`}>{e}</span>
+                                            <span className={`wrap-break-word rounded bg-indigo-400/30 px-2 py-0.5 ${index > 0 ? "mt-2" : ""} text-sm`}>{e}</span>
                                         ))}
                                     </div>
                                 </div>

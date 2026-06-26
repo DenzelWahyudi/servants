@@ -217,7 +217,7 @@ export function AdminUsers() {
                             <option value="number">Phone Number</option>
                         </select>
 					</div>
-                    <div className="px-3 py-1 max-h-137  overflow-y-auto rounded rounded-lg bg-zinc-100">
+                    <div className="px-3 py-1 max-h-137  overflow-y-auto rounded-lg bg-zinc-100">
                         <table className="table-fixed w-full h-full text-left text-zinc-950">
                             <thead className="border-b border-amber-400">
                                 <tr>
@@ -242,13 +242,13 @@ export function AdminUsers() {
                                                             <input className="relative z-60 w-full h-full -ml-0.5 bg-zinc-100 border-2 border-zinc-400 rounded" 
                                                             value={chosenName.name} onChange={handleNameChange("name")}/>
                                                         </>
-                                                    ) : <span className="break-words">{u.name}</span>}
+                                                    ) : <span className="wrap-break-word">{u.name}</span>}
 
                                                     <div className="pl-2 pr-3 relative">
                                                         {chosenName && chosenName._id === u._id ? (
                                                             <button 
                                                             className="relative z-60 text-right bg-green-300 px-1 py-1 border border-zinc-400 
-                                                            rounded rounded-lg hover:bg-green-500 disabled:bg-green-500 transition-colors"
+                                                            rounded-lg hover:bg-green-500 disabled:bg-green-500 transition-colors"
                                                             disabled={submitLoading}
                                                             onClick={() => handleNameSubmit()}
                                                             >
@@ -256,7 +256,7 @@ export function AdminUsers() {
                                                             </button>
                                                         ) : (
                                                             <button 
-                                                            className="text-right bg-zinc-100 px-1 py-1 border border-zinc-400 rounded rounded-lg
+                                                            className="text-right bg-zinc-100 px-1 py-1 border border-zinc-400 rounded-lg
                                                             hover:bg-zinc-300 transition-colors"
                                                             onClick={() => setChosenName({_id: u._id, name: u.name})}
                                                             >
@@ -274,13 +274,13 @@ export function AdminUsers() {
                                                             <input className="relative z-60 w-full h-full -ml-0.5 bg-zinc-100 border-2 border-zinc-400 rounded" 
                                                             value={chosenEmail.name} onChange={handleEmailChange("name")}/>
                                                         </>
-                                                    ) : <span className="break-words">{u.email}</span>}
+                                                    ) : <span className="wrap-break-word">{u.email}</span>}
 
                                                     <div className="pl-2 pr-3 relative">
                                                         {chosenEmail && chosenEmail._id === u._id ? (
                                                             <button 
                                                             className="relative z-60 text-right bg-green-300 px-1 py-1 border border-zinc-400 
-                                                            rounded rounded-lg hover:bg-green-500 disabled:bg-green-500 transition-colors"
+                                                            rounded-lg hover:bg-green-500 disabled:bg-green-500 transition-colors"
                                                             disabled={submitLoading}
                                                             onClick={() => handleEmailSubmit()}
                                                             >
@@ -288,7 +288,7 @@ export function AdminUsers() {
                                                             </button>
                                                         ) : (
                                                             <button 
-                                                            className="text-right bg-zinc-100 px-1 py-1 border border-zinc-400 rounded rounded-lg
+                                                            className="text-right bg-zinc-100 px-1 py-1 border border-zinc-400 rounded-lg
                                                             hover:bg-zinc-300 transition-colors"
                                                             onClick={() => setChosenEmail({_id: u._id, name: u.email})}
                                                             >
@@ -306,13 +306,13 @@ export function AdminUsers() {
                                                             <input className="relative z-60 w-full h-full -ml-0.5 bg-zinc-100 border-2 border-zinc-400 rounded" 
                                                             value={chosenPhoneNumber.name} onChange={handlePhoneNumberChange("name")}/>
                                                         </>
-                                                    ) : <span className="break-words">{u.phoneNumber}</span>}
+                                                    ) : <span className="wrap-break-word">{u.phoneNumber}</span>}
 
                                                     <div className="pl-2 pr-3 relative">
                                                         {chosenPhoneNumber && chosenPhoneNumber._id === u._id ? (
                                                             <button 
                                                             className="relative z-60 text-right bg-green-300 px-1 py-1 border border-zinc-400 
-                                                            rounded rounded-lg hover:bg-green-500 disabled:bg-green-500 transition-colors"
+                                                            rounded-lg hover:bg-green-500 disabled:bg-green-500 transition-colors"
                                                             disabled={submitLoading}
                                                             onClick={() => handlePhoneNumberSubmit()}
                                                             >
@@ -320,7 +320,7 @@ export function AdminUsers() {
                                                             </button>
                                                         ) : (
                                                             <button 
-                                                            className="text-right bg-zinc-100 px-1 py-1 border border-zinc-400 rounded rounded-lg
+                                                            className="text-right bg-zinc-100 px-1 py-1 border border-zinc-400 rounded-lg
                                                             hover:bg-zinc-300 transition-colors"
                                                             onClick={() => setChosenPhoneNumber({_id: u._id, name: u.phoneNumber})}
                                                             >
