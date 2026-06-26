@@ -2,12 +2,10 @@ const usersService = require('./users-service');
 const { errorResponder, errorTypes } = require('../../../core/errors');
 const { hashPassword, passwordMatched } = require('../../../utils/password');
 const jwt = require('jsonwebtoken');
-const { SNSClient, PublishCommand } = require('@aws-sdk/client-sns');
-const crypto = require('crypto');
-const Redis = require('ioredis');
+const twilio = require('twilio');
 
-const sns = new SNSClient({ region: process.env.AWS_REGION, });
-const redis = new Redis();
+const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+const SERVICE_SID = process.env.TWILIO_VERIFY_SERVICE_SID;
 
 async function getUser(request, response, next) {
   try {
@@ -409,16 +407,9 @@ async function getUserId(request, response, next) {
 async function sendOTP(req, res, next){
   try {
     const { phone } = req.body;
-    const otp = crypto.randomInt(100000, 999999).toString();
 
-    await redis.set(`otp:${phone}`, otp, 'EX', 600);
-
-    const success = await sns.send(
-      new PublishCommand({
-        Message: `Your verification code is: ${otp}`,
-        PhoneNumber: phone,
-      })
-    );
+    const success = await client.verify.v2.services(SERVICE_SID)
+      .verifications.create({ to: phone, channel: 'sms' });
 
     res.status(200).json(success)
   } catch (error) {
@@ -429,12 +420,12 @@ async function sendOTP(req, res, next){
 async function verifyOTP(req, res, next){
   try {
     const { phone, code } = req.body;
-    const stored = await redis.get(`otp:${phone}`);
+    const result = await client.verify.v2.services(SERVICE_SID)
+      .verificationChecks.create({ to: phone, code });
 
-    if (!stored || stored !== code){
-      throw errorResponder(errorTypes.VALIDATION, 'Wrong Code!');
+    if (result.status !== 'approved'){
+      throw errorResponder(errorTypes.VALIDATION, "Wrong Code!")
     }
-    await redis.del(`otp:${phone}`);
 
     res.status(200).json({ message: "Verified!" });
   } catch (error) {
