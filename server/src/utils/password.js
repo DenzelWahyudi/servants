@@ -3,12 +3,12 @@ const bcrypt = require('bcryptjs');
 /**
  * Hash a plain text password
  * @param {string} password - The password to be hashed
- * @returns {string}
+ * @returns {Promise<string>}
  */
 async function hashPassword(password) {
   const saltRounds = 10;
 
-  const hashedPassword = await new Promise((resolve, reject) => {
+  return await new Promise((resolve, reject) => {
     bcrypt.hash(password, saltRounds, (err, hash) => {
       if (err) {
         reject(err);
@@ -17,8 +17,6 @@ async function hashPassword(password) {
       }
     });
   });
-
-  return hashedPassword;
 }
 
 /**
@@ -26,7 +24,7 @@ async function hashPassword(password) {
  * Mainly use for comparing login credentials
  * @param {string} password - A plain text password
  * @param {string} hashedPassword - A hashed password
- * @returns {boolean}
+ * @returns {Promise<boolean>}
  */
 async function passwordMatched(password, hashedPassword) {
   return bcrypt.compareSync(password, hashedPassword);

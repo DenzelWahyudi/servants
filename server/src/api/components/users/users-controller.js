@@ -1,7 +1,13 @@
 const usersService = require('./users-service');
 const { errorResponder, errorTypes } = require('../../../core/errors');
 const { hashPassword, passwordMatched } = require('../../../utils/password');
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const { SNSClient, PublishCommand } = require('@aws-sdk/client-sns');
+const crypto = require('crypto');
+const Redis = require('ioredis');
+
+const sns = new SNSClient({ region: process.env.AWS_REGION, });
+const redis = new Redis();
 
 async function getUser(request, response, next) {
   try {
@@ -42,16 +48,16 @@ async function createUser(request, response, next) {
     } = request.body;
 
     if (!email) {
-      throw errorResponder(errorTypes.VALIDATION_ERROR, 'Email is required');
+      throw errorResponder(errorTypes.VALIDATION, 'Email is required');
     }
 
     if (!phoneNumber) {
-      throw errorResponder(errorTypes.VALIDATION_ERROR, 'Phone number is required')
+      throw errorResponder(errorTypes.VALIDATION, 'Phone number is required')
     }
 
     if (!name) {
       throw errorResponder(
-        errorTypes.VALIDATION_ERROR,
+        errorTypes.VALIDATION,
         'Full name is required'
       );
     }
@@ -79,14 +85,14 @@ async function createUser(request, response, next) {
 
     if (password.length < 8) {
       throw errorResponder(
-        errorTypes.VALIDATION_ERROR,
+        errorTypes.VALIDATION,
         'Password must be at least 8 characters long'
       );
     }
 
     if (password !== confirmPassword) {
       throw errorResponder(
-        errorTypes.VALIDATION_ERROR,
+        errorTypes.VALIDATION,
         'Password and confirm password do not match'
       );
     }
@@ -120,7 +126,7 @@ async function updateEmail(req, res, next){
     const { newEmail } = req.body
 
     if (!newEmail) {
-      throw errorResponder(errorTypes.VALIDATION_ERROR, 'Email is required');
+      throw errorResponder(errorTypes.VALIDATION, 'Email is required');
     }
 
     if (await usersService.emailExists(newEmail)) {
@@ -147,7 +153,7 @@ async function updatePhoneNumber(req, res, next){
     const { newPhoneNumber } = req.body
 
     if (!newPhoneNumber) {
-      throw errorResponder(errorTypes.VALIDATION_ERROR, 'Phone number is required')
+      throw errorResponder(errorTypes.VALIDATION, 'Phone number is required')
     }
 
     if (await usersService.phoneNumberExists(newPhoneNumber)) {
@@ -175,7 +181,7 @@ async function updateName(req, res, next){
 
     if (!newName) {
       throw errorResponder(
-        errorTypes.VALIDATION_ERROR,
+        errorTypes.VALIDATION,
         'Full name is required'
       );
     }
@@ -215,28 +221,28 @@ async function changePassword(request, response, next) {
     const isMatch = await passwordMatched(oldPassword, user.passwordHash);
     if (!isMatch) {
       throw errorResponder(
-        errorTypes.VALIDATION_ERROR,
+        errorTypes.VALIDATION,
         'Old password is incorrect'
       );
     }
 
     if (newPassword.length < 8) {
       throw errorResponder(
-        errorTypes.VALIDATION_ERROR,
+        errorTypes.VALIDATION,
         'Password must be at least 8 characters long'
       );
     }
 
     if (newPassword === oldPassword) {
       throw errorResponder(
-        errorTypes.VALIDATION_ERROR,
+        errorTypes.VALIDATION,
         'The new password must be different from the old password'
       );
     }
 
     if (newPassword !== confirmNewPassword) {
       throw errorResponder(
-        errorTypes.VALIDATION_ERROR,
+        errorTypes.VALIDATION,
         'New password and new confirm password do not match'
       );
     }
@@ -291,32 +297,17 @@ async function getUserName(req, res, next){
   }
 }
 
-async function geFullName(req, res, next){
-  try {
-    const user = await usersService.getUser(req.user.id);
-
-    if (!user) {
-      throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'User not found');
-    }
-
-    const name = await usersService.getUserName(req.user.id)
-    return res.status(200).json(name);
-  } catch (error) {
-    return next(error)
-  }
-}
-
 async function login(req, res, next){
 
   try {
     const {phoneNumber, password} = req.body;
     
     if (!phoneNumber){
-      throw errorResponder(errorTypes.VALIDATION_ERROR, 'Phone number is required');
+      throw errorResponder(errorTypes.VALIDATION, 'Phone number is required');
     }
 
     if (!password){
-      throw errorResponder(errorTypes.VALIDATION_ERROR, 'Password is required');
+      throw errorResponder(errorTypes.VALIDATION, 'Password is required');
     }
 
     const user = await usersService.getUserByPhoneNumber(phoneNumber);
@@ -357,22 +348,22 @@ async function loginAdmin(req, res, next){
     const {phoneNumber, password} = req.body;
     
     if (!phoneNumber){
-      throw errorResponder(errorTypes.VALIDATION_ERROR, 'Phone number is required');
+      throw errorResponder(errorTypes.VALIDATION, 'Phone number is required');
     }
 
     if (!password){
-      throw errorResponder(errorTypes.VALIDATION_ERROR, 'Password is required');
+      throw errorResponder(errorTypes.VALIDATION, 'Password is required');
     }
 
     const user = await usersService.getUserByPhoneNumber(phoneNumber);
 
     if (!user){
-      await passwordMatched(password, "$2b$16$H9YjlxIlOV2RmYyEhdXg2ODaGcQz6D4zkkUUnamUi3vrsPSpME0tK");
+      await passwordMatched(password, await hashPassword("this is a decoy password"));
       throw errorResponder(errorTypes.INVALID_CREDENTIALS, 'Invalid phone number or password');
     }
 
-    if (user.role != "admin"){
-      await passwordMatched(password, "$2b$16$H9YjlxIlOV2RmYyEhdXg2ODaGcQz6D4zkkUUnamUi3vrsPSpME0tK");
+    if (user.role !== "admin"){
+      await passwordMatched(password, await hashPassword("this is a decoy password"));
       throw errorResponder(errorTypes.INVALID_CREDENTIALS, 'Invalid phone number or password');
     }
 
@@ -415,6 +406,42 @@ async function getUserId(request, response, next) {
   }
 }
 
+async function sendOTP(req, res, next){
+  try {
+    const { phone } = req.body;
+    const otp = crypto.randomInt(100000, 999999).toString();
+
+    await redis.set(`otp:${phone}`, otp, 'EX', 600);
+
+    const success = await sns.send(
+      new PublishCommand({
+        Message: `Your verification code is: ${otp}`,
+        PhoneNumber: phone,
+      })
+    );
+
+    res.status(200).json(success)
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function verifyOTP(req, res, next){
+  try {
+    const { phone, code } = req.body;
+    const stored = await redis.get(`otp:${phone}`);
+
+    if (!stored || stored !== code){
+      throw errorResponder(errorTypes.VALIDATION, 'Wrong Code!');
+    }
+    await redis.del(`otp:${phone}`);
+
+    res.status(200).json({ message: "Verified!" });
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   getUser,
   getUsers,
@@ -425,8 +452,9 @@ module.exports = {
   changePassword,
   deleteUser,
   getUserName,
-  geFullName,
   login,
   loginAdmin,
-  getUserId
+  getUserId,
+  sendOTP,
+  verifyOTP
 };
