@@ -287,12 +287,10 @@ async function deleteUser(request, response, next) {
 async function getUserName(req, res, next){
   try {
     const user = await usersService.getUser(req.user.id);
-
     if (!user) {
       throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'User not found');
     }
-
-    const userName = user.fullName.trim().split(' ')[0];
+    const userName = user.name.trim().split(' ')[0];
 
     return res.status(200).json(userName);
   } catch (error) {
