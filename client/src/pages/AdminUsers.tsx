@@ -5,6 +5,7 @@ import { Heading } from "../components/Heading";
 import { API_URL } from "../api"
 import { Check, Pencil, Trash2 } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 interface User {
     _id: string
@@ -33,6 +34,7 @@ export function AdminUsers() {
     const [searchParams, setSearchParams] = useSearchParams({ q: "newest" })
     const q = searchParams.get("q")
     const [refreshKey, setRefreshKey] = useState(0)
+    const { token } = useAuth()
 
     useEffect(() => {
         async function fetchUsers(){
@@ -106,7 +108,10 @@ export function AdminUsers() {
         
         const response = await fetch(`${API_URL}/api/users/update/name/${chosenName._id}`, {
             method: "PUT",
-            headers: {"Content-Type": "application/json"},
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
             body: JSON.stringify({ newName: chosenName.name })
         })
 
@@ -131,7 +136,10 @@ export function AdminUsers() {
         
         const response = await fetch(`${API_URL}/api/users/update/email/${chosenEmail._id}`, {
             method: "PUT",
-            headers: {"Content-Type": "application/json"},
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
             body: JSON.stringify({ newEmail: chosenEmail.name })
         })
 
@@ -156,7 +164,10 @@ export function AdminUsers() {
         
         const response = await fetch(`${API_URL}/api/users/update/phonenumber/${chosenPhoneNumber._id}`, {
             method: "PUT",
-            headers: {"Content-Type": "application/json"},
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
             body: JSON.stringify({ newPhoneNumber: chosenPhoneNumber.name })
         })
 
@@ -179,7 +190,10 @@ export function AdminUsers() {
 
         const response = await fetch(`${API_URL}/api/users/${userId}`, {
             method: "DELETE",
-            headers: {"Content-Type": "application/json"},
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
         })
 
         const data = await response.json()
@@ -217,7 +231,7 @@ export function AdminUsers() {
                             <option value="number">Phone Number</option>
                         </select>
 					</div>
-                    <div className="px-3 py-1 max-h-137  overflow-y-auto rounded-lg bg-zinc-100">
+                    <div className="px-3 py-1 max-h-[70vh]  overflow-y-auto rounded-lg bg-zinc-100">
                         <table className="table-fixed w-full h-full text-left text-zinc-950">
                             <thead className="border-b border-amber-400">
                                 <tr>

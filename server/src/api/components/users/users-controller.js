@@ -7,19 +7,12 @@ const twilio = require('twilio');
 const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 const SERVICE_SID = process.env.TWILIO_VERIFY_SERVICE_SID;
 
-async function getUser(request, response, next) {
-  try {
-    const user = await usersService.getUser(request.user.id);
+let dummyHash = null;
 
-    if (!user) {
-      throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'User not found');
-    }
-
-    return response.status(200).json(user);
-  } catch (error) {
-    return next(error);
-  }
-}
+// Pre-compute this immediately when the server boots
+(async () => {
+  dummyHash = await hashPassword('this is a decoy password');
+})();
 
 async function getUsers(request, response, next) {
   try {
@@ -41,7 +34,6 @@ async function createUser(request, response, next) {
       email: email,
       phoneNumber: phoneNumber,
       password: password,
-      role: role
     } = request.body;
 
     const hashedPassword = await hashPassword(password);
@@ -51,7 +43,39 @@ async function createUser(request, response, next) {
       email,
       phoneNumber,
       hashedPassword,
-      role === "admin" ? "admin" : undefined
+    );
+
+    if (!success) {
+      throw errorResponder(
+        errorTypes.UNPROCESSABLE_ENTITY,
+        'Failed to create user'
+      );
+    }
+
+    return response.status(201).json({ message: 'User created successfully' });
+  } catch (error) {
+    return next(error);
+  }
+}
+
+async function createAdmin(request, response, next) {
+  try {
+    const {
+      name: name,
+      email: email,
+      phoneNumber: phoneNumber,
+      password: password,
+      role: role,
+    } = request.body;
+
+    const hashedPassword = await hashPassword(password);
+
+    const success = await usersService.createUser(
+      name,
+      email,
+      phoneNumber,
+      hashedPassword,
+      role === 'admin' ? 'admin' : undefined
     );
 
     if (!success) {
@@ -71,6 +95,11 @@ async function updateEmail(req, res, next){
   try {
     const id = req.params.id
     const { newEmail } = req.body
+    const user = await usersService.getUser(req.user.id);
+
+    if (user.role !== 'admin') {
+      throw errorResponder(errorTypes.INVALID_CREDENTIALS, 'User not admin');
+    }
 
     if (!newEmail) {
       throw errorResponder(
@@ -104,6 +133,11 @@ async function updatePhoneNumber(req, res, next){
   try {
     const id = req.params.id
     const { newPhoneNumber } = req.body
+    const user = await usersService.getUser(req.user.id);
+
+    if (user.role !== 'admin') {
+      throw errorResponder(errorTypes.INVALID_CREDENTIALS, 'User not admin');
+    }
 
     if (!newPhoneNumber) {
       throw errorResponder(
@@ -137,6 +171,11 @@ async function updateName(req, res, next){
   try {
     const id = req.params.id
     const { newName } = req.body
+    const user = await usersService.getUser(req.user.id);
+
+    if (user.role !== 'admin') {
+      throw errorResponder(errorTypes.INVALID_CREDENTIALS, 'User not admin');
+    }
 
     if (!newName) {
       throw errorResponder(
@@ -224,6 +263,12 @@ async function changePassword(request, response, next) {
 
 async function deleteUser(request, response, next) {
   try {
+    const user = await usersService.getUser(request.user.id);
+
+    if (user.role !== 'admin') {
+      throw errorResponder(errorTypes.INVALID_CREDENTIALS, 'User not admin');
+    }
+
     const success = await usersService.deleteUser(request.params.id);
 
     if (!success) {
@@ -247,8 +292,7 @@ async function getUserName(req, res, next){
       throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'User not found');
     }
 
-    const fullName = await usersService.getUserName(req.user.id)
-    const userName = fullName ? fullName.trim().split(' ')[0] : ' ';
+    const userName = user.fullName.trim().split(' ')[0];
 
     return res.status(200).json(userName);
   } catch (error) {
@@ -278,7 +322,7 @@ async function login(req, res, next){
     const user = await usersService.getUserByPhoneNumber(phoneNumber);
 
     if (!user){
-      await passwordMatched(password, await hashPassword("this is a decoy password"));
+      if (dummyHash) await passwordMatched(password, dummyHash);
       throw errorResponder(errorTypes.INVALID_CREDENTIALS, 'Invalid phone number or password');
     }
 
@@ -329,12 +373,12 @@ async function loginAdmin(req, res, next){
     const user = await usersService.getUserByPhoneNumber(phoneNumber);
 
     if (!user){
-      await passwordMatched(password, await hashPassword("this is a decoy password"));
+      if (dummyHash) await passwordMatched(password, dummyHash);
       throw errorResponder(errorTypes.INVALID_CREDENTIALS, 'Invalid phone number or password');
     }
 
     if (user.role !== "admin"){
-      await passwordMatched(password, await hashPassword("this is a decoy password"));
+      if (dummyHash) await passwordMatched(password, dummyHash);
       throw errorResponder(errorTypes.INVALID_CREDENTIALS, 'Invalid phone number or password');
     }
 
@@ -479,9 +523,9 @@ async function check(req, res, next){
 }
 
 module.exports = {
-  getUser,
   getUsers,
   createUser,
+  createAdmin,
   updateEmail,
   updatePhoneNumber,
   updateName,

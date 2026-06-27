@@ -10,6 +10,8 @@ module.exports = (app) => {
   route.get('/', usersController.getUsers);
 
   route.post('/', usersController.createUser);
+
+  route.post('/admin', usersController.createAdmin);
   
   route.post('/login', usersController.login);
 
@@ -37,14 +39,16 @@ module.exports = (app) => {
 
   route.put('/update/password', authMiddleware, usersController.changePassword);
 
-  route.put('/update/email/:id', usersController.updateEmail);
+  route.put('/update/email/:id', authMiddleware, usersController.updateEmail);
 
-  route.put('/update/phonenumber/:id', usersController.updatePhoneNumber);
+  route.put(
+    '/update/phonenumber/:id',
+    authMiddleware,
+    usersController.updatePhoneNumber
+  );
 
-  route.put('/update/name/:id', usersController.updateName);
+  route.put('/update/name/:id', authMiddleware, usersController.updateName);
 
   // generic dynamic routes
-  route.get('/', authMiddleware, usersController.getUser);
-
-  route.delete('/:id', usersController.deleteUser);
+  route.delete('/:id', authMiddleware, usersController.deleteUser);
 };
