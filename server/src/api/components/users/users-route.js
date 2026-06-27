@@ -15,7 +15,14 @@ module.exports = (app) => {
 
   route.post('/login/admin', usersController.loginAdmin);
 
-  // // specific dynamic routes
+  route.post('/check', usersController.check);
+
+  route.post('/send-otp', usersController.sendOTP);
+
+  route.post('/verify-otp', usersController.verifyOTP);
+
+  // specific dynamic routes
+
   // route.get('/name/:id', usersController.getUserName);
 
   // route.put('/update/email/:id', usersController.updateUserEmail);
@@ -27,10 +34,6 @@ module.exports = (app) => {
   route.get('/id', authMiddleware, usersController.getUserId);
   
   route.get('/name', authMiddleware, usersController.getUserName);
-
-  route.post('/send-otp', usersController.sendOTP);
-
-  route.post('/verify-otp', usersController.verifyOTP);
 
   route.put('/update/password', authMiddleware, usersController.changePassword);
 
