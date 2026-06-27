@@ -10,12 +10,21 @@ module.exports = (app) => {
   route.get('/', usersController.getUsers);
 
   route.post('/', usersController.createUser);
+
+  route.post('/admin', usersController.createAdmin);
   
   route.post('/login', usersController.login);
 
   route.post('/login/admin', usersController.loginAdmin);
 
-  // // specific dynamic routes
+  route.post('/check', usersController.check);
+
+  route.post('/send-otp', usersController.sendOTP);
+
+  route.post('/verify-otp', usersController.verifyOTP);
+
+  // specific dynamic routes
+
   // route.get('/name/:id', usersController.getUserName);
 
   // route.put('/update/email/:id', usersController.updateUserEmail);
@@ -28,20 +37,18 @@ module.exports = (app) => {
   
   route.get('/name', authMiddleware, usersController.getUserName);
 
-  route.post('/send-otp', usersController.sendOTP);
-
-  route.post('/verify-otp', usersController.verifyOTP);
-
   route.put('/update/password', authMiddleware, usersController.changePassword);
 
-  route.put('/update/email/:id', usersController.updateEmail);
+  route.put('/update/email/:id', authMiddleware, usersController.updateEmail);
 
-  route.put('/update/phonenumber/:id', usersController.updatePhoneNumber);
+  route.put(
+    '/update/phonenumber/:id',
+    authMiddleware,
+    usersController.updatePhoneNumber
+  );
 
-  route.put('/update/name/:id', usersController.updateName);
+  route.put('/update/name/:id', authMiddleware, usersController.updateName);
 
   // generic dynamic routes
-  route.get('/', authMiddleware, usersController.getUser);
-
-  route.delete('/:id', usersController.deleteUser);
+  route.delete('/:id', authMiddleware, usersController.deleteUser);
 };

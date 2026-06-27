@@ -7,19 +7,12 @@ const twilio = require('twilio');
 const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 const SERVICE_SID = process.env.TWILIO_VERIFY_SERVICE_SID;
 
-async function getUser(request, response, next) {
-  try {
-    const user = await usersService.getUser(request.user.id);
+let dummyHash = null;
 
-    if (!user) {
-      throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'User not found');
-    }
-
-    return response.status(200).json(user);
-  } catch (error) {
-    return next(error);
-  }
-}
+// Pre-compute this immediately when the server boots
+(async () => {
+  dummyHash = await hashPassword('this is a decoy password');
+})();
 
 async function getUsers(request, response, next) {
   try {
@@ -41,59 +34,7 @@ async function createUser(request, response, next) {
       email: email,
       phoneNumber: phoneNumber,
       password: password,
-      confirm_password: confirmPassword,
-      role: role
     } = request.body;
-
-    if (!email) {
-      throw errorResponder(errorTypes.VALIDATION, 'Email is required');
-    }
-
-    if (!phoneNumber) {
-      throw errorResponder(errorTypes.VALIDATION, 'Phone number is required')
-    }
-
-    if (!name) {
-      throw errorResponder(
-        errorTypes.VALIDATION,
-        'Full name is required'
-      );
-    }
-
-    if (await usersService.emailExists(email)) {
-      throw errorResponder(
-        errorTypes.EMAIL_ALREADY_TAKEN,
-        'Email already exists'
-      );
-    }
-
-    if (await usersService.phoneNumberExists(phoneNumber)) {
-      throw errorResponder(
-        errorTypes.EMAIL_ALREADY_TAKEN,
-        'Phone number already exists'
-      );
-    }
-
-    if (await usersService.nameExists(name)) {
-      throw errorResponder(
-        errorTypes.EMAIL_ALREADY_TAKEN,
-        'Name already exists'
-      );
-    }
-
-    if (password.length < 8) {
-      throw errorResponder(
-        errorTypes.VALIDATION,
-        'Password must be at least 8 characters long'
-      );
-    }
-
-    if (password !== confirmPassword) {
-      throw errorResponder(
-        errorTypes.VALIDATION,
-        'Password and confirm password do not match'
-      );
-    }
 
     const hashedPassword = await hashPassword(password);
     
@@ -102,7 +43,39 @@ async function createUser(request, response, next) {
       email,
       phoneNumber,
       hashedPassword,
-      role === "admin" ? "admin" : undefined
+    );
+
+    if (!success) {
+      throw errorResponder(
+        errorTypes.UNPROCESSABLE_ENTITY,
+        'Failed to create user'
+      );
+    }
+
+    return response.status(201).json({ message: 'User created successfully' });
+  } catch (error) {
+    return next(error);
+  }
+}
+
+async function createAdmin(request, response, next) {
+  try {
+    const {
+      name: name,
+      email: email,
+      phoneNumber: phoneNumber,
+      password: password,
+      role: role,
+    } = request.body;
+
+    const hashedPassword = await hashPassword(password);
+
+    const success = await usersService.createUser(
+      name,
+      email,
+      phoneNumber,
+      hashedPassword,
+      role === 'admin' ? 'admin' : undefined
     );
 
     if (!success) {
@@ -122,9 +95,17 @@ async function updateEmail(req, res, next){
   try {
     const id = req.params.id
     const { newEmail } = req.body
+    const user = await usersService.getUser(req.user.id);
+
+    if (user.role !== 'admin') {
+      throw errorResponder(errorTypes.INVALID_CREDENTIALS, 'User not admin');
+    }
 
     if (!newEmail) {
-      throw errorResponder(errorTypes.VALIDATION, 'Email is required');
+      throw errorResponder(
+        errorTypes.UNPROCESSABLE_ENTITY,
+        'Email is required'
+      );
     }
 
     if (await usersService.emailExists(newEmail)) {
@@ -136,7 +117,10 @@ async function updateEmail(req, res, next){
 
     const success = await usersService.updateEmail(id, newEmail)
     if(!success){
-      throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, "Failed to update email")
+      throw errorResponder(
+        errorTypes.UNPROCESSABLE_ENTITY,
+        'Failed to update email'
+      );
     }
 
     return res.status(200).json( { message: "Email updated." })
@@ -149,9 +133,17 @@ async function updatePhoneNumber(req, res, next){
   try {
     const id = req.params.id
     const { newPhoneNumber } = req.body
+    const user = await usersService.getUser(req.user.id);
+
+    if (user.role !== 'admin') {
+      throw errorResponder(errorTypes.INVALID_CREDENTIALS, 'User not admin');
+    }
 
     if (!newPhoneNumber) {
-      throw errorResponder(errorTypes.VALIDATION, 'Phone number is required')
+      throw errorResponder(
+        errorTypes.UNPROCESSABLE_ENTITY,
+        'Phone number is required'
+      );
     }
 
     if (await usersService.phoneNumberExists(newPhoneNumber)) {
@@ -163,7 +155,10 @@ async function updatePhoneNumber(req, res, next){
 
     const success = await usersService.updatePhoneNumber(id, newPhoneNumber)
     if(!success){
-      throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, "Failed to update phone number")
+      throw errorResponder(
+        errorTypes.UNPROCESSABLE_ENTITY,
+        'Failed to update phone number'
+      );
     }
 
     return res.status(200).json( { message: "Phone number updated." })
@@ -176,10 +171,15 @@ async function updateName(req, res, next){
   try {
     const id = req.params.id
     const { newName } = req.body
+    const user = await usersService.getUser(req.user.id);
+
+    if (user.role !== 'admin') {
+      throw errorResponder(errorTypes.INVALID_CREDENTIALS, 'User not admin');
+    }
 
     if (!newName) {
       throw errorResponder(
-        errorTypes.VALIDATION,
+        errorTypes.UNPROCESSABLE_ENTITY,
         'Full name is required'
       );
     }
@@ -219,28 +219,28 @@ async function changePassword(request, response, next) {
     const isMatch = await passwordMatched(oldPassword, user.passwordHash);
     if (!isMatch) {
       throw errorResponder(
-        errorTypes.VALIDATION,
+        errorTypes.UNPROCESSABLE_ENTITY,
         'Old password is incorrect'
       );
     }
 
     if (newPassword.length < 8) {
       throw errorResponder(
-        errorTypes.VALIDATION,
+        errorTypes.UNPROCESSABLE_ENTITY,
         'Password must be at least 8 characters long'
       );
     }
 
     if (newPassword === oldPassword) {
       throw errorResponder(
-        errorTypes.VALIDATION,
+        errorTypes.UNPROCESSABLE_ENTITY,
         'The new password must be different from the old password'
       );
     }
 
     if (newPassword !== confirmNewPassword) {
       throw errorResponder(
-        errorTypes.VALIDATION,
+        errorTypes.UNPROCESSABLE_ENTITY,
         'New password and new confirm password do not match'
       );
     }
@@ -263,6 +263,12 @@ async function changePassword(request, response, next) {
 
 async function deleteUser(request, response, next) {
   try {
+    const user = await usersService.getUser(request.user.id);
+
+    if (user.role !== 'admin') {
+      throw errorResponder(errorTypes.INVALID_CREDENTIALS, 'User not admin');
+    }
+
     const success = await usersService.deleteUser(request.params.id);
 
     if (!success) {
@@ -281,13 +287,10 @@ async function deleteUser(request, response, next) {
 async function getUserName(req, res, next){
   try {
     const user = await usersService.getUser(req.user.id);
-
     if (!user) {
       throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'User not found');
     }
-
-    const fullName = await usersService.getUserName(req.user.id)
-    const userName = fullName ? fullName.trim().split(' ')[0] : ' ';
+    const userName = user.name.trim().split(' ')[0];
 
     return res.status(200).json(userName);
   } catch (error) {
@@ -301,17 +304,23 @@ async function login(req, res, next){
     const {phoneNumber, password} = req.body;
     
     if (!phoneNumber){
-      throw errorResponder(errorTypes.VALIDATION, 'Phone number is required');
+      throw errorResponder(
+        errorTypes.UNPROCESSABLE_ENTITY,
+        'Phone number is required'
+      );
     }
 
     if (!password){
-      throw errorResponder(errorTypes.VALIDATION, 'Password is required');
+      throw errorResponder(
+        errorTypes.UNPROCESSABLE_ENTITY,
+        'Password is required'
+      );
     }
 
     const user = await usersService.getUserByPhoneNumber(phoneNumber);
 
     if (!user){
-      await passwordMatched(password, await hashPassword("this is a decoy password"));
+      if (dummyHash) await passwordMatched(password, dummyHash);
       throw errorResponder(errorTypes.INVALID_CREDENTIALS, 'Invalid phone number or password');
     }
 
@@ -346,22 +355,28 @@ async function loginAdmin(req, res, next){
     const {phoneNumber, password} = req.body;
     
     if (!phoneNumber){
-      throw errorResponder(errorTypes.VALIDATION, 'Phone number is required');
+      throw errorResponder(
+        errorTypes.UNPROCESSABLE_ENTITY,
+        'Phone number is required'
+      );
     }
 
     if (!password){
-      throw errorResponder(errorTypes.VALIDATION, 'Password is required');
+      throw errorResponder(
+        errorTypes.UNPROCESSABLE_ENTITY,
+        'Password is required'
+      );
     }
 
     const user = await usersService.getUserByPhoneNumber(phoneNumber);
 
     if (!user){
-      await passwordMatched(password, await hashPassword("this is a decoy password"));
+      if (dummyHash) await passwordMatched(password, dummyHash);
       throw errorResponder(errorTypes.INVALID_CREDENTIALS, 'Invalid phone number or password');
     }
 
     if (user.role !== "admin"){
-      await passwordMatched(password, await hashPassword("this is a decoy password"));
+      if (dummyHash) await passwordMatched(password, dummyHash);
       throw errorResponder(errorTypes.INVALID_CREDENTIALS, 'Invalid phone number or password');
     }
 
@@ -424,7 +439,10 @@ async function verifyOTP(req, res, next){
       .verificationChecks.create({ to: phone, code });
 
     if (result.status !== 'approved'){
-      throw errorResponder(errorTypes.VALIDATION, "Wrong Code!")
+      throw errorResponder(
+        errorTypes.UNPROCESSABLE_ENTITY,
+        "That code didn't match. Try again."
+      );
     }
 
     res.status(200).json({ message: "Verified!" });
@@ -433,10 +451,79 @@ async function verifyOTP(req, res, next){
   }
 }
 
+async function check(req, res, next){
+  try {
+    const {
+      name: name,
+      email: email,
+      phoneNumber: phoneNumber,
+      password: password,
+      confirm_password: confirmPassword,
+    } = req.body;
+
+    if (!email) {
+      throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Email is required');
+    }
+
+    if (!phoneNumber) {
+      throw errorResponder(
+        errorTypes.UNPROCESSABLE_ENTITY,
+        'Phone number is required'
+      );
+    }
+
+    if (!name) {
+      throw errorResponder(
+        errorTypes.UNPROCESSABLE_ENTITY,
+        'Full name is required'
+      );
+    }
+
+    if (await usersService.emailExists(email)) {
+      throw errorResponder(
+        errorTypes.UNPROCESSABLE_ENTITY,
+        'Email already exists'
+      );
+    }
+
+    if (await usersService.phoneNumberExists(phoneNumber)) {
+      throw errorResponder(
+        errorTypes.UNPROCESSABLE_ENTITY,
+        'Phone number already exists'
+      );
+    }
+
+    if (await usersService.nameExists(name)) {
+      throw errorResponder(
+        errorTypes.UNPROCESSABLE_ENTITY,
+        'Name already exists'
+      );
+    }
+
+    if (password.length < 8) {
+      throw errorResponder(
+        errorTypes.UNPROCESSABLE_ENTITY,
+        'Password must be at least 8 characters long'
+      );
+    }
+
+    if (password !== confirmPassword) {
+      throw errorResponder(
+        errorTypes.UNPROCESSABLE_ENTITY,
+        'Password and confirm password do not match'
+      );
+    }
+
+    return res.status(200).json({ message: "All checks have passed!" })
+  } catch (error) {
+    next(error)
+  }
+}
+
 module.exports = {
-  getUser,
   getUsers,
   createUser,
+  createAdmin,
   updateEmail,
   updatePhoneNumber,
   updateName,
@@ -447,5 +534,6 @@ module.exports = {
   loginAdmin,
   getUserId,
   sendOTP,
-  verifyOTP
+  verifyOTP,
+  check
 };
