@@ -21,29 +21,17 @@ interface Service {
 export function UpcomingServicesMobile(){
 
     const [services, setServices] = useState<Service[] | null>(null)
-    
+
     useEffect(() => {
         async function fetchServices() {
-            const response = await fetch(`${API_URL}/api/services`, {
+            const response = await fetch(`${API_URL}/api/services/with-roles`, {
                 method: "GET",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                },
             })
             const data: Service[] = await response.json();
-
-            const serviceWithRoles = await Promise.all(
-                data.map(async (service) => {
-                    const roleRes = await fetch(`${API_URL}/api/roles/${service._id}`, {
-                        method: "GET",
-                        headers: { "Content-Type": "application/json" },
-                    })
-                    const roles: Role[] = await roleRes.json();
-                    return { ...service, roles }
-                })
-            )
-            const sorted = serviceWithRoles.sort(
-                (a,b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-            );
-            setServices(sorted);
+            setServices(data);
         }
         fetchServices()
     }, [])

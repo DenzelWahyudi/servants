@@ -2,10 +2,20 @@ const servicesService = require('./services-service');
 const rolesService = require('../roles/roles-service');
 const chatsService = require('../chats/chats-service');
 const { errorResponder, errorTypes } = require('../../../core/errors');
+const {getUser} = require("../users/users-service");
 
 async function createService(req, res, next){
     try {
         const { name, date, time, status, roles } = req.body;
+        const user = await getUser(req.user.id);
+
+        if (user.role !== 'admin') {
+            throw errorResponder(
+                errorTypes.INVALID_CREDENTIALS,
+                'User not admin'
+            );
+        }
+
         if (!name){
             throw errorResponder(errorTypes.VALIDATION_ERROR, 'Service name is required');
         }
@@ -78,6 +88,15 @@ async function deleteService(req, res, next){
     try {
         const serviceId = req.params.serviceId;
         const service = await servicesService.getService(serviceId);
+        const user = await getUser(req.user.id);
+
+        if (user.role !== 'admin') {
+            throw errorResponder(
+                errorTypes.INVALID_CREDENTIALS,
+                'User not admin'
+            );
+        }
+
         if (!service){
             throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Failed to get service');
         }
@@ -107,6 +126,15 @@ async function updateService(req, res, next){
     try {
         const serviceId = req.params.serviceId;
         const { name, date, time, status, roles } = req.body;
+        const user = await getUser(req.user.id);
+
+        if (user.role !== 'admin') {
+            throw errorResponder(
+                errorTypes.INVALID_CREDENTIALS,
+                'User not admin'
+            );
+        }
+
         if (!name){
             throw errorResponder(errorTypes.VALIDATION_ERROR, 'Service name is required');
         }
@@ -123,7 +151,7 @@ async function updateService(req, res, next){
         if (roles.some(role => !role.name)){
             throw errorResponder(errorTypes.VALIDATION_ERROR, 'Role name is required');
         }
-        
+
         const service = await servicesService.getService(serviceId);
         if (!service){
             throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Failed to get service');
@@ -167,7 +195,15 @@ async function updateService(req, res, next){
 async function updateStatus(req, res, next){
     try {
         const { status } = req.body
-        
+        const user = await getUser(req.user.id);
+
+        if (user.role !== 'admin') {
+            throw errorResponder(
+                errorTypes.INVALID_CREDENTIALS,
+                'User not admin'
+            );
+        }
+
         const success = await servicesService.updateStatus(req.params.serviceId, status)
 
         if (!success){
@@ -180,11 +216,46 @@ async function updateStatus(req, res, next){
     }
 }
 
+async function getServicesWithRoles(req, res, next){
+    try {
+        const services = await servicesService.getServicesWithRoles();
+        if (!services){
+            throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Failed to get services');
+        }
+        return res.status(200).json(services);
+    } catch (error) {
+        return next(error);
+    }
+}
+
+async function getServiceWithRoles(req, res, next){
+    try {
+        const service = await servicesService.getServiceWithRoles(req.params.id);
+        const user = await getUser(req.user.id);
+
+        if (user.role !== 'admin') {
+            throw errorResponder(
+                errorTypes.INVALID_CREDENTIALS,
+                'User not admin'
+            );
+        }
+
+        if (!service){
+            throw errorResponder(errorTypes.NOT_FOUND, 'Service not found');
+        }
+        return res.status(200).json(service);
+    } catch (error) {
+        return next(error);
+    }
+}
+
 module.exports = {
     createService,
     getServices,
     getService,
     deleteService,
     updateService,
-    updateStatus
+    updateStatus,
+    getServicesWithRoles,
+    getServiceWithRoles
 };
