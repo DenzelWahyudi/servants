@@ -4,6 +4,7 @@ import { API_URL } from "../api"
 import { format } from "date-fns"
 import { useNavigate } from "react-router-dom"
 import { Heading } from "./Heading"
+import { useAuth } from "../hooks/useAuth.ts";
 
 
 type RoleFormProps = {
@@ -12,6 +13,7 @@ type RoleFormProps = {
     serviceName: string
     roleName: string
     onClose: () => void
+    token: string | null
 }
 
 type RolesCardProps = {
@@ -52,6 +54,7 @@ export function RolesCard({ serviceId, serviceName, serviceTime, serviceDate }: 
     const [assignData, setAssignData] = useState<Assign | null>(null)
     const [relieveData, setRelieveData] = useState<Assign | null>(null)
     const [refreshKey, setRefreshKey] = useState(0)
+    const { token } = useAuth()
 
     useEffect(() => {
         async function fetchService() {
@@ -142,6 +145,7 @@ export function RolesCard({ serviceId, serviceName, serviceTime, serviceDate }: 
                             setAssignData(null)
                             setRefreshKey(k => k + 1)
                         }}
+                        token={token}
                         />
                     </div>
                 </div>
@@ -163,6 +167,7 @@ export function RolesCard({ serviceId, serviceName, serviceTime, serviceDate }: 
                             setRelieveData(null)
                             setRefreshKey(k => k + 1)
                         }}
+                        token={token}
                         />
                     </div>
                 </div>
@@ -172,7 +177,7 @@ export function RolesCard({ serviceId, serviceName, serviceTime, serviceDate }: 
 }
 
 
-function RelieveRoleForm({ roleId, serviceName, roleName, onClose }: RoleFormProps){
+function RelieveRoleForm({ roleId, serviceName, roleName, onClose, token }: RoleFormProps){
 
     const navigate = useNavigate()
     const [error, setError] = useState<string | null>(null)
@@ -202,7 +207,10 @@ function RelieveRoleForm({ roleId, serviceName, roleName, onClose }: RoleFormPro
 
         const response = await fetch(`${API_URL}/api/assignments/relieve`, {
             method: "DELETE",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
             body: JSON.stringify({ userId, roleId })
         })
         const data = await response.json()
@@ -266,7 +274,7 @@ function RelieveRoleForm({ roleId, serviceName, roleName, onClose }: RoleFormPro
 }
 
 
-function AssignRoleForm({ roleId, serviceName, roleName, onClose }: RoleFormProps){
+function AssignRoleForm({ roleId, serviceName, roleName, onClose, token }: RoleFormProps){
 
     const navigate = useNavigate()
     const [error, setError] = useState<string | null>(null)
@@ -290,9 +298,12 @@ function AssignRoleForm({ roleId, serviceName, roleName, onClose }: RoleFormProp
         setLoading(true);
         setError(null);
         try {
-            const response = await fetch(`${API_URL}/api/assignments`, {
+            const response = await fetch(`${API_URL}/api/assignments/admin`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json"},
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                },
                 body: JSON.stringify({
                     userId,
                     roleId,

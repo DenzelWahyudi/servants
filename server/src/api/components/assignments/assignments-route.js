@@ -9,12 +9,14 @@ module.exports = (app) => {
     route.post('/', assignmentsController.createAssignment)
 
     route.get('/pendingstatus', assignmentsController.getPendingStatusAssignments)
-
-    route.delete('/relieve', assignmentsController.relieveUser)
     
     route.get('/relieve/:roleId', assignmentsController.getUsersToRelieve)
 
-    route.put('/updatestatus/:id', assignmentsController.updateStatus)
+    route.put(
+        '/updatestatus/:id',
+        authMiddleware,
+        assignmentsController.updateStatus
+    );
 
     route.get('/group/:serviceId', assignmentsController.getGroupDetails)
 
@@ -23,4 +25,8 @@ module.exports = (app) => {
     route.get('/all', authMiddleware, assignmentsController.getAllUserAssignments)
 
     route.get('/assignedservices', authMiddleware, assignmentsController.getAllUserAssignedServices)
+
+    route.post('/admin', authMiddleware, assignmentsController.adminCreateAssignment)
+
+    route.delete('/relieve', authMiddleware, assignmentsController.relieveUser);
 }

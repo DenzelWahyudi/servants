@@ -4,6 +4,7 @@ import { Heading } from "../components/Heading";
 import { Sidebar } from "../components/Sidebar";
 import { API_URL } from "../api";
 import { format } from "date-fns";
+import { useAuth } from "../hooks/useAuth.ts";
 
 
 type AdmitCardProps = {
@@ -15,6 +16,7 @@ type AdmitCardProps = {
     date: string
     time: string
     onSave: () => void
+    token: string | null
 }
 
 interface Assignment {
@@ -31,6 +33,7 @@ interface Assignment {
 export function AdminAdmissions(){
 
     const [assignments, setAssignments] = useState<Assignment[] | null>(null)
+    const { token } = useAuth();
 
     useEffect(() => {
         async function fetchPendingAssignments() {
@@ -70,7 +73,7 @@ export function AdminAdmissions(){
                 </div>
                 <div className="flex flex-wrap gap-4">
                     {assignments?.map((a) => <AdmitCard _id={a._id} userName={a.userName} roleId={a.roleId} roleName={a.roleName} 
-                    serviceName={a.serviceName} date={a.date} time={a.time} onSave={() => {fetchPendingAssignments()}}/>)}
+                    serviceName={a.serviceName} date={a.date} time={a.time} onSave={() => {fetchPendingAssignments()}} token={token}/>)}
                 </div>
             </div>
         </div>
@@ -79,7 +82,7 @@ export function AdminAdmissions(){
 }
 
 
-function AdmitCard({ _id, userName, roleId, roleName, serviceName, date, time, onSave }:AdmitCardProps){
+function AdmitCard({ _id, userName, roleId, roleName, serviceName, date, time, onSave, token }:AdmitCardProps){
 
     const [error, setError] = useState<string | null>(null)
     const [loading, setLoading] = useState(false)
@@ -94,6 +97,7 @@ function AdmitCard({ _id, userName, roleId, roleName, serviceName, date, time, o
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
                 },
                 body: JSON.stringify({ status, roleId })
             })
