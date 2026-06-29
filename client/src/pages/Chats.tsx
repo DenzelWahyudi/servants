@@ -4,11 +4,12 @@ import { Header } from "../components/Header";
 import { API_URL } from "../api";
 import { useAuth } from "../hooks/useAuth";
 import { ChevronLeftIcon } from "@heroicons/react/24/solid";
-import { SendHorizontal } from 'lucide-react';
+import { SendHorizontal, X } from 'lucide-react';
 import { format } from 'date-fns';
 import { useLayoutEffect, useRef } from 'react';
 import { useChatSocket } from "../hooks/useChatSocket";
 import React from "react";
+import { motion } from "framer-motion";
 
 interface Service {
     serviceId: string
@@ -38,6 +39,13 @@ interface ReplyTo {
     message: string
 }
 
+interface Chat {
+    _id: string
+    userId: string
+    userName: string
+    message: string
+}
+
 export function Chats() {
 
     const { token } = useAuth()
@@ -60,6 +68,8 @@ export function Chats() {
     const [groupDetails, setGroupDetails] = useState<Group[] | null>(null)
     const [loading, setLoading] = useState(false)
     const [loadingDetails, setLoadingDetails] = useState(false)
+    const messageRefs = useRef<Record<string, HTMLDivElement | null>>({})
+    const [highlightedId, setHighlightedId] = useState<string | null>(null)
 
     useEffect(() => {
         async function fetchAssignedServices(){
@@ -136,7 +146,7 @@ export function Chats() {
                 return
             }
 
-            setMessage((prev) => ({...prev, message:""}))
+            setMessage((prev) => ({...prev, message:"", replyTo: null}))
 
             setLoading(false)
         } catch {
@@ -161,6 +171,26 @@ export function Chats() {
 
         setGroupDetails(data)
         setLoadingDetails(false)
+    }
+
+    function handleReply(c: Chat){
+        setMessage(prev => ({
+            ...prev,
+            replyTo: {
+                chatId: c._id,
+                userId: c.userId,
+                userName: c.userName,
+                message: c.message
+            }
+        }))
+    }
+
+    function scrollToMessage(chatId: string) {
+        const el = messageRefs.current[chatId];
+        if (!el) return;
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setHighlightedId(chatId);
+        setTimeout(() => setHighlightedId(null), 1500);
     }
 
     return(
@@ -204,7 +234,10 @@ export function Chats() {
                         <div className="flex gap-1 items-center">
                             <ChevronLeftIcon
                             className="-ml-2 h-6.5 cursor-pointer hover:text-slate-600 transition-colors"
-                            onClick={() => setChosenService(null)}
+                            onClick={() => {
+                                setChosenService(null)
+                                setMessage(prev => ({...prev, replyTo: null }))
+                            }}
                             />
                             <div className="flex flex-col gap-0.5 items-start">
                                 <button 
@@ -241,8 +274,18 @@ export function Chats() {
                                         </div>
                                     )}
                                     {c.replyTo === null ? (
-                                        <div className={`relative ${c.userId === userId._id ? "self-end bg-sky-700" : "self-start bg-zinc-800"} max-w-3/4 px-1.5 py-1 
-                                        gap-2.5 items-end rounded-lg`}>
+                                        <motion.div
+                                            drag="x"
+                                            dragConstraints={{ left: 0, right: 90 }}
+                                            dragElastic={{left: 0, right: 0.5}}
+                                            dragSnapToOrigin
+                                            onDragEnd={(_, info) => {
+                                                if (info.offset.x > 60) handleReply(c)
+                                            }}
+                                            className={`relative ${c.userId === userId._id ? "self-end bg-sky-700" : "self-start bg-zinc-800"} max-w-3/4 px-1.5 py-1 
+                                            gap-2.5 items-end rounded-lg ${highlightedId === c._id ? 'ring-2 ring-amber-400 transition-all' : ''}`}
+                                            ref={(el) => { messageRefs.current[c._id] = el as HTMLDivElement | null }}
+                                        >
                                             <span className={`${c.userId === userId._id ? "hidden" : ""}
                                             text-[12px] text-rose-400 font-semibold`}>{c.userName}</span>
                                                 <div className="text-sm wrap-break-word whitespace-pre-wrap">
@@ -254,16 +297,32 @@ export function Chats() {
                                                 <span className="absolute bottom-1 right-1.5 text-[10px] text-zinc-300 whitespace-nowrap select-none">
                                                 {format(new Date(c.createdAt), 'HH:mm')}
                                             </span>
-                                        </div>
+                                        </motion.div>
                                     ) : (
-                                        <div className={`relative ${c.userId === userId._id ? "self-end bg-sky-700" : "self-start bg-zinc-800"} max-w-3/4 px-1.5 py-1 
-                                        gap-2.5 items-end rounded-lg`}>
+                                        <motion.div
+                                            drag="x"
+                                            dragConstraints={{ left: 0, right: 90 }}
+                                            dragElastic={{left: 0, right: 0.5}}
+                                            dragSnapToOrigin
+                                            onDragEnd={(_, info) => {
+                                                if (info.offset.x > 60) handleReply(c)
+                                            }}
+                                            className={`relative ${c.userId === userId._id ? "self-end bg-sky-700" : "self-start bg-zinc-800"} max-w-3/4 px-1.5 py-1 
+                                            gap-2.5 items-end rounded-lg ${highlightedId === c._id ? 'ring-2 ring-amber-400 transition-all' : ''}`}
+                                            ref={(el) => { messageRefs.current[c._id] = el as HTMLDivElement | null }}
+                                        >
                                             <span className={`${c.userId === userId._id ? "hidden" : ""}
                                             text-[12px] text-rose-400 font-semibold`}>{c.userName}</span>
-                                            <div className={`${c.userId === userId._id ? "bg-sky-900" : "bg-black/25"} flex flex-col rounded-lg max-h-24 p-2 text-sm
-                                            items-start overflow-hidden border-l-3 border-rose-400`}>
+                                            <div
+                                                className={`${c.userId === userId._id ? "bg-sky-900" : "bg-black/25"} flex flex-col rounded-lg max-h-22.5 p-2 text-sm
+                                                items-start overflow-hidden border-l-3 border-rose-400`}
+                                                onClick={() => {
+                                                    if(c.replyTo !== null) scrollToMessage(c.replyTo.chatId)
+                                                    }
+                                                }
+                                            >
                                                 <span className="text-[12px] text-rose-400 font-semibold">{c.replyTo.userName}</span>
-                                                <span className="w-full text-sm text-zinc-200 wrap-break-word">{c.replyTo.message}</span>
+                                                <span className="w-full text-sm text-zinc-200 wrap-break-word whitespace-pre-wrap">{c.replyTo.message}</span>
                                             </div>
                                             <div className="text-sm wrap-break-word whitespace-pre-wrap">
                                                 {c.message}
@@ -274,7 +333,7 @@ export function Chats() {
                                             <span className="absolute bottom-1 right-1.5 text-[10px] text-zinc-300 whitespace-nowrap select-none">
                                                 {format(new Date(c.createdAt), 'HH:mm')}
                                             </span>
-                                        </div>
+                                        </motion.div>
                                     )}
                                 </React.Fragment>
                             )
@@ -285,8 +344,14 @@ export function Chats() {
                         <div className="p-2 pb-0 bg-slate-700">
                             <div className={`${message.replyTo.userId === userId._id ? "bg-sky-900" : "bg-black/50"} flex flex-col rounded-lg p-2 text-sm
                                             items-start overflow-hidden max-h-[89.9px] border-l-3 border-rose-400`}>
-                                <span className="text-[12px] text-rose-400 font-semibold">{message.replyTo.userName}</span>
-                                <span className="w-full text-sm text-zinc-200 wrap-break-word">{message.replyTo.message}</span>
+                                <div className="flex justify-between w-full">
+                                    <span className="text-[12px] text-rose-400 font-semibold">{message.replyTo.userName}</span>
+                                    <button className="bg-black/50 p-1 rounded-full text-center hover:text-black/50"
+                                            onClick={() => setMessage(prev => ({...prev, replyTo: null }))}>
+                                        <X size={10} />
+                                    </button>
+                                </div>
+                                <span className="w-full text-sm text-zinc-200 wrap-break-word whitespace-pre-wrap">{message.replyTo.message}</span>
                             </div>
                         </div>
                     ) : null}
