@@ -18,8 +18,13 @@ db.model(
             enum: ['success', 'pending', 'failed'],
         },
         replyTo: {
-            type: String,
-            default: "none"
+            type: {
+                chatId: String,
+                userId: String,
+                userName: String,
+                message: String
+            },
+            default: null
         }
     }, { timestamps : true })
 );

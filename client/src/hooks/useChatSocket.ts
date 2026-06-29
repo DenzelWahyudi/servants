@@ -7,7 +7,15 @@ interface Chat {
     userName: string
     message: string
     status: string
+    replyTo: ReplyTo | null
     createdAt: string
+}
+
+interface ReplyTo {
+    chatId: string
+    userId: string
+    userName: string
+    message: string
 }
 
 // Derives ws:// or wss:// from your existing API_URL automatically
