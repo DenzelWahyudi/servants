@@ -17,5 +17,9 @@ db.model(
             default: 'pending',
             enum: ['success', 'pending', 'failed'],
         },
+        replyTo: {
+            type: String,
+            default: "none"
+        }
     }, { timestamps : true })
 );
