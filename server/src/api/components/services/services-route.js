@@ -1,5 +1,6 @@
 const express = require('express');
 const servicesController = require('./services-controller');
+const authMiddleware = require('../../../core/middlewares/auth');
 const route = express.Router();
 
 module.exports = (app) => {
@@ -7,13 +8,17 @@ module.exports = (app) => {
 
     route.get('/', servicesController.getServices)
 
-    route.post('/create', servicesController.createService)
+    route.get('/with-roles', servicesController.getServicesWithRoles)
 
-    route.put('/update/:serviceId', servicesController.updateService)
+    route.post('/create', authMiddleware, servicesController.createService)
 
-    route.put('/updatestatus/:serviceId', servicesController.updateStatus)
+    route.put('/update/:serviceId', authMiddleware, servicesController.updateService)
 
-    route.post('/delete/:serviceId', servicesController.deleteService)
+    route.put('/updatestatus/:serviceId', authMiddleware, servicesController.updateStatus)
+
+    route.post('/delete/:serviceId', authMiddleware, servicesController.deleteService)
 
     route.get('/:id', servicesController.getService)
+
+    route.get('/:id/with-roles', authMiddleware, servicesController.getServiceWithRoles)
 };

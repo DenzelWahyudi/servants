@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { Form } from "./Form";
 import { Heading } from "./Heading";
+import {useAuth} from "../hooks/useAuth.ts";
 
 
 type Role2 = {
@@ -23,6 +24,7 @@ type EditServiceFormProps = {
     id: string
     onClose?: () => void
     onSave?: (updated: Service & { roles: SavedRole[] }) => void
+    token: string | null
 }
 
 interface Service {
@@ -61,29 +63,18 @@ export function UpcomingServicesAdmin(){
     const [editingId, setEditingId] = useState<string | null>(null);
     const [toBeDelete, setToBeDelete] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+    const { token } = useAuth()
     
     useEffect(() => {
         async function fetchServices() {
-            const response = await fetch(`${API_URL}/api/services`, {
+            const response = await fetch(`${API_URL}/api/services/with-roles`, {
                 method: "GET",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                },
             })
             const data: Service[] = await response.json();
-
-            const serviceWithRoles = await Promise.all(
-                data.map(async (service) => {
-                    const roleRes = await fetch(`${API_URL}/api/roles/${service._id}`, {
-                        method: "GET",
-                        headers: { "Content-Type": "application/json" },
-                    })
-                    const roles: Role[] = await roleRes.json();
-                    return { ...service, roles }
-                })
-            )
-            const sorted = serviceWithRoles.sort(
-                (a,b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-            );
-            setServices(sorted);
+            setServices(data);
         }
         fetchServices()
     }, [])
@@ -94,7 +85,10 @@ export function UpcomingServicesAdmin(){
         try {
             const response = await fetch(`${API_URL}/api/services/delete/${serviceId}`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
             });
 
             const data = await response.json();
@@ -116,7 +110,10 @@ export function UpcomingServicesAdmin(){
             const newStatus = e.target.value
             const response = await fetch(`${API_URL}/api/services/updatestatus/${serviceId}`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
                 body: JSON.stringify({ status: newStatus })
             })
             if (!response.ok){
@@ -212,7 +209,6 @@ export function UpcomingServicesAdmin(){
         {editingId && (
             <div
             className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-            onClick={() => setEditingId(null)}
             >
                 <div 
                 onClick={(e) => e.stopPropagation()}
@@ -224,6 +220,7 @@ export function UpcomingServicesAdmin(){
                     onSave={(updated) => {
                         setServices(prev => prev?.map(s => s._id === updated._id ? { ...s, ...updated, roles: updated.roles } : s)?? null)
                     }}
+                    token={token}
                     />
                 </div>
             </div>
@@ -233,7 +230,7 @@ export function UpcomingServicesAdmin(){
 }
 
 
-function EditServiceForm({ id, onClose, onSave }: EditServiceFormProps){
+function EditServiceForm({ id, onClose, onSave, token }: EditServiceFormProps){
     
     const navigate = useNavigate();
 
@@ -253,13 +250,15 @@ function EditServiceForm({ id, onClose, onSave }: EditServiceFormProps){
 
     useEffect(() => {
         async function fetchService(){
-            const response = await fetch(`${API_URL}/api/services/${id}`, {
+            const response = await fetch(`${API_URL}/api/services/${id}/with-roles`, {
                 method: "GET",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
             });
-            const service: Service = await response.json();
-            console.log("service id:", id)
-            console.log("fetched service:", service);
+            const service = await response.json();
+
             setFormData({
                 name: service.name,
                 date: service.date.split("T")[0],
@@ -267,21 +266,16 @@ function EditServiceForm({ id, onClose, onSave }: EditServiceFormProps){
                 status: service.status
             });
 
-            const roleRes = await fetch(`${API_URL}/api/roles/${service._id}`, {
-                method: "GET",
-                headers: { "Content-Type": "application/json" },
-            });
-            const fetchedRoles: RoleInterface[] = await roleRes.json();
             setRoles(
-                fetchedRoles.map((r) => ({
+                service.roles.map((r: RoleInterface) => ({
                     id: Date.now() + Math.random(),
                     name: r.name,
                     spotsTotal: r.spotsTotal
                 }))
             );
         }
-        if (id) fetchService();
-    },[id]);
+        fetchService();
+    },[id, token]);
     
 
     function handleChange(field: keyof typeof formData){
@@ -325,7 +319,10 @@ function EditServiceForm({ id, onClose, onSave }: EditServiceFormProps){
         try {
             const response = await fetch(`${API_URL}/api/services/update/${id}`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json"},
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
                 body: JSON.stringify({ 
                     ...formData, 
                     roles: roles.map(role => ({

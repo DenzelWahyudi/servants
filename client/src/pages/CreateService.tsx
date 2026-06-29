@@ -6,6 +6,7 @@ import { Heading } from "../components/Heading";
 import React, { useState } from "react";
 import { Trash2 } from "lucide-react";
 import { API_URL } from "../api"
+import {useAuth} from "../hooks/useAuth.ts";
 
 type Role = {
     id: number;
@@ -16,6 +17,7 @@ type Role = {
 export function CreateService() {
 
     const navigate = useNavigate();
+    const { token } = useAuth();
 
     const [formData, setFormData] = useState({
         name: "",
@@ -72,7 +74,10 @@ export function CreateService() {
         try {
             const response = await fetch(`${API_URL}/api/services/create`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json"},
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
                 body: JSON.stringify({ 
                     ...formData, 
                     roles: roles.map(role => ({

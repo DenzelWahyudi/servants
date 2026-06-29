@@ -24,11 +24,21 @@ async function updateStatus(id, status){
     return servicesRepository.updateStatus(id, status)
 }
 
+async function getServicesWithRoles(){
+    return servicesRepository.getServicesWithRoles();
+}
+
+async function getServiceWithRoles(id){
+    return servicesRepository.getServiceWithRoles(id);
+}
+
 module.exports = {
     createService,
     getServices,
     getService,
     deleteService,
     updateService,
-    updateStatus
+    updateStatus,
+    getServicesWithRoles,
+    getServiceWithRoles
 };

@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { Services } = require('../../../models');
 const { Roles } = require('../../../models');
 const cron = require('node-cron');
@@ -38,11 +39,42 @@ async function updateStatus(id, status){
     return Services.updateOne({ _id: id }, { $set: { status }} )
 }
 
+async function getServicesWithRoles() {
+    return Services.aggregate([
+        {
+            $lookup: {
+                from: 'roles',
+                localField: '_id',
+                foreignField: 'serviceId',
+                as: 'roles'
+            }
+        },
+        { $sort: { date: 1 } }
+    ]);
+}
+
+async function getServiceWithRoles(id) {
+    const result = await Services.aggregate([
+        { $match: { _id: new mongoose.Types.ObjectId(id) } },
+        {
+            $lookup: {
+                from: 'roles',
+                localField: '_id',
+                foreignField: 'serviceId',
+                as: 'roles'
+            }
+        }
+    ]);
+    return result[0] ?? null;
+}
+
 module.exports = {
     createService,
     getServices,
     getService,
     deleteService,
     updateService,
-    updateStatus
+    updateStatus,
+    getServicesWithRoles,
+    getServiceWithRoles
 };
