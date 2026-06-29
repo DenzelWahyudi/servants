@@ -33,7 +33,8 @@ export function Chats() {
     const [message, setMessage] = useState({
         serviceId: "",
         message: "",
-        status: "success"
+        status: "success",
+        replyTo: "none"
     })
     const [error, setError] = useState<string | null>(null)
     const containerRef = useRef<HTMLDivElement>(null)

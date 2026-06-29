@@ -6,7 +6,7 @@ const { broadcastToService } = require('../../../core/webSocket');
 async function sendChat(req, res, next){
     try {
         const userId = req.user.id
-        const { serviceId, message, status } = req.body
+        const { serviceId, message, status, replyTo } = req.body
 
         if(!message){
             throw errorResponder(errorTypes.EMPTY_BODY, 'No message was sent.')
@@ -14,7 +14,7 @@ async function sendChat(req, res, next){
 
         const userName = await usersService.getUserName(userId)
 
-        const success = await chatsService.sendChat(serviceId, userId, userName, message, status)
+        const success = await chatsService.sendChat(serviceId, userId, userName, message, status, replyTo)
         if (!success){
             throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Failed to send message!')
         }

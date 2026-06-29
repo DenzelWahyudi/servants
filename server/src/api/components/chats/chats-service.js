@@ -1,7 +1,7 @@
 const chatsRepository = require('./chats-repository')
 
-async function sendChat(serviceId, userId, userName, message, status){
-    return chatsRepository.sendChat(serviceId, userId, userName, message, status)
+async function sendChat(serviceId, userId, userName, message, status, replyTo){
+    return chatsRepository.sendChat(serviceId, userId, userName, message, status, replyTo)
 }
 
 async function getAllChats(serviceId){
