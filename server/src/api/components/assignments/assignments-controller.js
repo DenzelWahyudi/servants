@@ -1,10 +1,12 @@
 const assignmentsService = require('./assignments-service')
 const rolesService = require('../roles/roles-service')
 const { errorResponder, errorTypes } = require('../../../core/errors')
+const usersService = require('../users/users-service');
 
 async function createAssignment(req, res, next){
     try {
-        const { userId, roleId, status } = req.body
+        const { userId, roleId } = req.body
+        const status = "pending"
         if (!userId){
             throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'User id empty!')
         }
@@ -21,8 +23,6 @@ async function createAssignment(req, res, next){
             throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Already signed up!')
         }
 
-        if (status === "confirmed") await rolesService.increaseRoleSpotsFilled(roleId)
-
         const success = await assignmentsService.createAssignment(userId, roleId, status)
         if (!success){
             throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Failed to create assignment.')
@@ -31,6 +31,67 @@ async function createAssignment(req, res, next){
         return res.status(201).json({ message: "Create assignment success!" })
     } catch (error) {
         next(error)
+    }
+}
+
+async function adminCreateAssignment(req, res, next) {
+    try {
+        const { userId, roleId, status } = req.body;
+        const user = await usersService.getUser(req.user.id);
+
+        if (user.role !== 'admin') {
+            throw errorResponder(
+                errorTypes.INVALID_CREDENTIALS,
+                'User not admin'
+            );
+        }
+
+        if (!userId) {
+            throw errorResponder(
+                errorTypes.UNPROCESSABLE_ENTITY,
+                'User id empty!'
+            );
+        }
+        if (!roleId) {
+            throw errorResponder(
+                errorTypes.UNPROCESSABLE_ENTITY,
+                'Role id empty!'
+            );
+        }
+
+        const role = await rolesService.getRole(roleId);
+        if (!role) {
+            throw errorResponder(
+                errorTypes.UNPROCESSABLE_ENTITY,
+                'Role id invalid!'
+            );
+        }
+
+        if (await assignmentsService.hasUserBeenAssigned(roleId, userId)) {
+            throw errorResponder(
+                errorTypes.UNPROCESSABLE_ENTITY,
+                'Already signed up!'
+            );
+        }
+
+        if (status === 'confirmed')
+            await rolesService.increaseRoleSpotsFilled(roleId);
+
+        const success = await assignmentsService.createAssignment(
+            userId,
+            roleId,
+            status
+        );
+        if (!success) {
+            throw errorResponder(
+                errorTypes.UNPROCESSABLE_ENTITY,
+                'Failed to create assignment.'
+            );
+        }
+
+        return res.status(201).json({ message: 'Create assignment success!' });
+    } catch (error) {
+        next(error);
     }
 }
 
@@ -68,6 +129,14 @@ async function updateStatus(req, res, next){
     try {
         const assignmentId = req.params.id
         const { status, roleId } = req.body
+        const user = await usersService.getUser(req.user.id);
+
+        if (user.role !== 'admin') {
+            throw errorResponder(
+                errorTypes.INVALID_CREDENTIALS,
+                'User not admin'
+            );
+        }
 
         if (!assignmentId){
             throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Assignment id empty')
@@ -124,6 +193,14 @@ async function getUsersToRelieve(req, res, next){
 async function relieveUser(req, res, next){
     try {
         const { userId, roleId } = req.body
+        const user = await usersService.getUser(req.user.id);
+
+        if (user.role !== 'admin') {
+            throw errorResponder(
+                errorTypes.INVALID_CREDENTIALS,
+                'User not admin'
+            );
+        }
 
         const success = await assignmentsService.relieveUser(userId, roleId)
 
@@ -169,6 +246,7 @@ async function getGroupDetails(req, res, next){
 
 module.exports = {
     createAssignment,
+    adminCreateAssignment,
     getUserSchedule,
     getPendingStatusAssignments,
     updateStatus,
