@@ -17,14 +17,20 @@ async function getAllRoles(){
     return rolesRepository.getAllRoles()
 }
 
-async function getRole(id){
-    return rolesRepository.getRole(id)
+async function getRole(id) {
+    return rolesRepository.getRole(id);
 }
 
-async function deleteRoles(serviceId){
-    const roles = await rolesRepository.getRoles(serviceId)
-    roles?.map(async (r) => await assignmentsRepository.deleteAssignmentByRoleId(r._id))
-    return rolesRepository.deleteRoles(serviceId)
+async function deleteRoles(serviceId) {
+    const roles = await rolesRepository.getRoles(serviceId);
+    if (roles?.length) {
+        await Promise.all(
+            roles.map((r) =>
+                assignmentsRepository.deleteAssignmentByRoleId(r._id)
+            )
+        );
+    }
+    return rolesRepository.deleteRoles(serviceId);
 }
 
 async function increaseRoleSpotsFilled(id){
