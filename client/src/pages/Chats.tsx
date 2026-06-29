@@ -24,16 +24,31 @@ interface Group {
     roleName: string[]
 }
 
+interface Message {
+    serviceId: string,
+    message: string,
+    status: string,
+    replyTo: ReplyTo | null
+}
+
+interface ReplyTo {
+    chatId: string
+    userId: string
+    userName: string,
+    message: string
+}
+
 export function Chats() {
 
     const { token } = useAuth()
     const [assignedServices, setAssignedServices] = useState<Service[] | null>([])
     const [chosenService, setChosenService] = useState<Service | null>(null)
     const { chats } = useChatSocket(chosenService?.serviceId)
-    const [message, setMessage] = useState({
+    const [message, setMessage] = useState<Message>({
         serviceId: "",
         message: "",
-        status: "success"
+        status: "success",
+        replyTo: null
     })
     const [error, setError] = useState<string | null>(null)
     const containerRef = useRef<HTMLDivElement>(null)
@@ -225,25 +240,56 @@ export function Chats() {
                                             <span className="bg-zinc-900 rounded-md text-[10.5px] px-2 font-medium">{format(currentDate, 'EEE, d MMMM')}</span>
                                         </div>
                                     )}
-                                    <div className={`relative ${c.userId === userId._id ? "self-end bg-sky-700" : "self-start bg-zinc-800"} max-w-3/4 px-1.5 py-1 
-                                    gap-2.5 items-end rounded-lg`}>
-                                        <span className={`${c.userId === userId._id ? "hidden" : ""}
-                                        text-[12px] text-rose-300 font-semibold`}>{c.userName}</span>
-                                        <div className="text-sm wrap-break-word whitespace-pre-wrap">
-                                            {c.message}
-                                            <span className="invisible inline-block text-[10px] ml-2.5 whitespace-nowrap">
-                                                {format(new Date(c.createdAt), 'HH:mm')
-                                            }</span>
+                                    {c.replyTo === null ? (
+                                        <div className={`relative ${c.userId === userId._id ? "self-end bg-sky-700" : "self-start bg-zinc-800"} max-w-3/4 px-1.5 py-1 
+                                        gap-2.5 items-end rounded-lg`}>
+                                            <span className={`${c.userId === userId._id ? "hidden" : ""}
+                                            text-[12px] text-rose-400 font-semibold`}>{c.userName}</span>
+                                                <div className="text-sm wrap-break-word whitespace-pre-wrap">
+                                                    {c.message}
+                                                    <span className="invisible inline-block text-[10px] ml-2.5 whitespace-nowrap">
+                                                    {format(new Date(c.createdAt), 'HH:mm')
+                                                    }</span>
+                                                </div>
+                                                <span className="absolute bottom-1 right-1.5 text-[10px] text-zinc-300 whitespace-nowrap select-none">
+                                                {format(new Date(c.createdAt), 'HH:mm')}
+                                            </span>
                                         </div>
-                                        <span className="absolute bottom-1 right-1.5 text-[10px] text-zinc-300 whitespace-nowrap select-none">
-                                            {format(new Date(c.createdAt), 'HH:mm')}
-                                        </span>
-                                    </div>
+                                    ) : (
+                                        <div className={`relative ${c.userId === userId._id ? "self-end bg-sky-700" : "self-start bg-zinc-800"} max-w-3/4 px-1.5 py-1 
+                                        gap-2.5 items-end rounded-lg`}>
+                                            <span className={`${c.userId === userId._id ? "hidden" : ""}
+                                            text-[12px] text-rose-400 font-semibold`}>{c.userName}</span>
+                                            <div className={`${c.userId === userId._id ? "bg-sky-900" : "bg-black/25"} flex flex-col rounded-lg max-h-24 p-2 text-sm
+                                            items-start overflow-hidden border-l-3 border-rose-400`}>
+                                                <span className="text-[12px] text-rose-400 font-semibold">{c.replyTo.userName}</span>
+                                                <span className="w-full text-sm text-zinc-200 wrap-break-word">{c.replyTo.message}</span>
+                                            </div>
+                                            <div className="text-sm wrap-break-word whitespace-pre-wrap">
+                                                {c.message}
+                                                <span className="invisible inline-block text-[10px] ml-2.5 whitespace-nowrap">
+                                                    {format(new Date(c.createdAt), 'HH:mm')
+                                                    }</span>
+                                            </div>
+                                            <span className="absolute bottom-1 right-1.5 text-[10px] text-zinc-300 whitespace-nowrap select-none">
+                                                {format(new Date(c.createdAt), 'HH:mm')}
+                                            </span>
+                                        </div>
+                                    )}
                                 </React.Fragment>
                             )
                         })}
                     </div>
 
+                    {message.replyTo ? (
+                        <div className="p-2 pb-0 bg-slate-700">
+                            <div className={`${message.replyTo.userId === userId._id ? "bg-sky-900" : "bg-black/50"} flex flex-col rounded-lg p-2 text-sm
+                                            items-start overflow-hidden max-h-[89.9px] border-l-3 border-rose-400`}>
+                                <span className="text-[12px] text-rose-400 font-semibold">{message.replyTo.userName}</span>
+                                <span className="w-full text-sm text-zinc-200 wrap-break-word">{message.replyTo.message}</span>
+                            </div>
+                        </div>
+                    ) : null}
                     <div className="flex items-center py-2 gap-1.5 px-2.5 mt-auto bg-slate-700">
                         <textarea 
                         ref={textareaRef}
