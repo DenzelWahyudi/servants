@@ -76,6 +76,15 @@ export function Chats() {
     const messageRefs = useRef<Record<string, HTMLDivElement | null>>({})
     const [highlightedId, setHighlightedId] = useState<string | null>(null)
     const [members, setMembers] = useState<Member[] | null>(null)
+    const [readStatusChat, setReadStatusChat] = useState<{
+        _id: string
+        userId: string
+        userName: string
+        message: string
+        createdAt: string
+        readBy: { userId: string; userName: string }[]
+        replyTo: { chatId: string; userId: string; userName: string; message: string } | null
+    } | null>(null)
 
     useEffect(() => {
         async function fetchAssignedServices(){
@@ -286,7 +295,7 @@ export function Chats() {
                                 setMessage(prev => ({...prev, replyTo: null }))
                             }}
                             />
-                            <div className="flex flex-col gap-0.5 items-start">
+                            <div className="flex flex-col gap-1 items-start">
                                 <button 
                                 disabled={loadingDetails}
                                 className="text-[13.5px] font-medium leading-none hover:text-zinc-300 disabled:text-zinc-300"
@@ -323,11 +332,12 @@ export function Chats() {
                                     {c.replyTo === null ? (
                                         <motion.div
                                             drag="x"
-                                            dragConstraints={{ left: 0, right: 90 }}
-                                            dragElastic={{left: 0, right: 0.5}}
+                                            dragConstraints={{ left: -90, right: 90 }}
+                                            dragElastic={{ left: 0.5, right: 0.5 }}
                                             dragSnapToOrigin
                                             onDragEnd={(_, info) => {
                                                 if (info.offset.x > 60) handleReply(c)
+                                                if (info.offset.x < -60 && c.userId === userId._id) setReadStatusChat(c)
                                             }}
                                             className={`relative ${c.userId === userId._id ? "self-end bg-sky-700" : "self-start bg-zinc-800"} max-w-3/4 px-1.5 py-1 
                                             gap-2.5 items-end rounded-lg ${highlightedId === c._id ? 'ring-2 ring-amber-400 transition-all' : ''}`}
@@ -350,11 +360,12 @@ export function Chats() {
                                     ) : (
                                         <motion.div
                                             drag="x"
-                                            dragConstraints={{ left: 0, right: 90 }}
-                                            dragElastic={{left: 0, right: 0.5}}
+                                            dragConstraints={{ left: -90, right: 90 }}
+                                            dragElastic={{ left: 0.5, right: 0.5 }}
                                             dragSnapToOrigin
                                             onDragEnd={(_, info) => {
                                                 if (info.offset.x > 60) handleReply(c)
+                                                if (info.offset.x < -60 && c.userId === userId._id) setReadStatusChat(c)
                                             }}
                                             className={`relative ${c.userId === userId._id ? "self-end bg-sky-700" : "self-start bg-zinc-800"} max-w-3/4 px-1.5 py-1 
                                             gap-2.5 items-end rounded-lg ${highlightedId === c._id ? 'ring-2 ring-amber-400 transition-all' : ''}`}
@@ -457,6 +468,102 @@ export function Chats() {
                             ))}
                         </div>
                     </div>
+                </div>
+
+                {/* read / unread status view */}
+                <div className={`absolute bg-slate-800 w-full h-full
+                transition-transform duration-300 ease-in-out overflow-y-auto
+                ${readStatusChat && chosenService ? 'translate-x-0' : 'translate-x-full'}`}>
+                    {/* header */}
+                    <div className="flex items-center gap-1 py-3.5 px-2.5 bg-slate-700 select-none">
+                        <ChevronLeftIcon
+                        className="-ml-2 h-6.5 cursor-pointer hover:text-slate-600 transition-colors"
+                        onClick={() => setReadStatusChat(null)}
+                        />
+                        <div className="flex flex-col gap-1 items-start">
+                            <span className="text-[13.5px] font-medium leading-none">Message Info</span>
+                            <span className="text-zinc-300 text-[10px] leading-none">
+                                {readStatusChat ? format(new Date(readStatusChat.createdAt), 'd MMMM yyyy, HH:mm') : null}
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* message preview */}
+                    {readStatusChat && (
+                        <div className="flex flex-col px-2.5 py-3 border-b border-zinc-700">
+                            <div className="relative self-end bg-sky-700 max-w-3/4 ml-auto px-1.5 py-1 rounded-lg">
+                                <div className="text-sm wrap-break-word whitespace-pre-wrap select-text">
+                                    {readStatusChat.message}
+                                    <span className="invisible inline-flex gap-1 text-[10px] ml-2.5 whitespace-nowrap">
+                                        {format(new Date(readStatusChat.createdAt), 'HH:mm')}
+                                        <CheckCheck size={13} />
+                                    </span>
+                                </div>
+                                <span className="absolute bottom-1 right-1.5 inline-flex gap-1 items-center text-[10px] text-zinc-300 whitespace-nowrap select-none">
+                                    {format(new Date(readStatusChat.createdAt), 'HH:mm')}
+                                    <CheckCheck
+                                        size={13}
+                                        className={members && readStatusChat.readBy.length < members.length ? "text-zinc-100" : "text-blue-500"}
+                                    />
+                                </span>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* read by section */}
+                    {readStatusChat && readStatusChat.readBy.filter(r => r.userId !== userId._id).length > 0 && (
+                        <div>
+                            <div className="flex items-center gap-2 px-2.5 pt-3 pb-1">
+                                <CheckCheck size={14} className="text-blue-400" />
+                                <span className="text-[11px] font-semibold tracking-widest text-blue-400 uppercase">Read</span>
+                            </div>
+                            {readStatusChat.readBy
+                                .filter(r => r.userId !== userId._id)
+                                .map((r, index, arr) => (
+                                    <div
+                                        key={r.userId}
+                                        className={`flex justify-between items-center px-2.5 py-2.5
+                                        ${index < arr.length - 1 ? 'border-b border-zinc-700' : ''}`}
+                                    >
+                                        <span className="text-[13.5px] font-medium">{r.userName}</span>
+                                        <span className="text-[11px] text-blue-400 font-medium">Read</span>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                    )}
+
+                    {/* unread by section */}
+                    {readStatusChat && members && (
+                        members
+                            .filter(m =>
+                                m.userId !== userId._id &&
+                                !readStatusChat.readBy.some(r => r.userId === m.userId)
+                            ).length > 0
+                    ) && (
+                        <div>
+                            <div className="flex items-center gap-2 px-2.5 pt-3 pb-1">
+                                <CheckCheck size={14} className="text-zinc-400" />
+                                <span className="text-[11px] font-semibold tracking-widest text-zinc-400 uppercase">Unread</span>
+                            </div>
+                            {members!
+                                .filter(m =>
+                                    m.userId !== userId._id &&
+                                    !readStatusChat!.readBy.some(r => r.userId === m.userId)
+                                )
+                                .map((m, index, arr) => (
+                                    <div
+                                        key={m.userId}
+                                        className={`flex justify-between items-center px-2.5 py-2.5
+                                        ${index < arr.length - 1 ? 'border-b border-zinc-700' : ''}`}
+                                    >
+                                        <span className="text-[13.5px] font-medium">{m.userName}</span>
+                                        <span className="text-[11px] text-zinc-400 font-medium">Unread</span>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                    )}                    
                 </div>
             </div>
             
