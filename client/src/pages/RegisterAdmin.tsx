@@ -111,7 +111,7 @@ export function RegisterAdmin() {
     }
 
     return(
-        <div className="mx-auto px-4 sm:px-12 pt-5 pb-10 flex flex-col gap-8 sm:gap-12 items-center min-h-screen">
+        <div className="mx-auto px-4 sm:px-12 pt-5 pb-10 flex flex-col gap-8 sm:gap-12 items-center min-h-screen select-none">
             <Header variant="registeradmin" />
             { page === "form" ? (
                 <div className="flex flex-col gap-4 p-6 sm:p-10 bg-slate-800/80 backdrop-blur-sm border border-slate-700/50 shadow-2xl items-center rounded-2xl w-full max-w-md">

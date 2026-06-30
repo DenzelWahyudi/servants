@@ -1,8 +1,8 @@
 const servicesService = require('./services-service');
-const rolesService = require('../roles/roles-service');
-const chatsService = require('../chats/chats-service');
+const { createRoles, deleteRoles } = require('../roles/roles-service');
+const { deleteChats } = require('../chats/chats-service');
 const { errorResponder, errorTypes } = require('../../../core/errors');
-const {getUser} = require("../users/users-service");
+const { getUser } = require("../users/users-service");
 
 async function createService(req, res, next){
     try {
@@ -47,7 +47,7 @@ async function createService(req, res, next){
                 spotsFilled: 0
             }));
 
-            const rolesSuccess = await rolesService.createRoles(rolesBody);
+            const rolesSuccess = await createRoles(rolesBody);
             if (!rolesSuccess){
                 throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Failed to create roles');
             }
@@ -101,12 +101,12 @@ async function deleteService(req, res, next){
             throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Failed to get service');
         }
 
-        const successRoles = await rolesService.deleteRoles(serviceId);
+        const successRoles = await deleteRoles(serviceId);
         if (!successRoles){
             throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Failed to delete roles');
         }
 
-        const successChats = await chatsService.deleteChats(serviceId);
+        const successChats = await deleteChats(serviceId);
         if (!successChats){
             throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Failed to delete chats');
         }
@@ -157,12 +157,12 @@ async function updateService(req, res, next){
             throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Failed to get service');
         }
 
-        const successRoles = await rolesService.deleteRoles(serviceId);
+        const successRoles = await deleteRoles(serviceId);
         if (!successRoles){
             throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Failed to delete roles');
         }
 
-        const successChats = await chatsService.deleteChats(serviceId);
+        const successChats = await deleteChats(serviceId);
         if (!successChats){
             throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Failed to delete chats');
         }
@@ -180,7 +180,7 @@ async function updateService(req, res, next){
                 spotsFilled: 0
             }));
 
-            const rolesSuccess = await rolesService.createRoles(rolesBody);
+            const rolesSuccess = await createRoles(rolesBody);
             if (!rolesSuccess){
                 throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Failed to update roles');
             }

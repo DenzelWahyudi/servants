@@ -116,7 +116,7 @@ export function Home() {
 	}
 
 	return (
-		<div className="mx-auto px-4 sm:px-12 py-5 flex flex-col gap-15">
+		<div className="mx-auto px-4 sm:px-12 py-5 flex flex-col gap-15 select-none">
 			<Header variant="home"/>
 
 			<header className="hidden sm:flex flex-col gap-5 items-center justify-center w-full">

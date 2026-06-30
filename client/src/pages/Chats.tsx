@@ -4,7 +4,7 @@ import { Header } from "../components/Header";
 import { API_URL } from "../api";
 import { useAuth } from "../hooks/useAuth";
 import { ChevronLeftIcon } from "@heroicons/react/24/solid";
-import { SendHorizontal, X } from 'lucide-react';
+import { SendHorizontal, X, CheckCheck } from 'lucide-react';
 import { format } from 'date-fns';
 import { useLayoutEffect, useRef } from 'react';
 import { useChatSocket } from "../hooks/useChatSocket";
@@ -46,6 +46,11 @@ interface Chat {
     message: string
 }
 
+interface Member {
+    userId: string,
+    userName: string
+}
+
 export function Chats() {
 
     const { token } = useAuth()
@@ -70,6 +75,16 @@ export function Chats() {
     const [loadingDetails, setLoadingDetails] = useState(false)
     const messageRefs = useRef<Record<string, HTMLDivElement | null>>({})
     const [highlightedId, setHighlightedId] = useState<string | null>(null)
+    const [members, setMembers] = useState<Member[] | null>(null)
+    const [readStatusChat, setReadStatusChat] = useState<{
+        _id: string
+        userId: string
+        userName: string
+        message: string
+        createdAt: string
+        readBy: { userId: string; userName: string }[]
+        replyTo: { chatId: string; userId: string; userName: string; message: string } | null
+    } | null>(null)
 
     useEffect(() => {
         async function fetchAssignedServices(){
@@ -166,7 +181,9 @@ export function Chats() {
         const data: Group[] = await response.json()
 
         if(!response.ok){
+            setLoadingDetails(false)
             setError("Failed to get group details")
+            return
         }
 
         setGroupDetails(data)
@@ -193,6 +210,43 @@ export function Chats() {
         setTimeout(() => setHighlightedId(null), 1500);
     }
 
+    async function handleReadServiceChats(serviceId: string){
+        setError(null)
+
+        const response = await fetch(`${API_URL}/api/chats/read-all`, {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ serviceId })
+        })
+
+        if (!response.ok){
+            setError("Failed to mark read all service chats.")
+            return
+        }
+        setError(null)
+    }
+
+    async function fetchGroupMemberNames(serviceId: string){
+        setError(null)
+
+        const response = await fetch(`${API_URL}/api/assignments/group-names/${serviceId}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json'}
+        })
+
+        const data: Member[] = await response.json()
+
+        if(!response.ok){
+            setError("Failed to get group member names")
+            return
+        }
+
+        setMembers(data)
+    }
+
     return(
         <div className="flex flex-col gap-5 mx-auto p-4 sm:px-12 py-5">
             <Header variant="chats" />
@@ -204,7 +258,7 @@ export function Chats() {
                     <input className="mx-2 px-3 py-1 bg-slate-700 border border-slate-600 focus:border-amber-400 outline-none
                     text-zinc-100 text-sm rounded-lg transition-colors" 
                     placeholder="🔍︎  Search Service"/>
-                    <div className="pr-0">
+                    <div className="pr-0 select-none">
                         {assignedServices?.length === 0 ? (
                                 <p className="text-center text-zinc-100 text-sm">No Assignments</p>
                             ) : (assignedServices?.map((s) => 
@@ -214,6 +268,8 @@ export function Chats() {
                             onClick={() => {
                                 setChosenService(s);
                                 setMessage(prev => ({...prev, serviceId: s.serviceId}))
+                                handleReadServiceChats(s.serviceId).then()
+                                fetchGroupMemberNames(s.serviceId).then()
                             }}
                             >
                                 <div className="flex flex-col text-left">
@@ -230,7 +286,7 @@ export function Chats() {
                 <div className={`absolute flex flex-col bg-slate-800 w-full h-full 
                 transition-transform duration-300 ease-in-out
                 ${chosenService ? 'translate-x-0' : 'translate-x-full'}`}>
-                    <div className="flex justify-between items-center py-3.5 px-2.5 bg-slate-700">
+                    <div className="flex justify-between items-center py-3.5 px-2.5 bg-slate-700 select-none">
                         <div className="flex gap-1 items-center">
                             <ChevronLeftIcon
                             className="-ml-2 h-6.5 cursor-pointer hover:text-slate-600 transition-colors"
@@ -239,7 +295,7 @@ export function Chats() {
                                 setMessage(prev => ({...prev, replyTo: null }))
                             }}
                             />
-                            <div className="flex flex-col gap-0.5 items-start">
+                            <div className="flex flex-col gap-1 items-start">
                                 <button 
                                 disabled={loadingDetails}
                                 className="text-[13.5px] font-medium leading-none hover:text-zinc-300 disabled:text-zinc-300"
@@ -276,43 +332,48 @@ export function Chats() {
                                     {c.replyTo === null ? (
                                         <motion.div
                                             drag="x"
-                                            dragConstraints={{ left: 0, right: 90 }}
-                                            dragElastic={{left: 0, right: 0.5}}
+                                            dragConstraints={{ left: -90, right: 90 }}
+                                            dragElastic={{ left: 0.5, right: 0.5 }}
                                             dragSnapToOrigin
                                             onDragEnd={(_, info) => {
                                                 if (info.offset.x > 60) handleReply(c)
+                                                if (info.offset.x < -60 && c.userId === userId._id) setReadStatusChat(c)
                                             }}
                                             className={`relative ${c.userId === userId._id ? "self-end bg-sky-700" : "self-start bg-zinc-800"} max-w-3/4 px-1.5 py-1 
                                             gap-2.5 items-end rounded-lg ${highlightedId === c._id ? 'ring-2 ring-amber-400 transition-all' : ''}`}
                                             ref={(el) => { messageRefs.current[c._id] = el as HTMLDivElement | null }}
                                         >
                                             <span className={`${c.userId === userId._id ? "hidden" : ""}
-                                            text-[12px] text-rose-400 font-semibold`}>{c.userName}</span>
-                                                <div className="text-sm wrap-break-word whitespace-pre-wrap">
-                                                    {c.message}
-                                                    <span className="invisible inline-block text-[10px] ml-2.5 whitespace-nowrap">
-                                                    {format(new Date(c.createdAt), 'HH:mm')
-                                                    }</span>
-                                                </div>
-                                                <span className="absolute bottom-1 right-1.5 text-[10px] text-zinc-300 whitespace-nowrap select-none">
-                                                {format(new Date(c.createdAt), 'HH:mm')}
+                                                text-[12px] text-rose-400 font-semibold`}>{c.userName}
+                                            </span>
+                                            <div className="text-sm wrap-break-word whitespace-pre-wrap select-text">
+                                                {c.message}
+                                                <span className="invisible inline-flex gap-1 text-[10px] ml-2.5 whitespace-nowrap">
+                                                    {format(new Date(c.createdAt), 'HH:mm')} {c.userId === userId._id && <CheckCheck size={13} className="text-zinc-100" />}
+                                                </span>
+                                            </div>
+                                            <span className="absolute bottom-1 inline-flex gap-1 items-center right-1.5 text-[10px] text-zinc-300 whitespace-nowrap select-none">
+                                                {format(new Date(c.createdAt), 'HH:mm')} {c.userId === userId._id &&
+                                                <CheckCheck size={13} className={members && c.readBy.length < members.length ? "text-zinc-100" : "text-blue-800"} />}
                                             </span>
                                         </motion.div>
                                     ) : (
                                         <motion.div
                                             drag="x"
-                                            dragConstraints={{ left: 0, right: 90 }}
-                                            dragElastic={{left: 0, right: 0.5}}
+                                            dragConstraints={{ left: -90, right: 90 }}
+                                            dragElastic={{ left: 0.5, right: 0.5 }}
                                             dragSnapToOrigin
                                             onDragEnd={(_, info) => {
                                                 if (info.offset.x > 60) handleReply(c)
+                                                if (info.offset.x < -60 && c.userId === userId._id) setReadStatusChat(c)
                                             }}
                                             className={`relative ${c.userId === userId._id ? "self-end bg-sky-700" : "self-start bg-zinc-800"} max-w-3/4 px-1.5 py-1 
                                             gap-2.5 items-end rounded-lg ${highlightedId === c._id ? 'ring-2 ring-amber-400 transition-all' : ''}`}
                                             ref={(el) => { messageRefs.current[c._id] = el as HTMLDivElement | null }}
                                         >
-                                            <span className={`${c.userId === userId._id ? "hidden" : ""}
-                                            text-[12px] text-rose-400 font-semibold`}>{c.userName}</span>
+                                            <span className={`${c.userId === userId._id ? "hidden" : ""} text-[12px] text-rose-400 font-semibold`}>
+                                                {c.userName}
+                                            </span>
                                             <div
                                                 className={`${c.userId === userId._id ? "bg-sky-900" : "bg-black/25"} flex flex-col rounded-lg max-h-22.5 p-2 text-sm
                                                 items-start overflow-hidden border-l-3 border-rose-400`}
@@ -324,14 +385,15 @@ export function Chats() {
                                                 <span className="text-[12px] text-rose-400 font-semibold">{c.replyTo.userName}</span>
                                                 <span className="w-full text-sm text-zinc-200 wrap-break-word whitespace-pre-wrap">{c.replyTo.message}</span>
                                             </div>
-                                            <div className="text-sm wrap-break-word whitespace-pre-wrap">
+                                            <div className="text-sm wrap-break-word whitespace-pre-wrap select-text">
                                                 {c.message}
-                                                <span className="invisible inline-block text-[10px] ml-2.5 whitespace-nowrap">
-                                                    {format(new Date(c.createdAt), 'HH:mm')
-                                                    }</span>
+                                                <span className="invisible inline-flex gap-1 text-[10px] ml-2.5 whitespace-nowrap">
+                                                    {format(new Date(c.createdAt), 'HH:mm')} {c.userId === userId._id && <CheckCheck size={13} className="text-zinc-100" />}
+                                                </span>
                                             </div>
-                                            <span className="absolute bottom-1 right-1.5 text-[10px] text-zinc-300 whitespace-nowrap select-none">
-                                                {format(new Date(c.createdAt), 'HH:mm')}
+                                            <span className="absolute bottom-1 inline-flex gap-1 items-center right-1.5 text-[10px] text-zinc-300 whitespace-nowrap select-none">
+                                                {format(new Date(c.createdAt), 'HH:mm')} {c.userId === userId._id &&
+                                                <CheckCheck size={13} className={members && c.readBy.length < members.length ? "text-zinc-100" : "text-blue-700"} />}
                                             </span>
                                         </motion.div>
                                     )}
@@ -406,6 +468,102 @@ export function Chats() {
                             ))}
                         </div>
                     </div>
+                </div>
+
+                {/* read / unread status view */}
+                <div className={`absolute bg-slate-800 w-full h-full
+                transition-transform duration-300 ease-in-out overflow-y-auto
+                ${readStatusChat && chosenService ? 'translate-x-0' : 'translate-x-full'}`}>
+                    {/* header */}
+                    <div className="flex items-center gap-1 py-3.5 px-2.5 bg-slate-700 select-none">
+                        <ChevronLeftIcon
+                        className="-ml-2 h-6.5 cursor-pointer hover:text-slate-600 transition-colors"
+                        onClick={() => setReadStatusChat(null)}
+                        />
+                        <div className="flex flex-col gap-1 items-start">
+                            <span className="text-[13.5px] font-medium leading-none">Message Info</span>
+                            <span className="text-zinc-300 text-[10px] leading-none">
+                                {readStatusChat ? format(new Date(readStatusChat.createdAt), 'd MMMM yyyy, HH:mm') : null}
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* message preview */}
+                    {readStatusChat && (
+                        <div className="flex flex-col px-2.5 py-3 border-b border-zinc-700">
+                            <div className="relative self-end bg-sky-700 max-w-3/4 ml-auto px-1.5 py-1 rounded-lg">
+                                <div className="text-sm wrap-break-word whitespace-pre-wrap select-text">
+                                    {readStatusChat.message}
+                                    <span className="invisible inline-flex gap-1 text-[10px] ml-2.5 whitespace-nowrap">
+                                        {format(new Date(readStatusChat.createdAt), 'HH:mm')}
+                                        <CheckCheck size={13} />
+                                    </span>
+                                </div>
+                                <span className="absolute bottom-1 right-1.5 inline-flex gap-1 items-center text-[10px] text-zinc-300 whitespace-nowrap select-none">
+                                    {format(new Date(readStatusChat.createdAt), 'HH:mm')}
+                                    <CheckCheck
+                                        size={13}
+                                        className={members && readStatusChat.readBy.length < members.length ? "text-zinc-100" : "text-blue-500"}
+                                    />
+                                </span>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* read by section */}
+                    {readStatusChat && readStatusChat.readBy.filter(r => r.userId !== userId._id).length > 0 && (
+                        <div>
+                            <div className="flex items-center gap-2 px-2.5 pt-3 pb-1">
+                                <CheckCheck size={14} className="text-blue-400" />
+                                <span className="text-[11px] font-semibold tracking-widest text-blue-400 uppercase">Read</span>
+                            </div>
+                            {readStatusChat.readBy
+                                .filter(r => r.userId !== userId._id)
+                                .map((r, index, arr) => (
+                                    <div
+                                        key={r.userId}
+                                        className={`flex justify-between items-center px-2.5 py-2.5
+                                        ${index < arr.length - 1 ? 'border-b border-zinc-700' : ''}`}
+                                    >
+                                        <span className="text-[13.5px] font-medium">{r.userName}</span>
+                                        <span className="text-[11px] text-blue-400 font-medium">Read</span>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                    )}
+
+                    {/* unread by section */}
+                    {readStatusChat && members && (
+                        members
+                            .filter(m =>
+                                m.userId !== userId._id &&
+                                !readStatusChat.readBy.some(r => r.userId === m.userId)
+                            ).length > 0
+                    ) && (
+                        <div>
+                            <div className="flex items-center gap-2 px-2.5 pt-3 pb-1">
+                                <CheckCheck size={14} className="text-zinc-400" />
+                                <span className="text-[11px] font-semibold tracking-widest text-zinc-400 uppercase">Unread</span>
+                            </div>
+                            {members!
+                                .filter(m =>
+                                    m.userId !== userId._id &&
+                                    !readStatusChat!.readBy.some(r => r.userId === m.userId)
+                                )
+                                .map((m, index, arr) => (
+                                    <div
+                                        key={m.userId}
+                                        className={`flex justify-between items-center px-2.5 py-2.5
+                                        ${index < arr.length - 1 ? 'border-b border-zinc-700' : ''}`}
+                                    >
+                                        <span className="text-[13.5px] font-medium">{m.userName}</span>
+                                        <span className="text-[11px] text-zinc-400 font-medium">Unread</span>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                    )}                    
                 </div>
             </div>
             

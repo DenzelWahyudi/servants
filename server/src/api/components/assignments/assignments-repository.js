@@ -249,47 +249,47 @@ async function getAllUserAssignedServices(userId){
     ])
 }
 
-async function getGroupDetails(serviceId){
+async function getGroupDetails(serviceId) {
     return Assignments.aggregate([
         {
             $match: {
-                status: 'confirmed'
-            }
+                status: 'confirmed',
+            },
         },
         {
             $lookup: {
                 from: 'roles',
                 localField: 'roleId',
                 foreignField: '_id',
-                as: 'roles'
-            }
+                as: 'roles',
+            },
         },
         {
-            $unwind: '$roles'
+            $unwind: '$roles',
         },
         {
             $match: {
-                'roles.serviceId': new mongoose.Types.ObjectId(serviceId)
-            }
+                'roles.serviceId': new mongoose.Types.ObjectId(serviceId),
+            },
         },
         {
             $lookup: {
                 from: 'users',
                 localField: 'userId',
                 foreignField: '_id',
-                as: 'users'
-            }
+                as: 'users',
+            },
         },
         {
-            $unwind: '$users'
+            $unwind: '$users',
         },
         {
             $group: {
                 _id: '$users._id',
                 userName: { $first: '$users.name' },
-                phoneNumber: { $first: '$users.phoneNumber'},
-                roleName: { $push: '$roles.name'}
-            }
+                phoneNumber: { $first: '$users.phoneNumber' },
+                roleName: { $push: '$roles.name' },
+            },
         },
         {
             $project: {
@@ -297,10 +297,60 @@ async function getGroupDetails(serviceId){
                 userId: '$_id',
                 userName: 1,
                 phoneNumber: 1,
-                roleName: 1
-            }
-        }
-    ])
+                roleName: 1,
+            },
+        },
+    ]);
+}
+
+async function getGroupMemberNames(serviceId) {
+    return Assignments.aggregate([
+        {
+            $match: {
+                status: 'confirmed',
+            },
+        },
+        {
+            $lookup: {
+                from: 'roles',
+                localField: 'roleId',
+                foreignField: '_id',
+                as: 'roles',
+            },
+        },
+        {
+            $unwind: '$roles',
+        },
+        {
+            $match: {
+                'roles.serviceId': new mongoose.Types.ObjectId(serviceId),
+            },
+        },
+        {
+            $lookup: {
+                from: 'users',
+                localField: 'userId',
+                foreignField: '_id',
+                as: 'users',
+            },
+        },
+        {
+            $unwind: '$users',
+        },
+        {
+            $group: {
+                _id: '$users._id',
+                userName: { $first: '$users.name' },
+            },
+        },
+        {
+            $project: {
+                _id: 0,
+                userId: '$_id',
+                userName: 1
+            },
+        },
+    ]);
 }
 
 module.exports = {
@@ -314,5 +364,6 @@ module.exports = {
     getUsersToRelieve,
     relieveUser,
     getAllUserAssignedServices,
-    getGroupDetails
+    getGroupDetails,
+    getGroupMemberNames
 }

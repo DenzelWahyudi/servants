@@ -86,11 +86,11 @@ export function Schedule() {
     }
 
     return(
-        <div className="mx-auto p-4 sm:px-12 py-5 flex flex-col gap-7">
+        <div className="mx-auto p-4 sm:px-12 py-5 flex flex-col gap-7 select-none">
             <Header variant="schedule" />
-            <div className="h-[770px] lg:h-[900px]">
+            <div className="h-192.5 lg:h-225">
                 <div className="flex justify-center">
-                    <div className="w-full h-[600px]">
+                    <div className="w-full h-150">
                         <div className="flex items-center justify-between">
                             <p className="font-semibold text-2xl pl-2.5">
                                 {format(firstDayOfMonth, "MMMM yyyy")}
@@ -125,7 +125,7 @@ export function Schedule() {
                         <div className="hidden lg:grid grid-cols-7 mt-3 items-center border border-slate-600">
                             {daysInMonth.map((day, idx) => {
                                 return (
-                                    <div key={idx} className={`${colStartClasses[getDay(day)]} border-r border-b border-slate-600 h-[130px] overflow-y-auto`}>
+                                    <div key={idx} className={`${colStartClasses[getDay(day)]} border-r border-b border-slate-600 h-32.5 overflow-y-auto`}>
                                         <p
                                         className={`cursor-default flex items-center justify-center font-normal h-6 w-6 text-sm mt-1.5 ml-2 rounded-full ${
                                             isSameMonth(day, firstDayOfMonth) ? "text-zinc-100" : "text-zinc-500"
@@ -171,7 +171,7 @@ export function Schedule() {
                             <div className="lg:hidden grid grid-cols-7 mt-3 border border-slate-600">
                                 {daysInMonth.map((day, idx) => {
                                     return (
-                                        <div key={idx} className={`${colStartClasses[getDay(day)]} border-r border-b border-slate-600 h-[67px] flex flex-col items-center`}>
+                                        <div key={idx} className={`${colStartClasses[getDay(day)]} border-r border-b border-slate-600 h-16.75 flex flex-col items-center`}>
                                             <button
                                             className={`cursor-pointer hover:text-indigo-300 flex items-center justify-center font-normal h-6 w-6 text-sm mt-1.5 rounded-full ${
                                                 isSameMonth(day, firstDayOfMonth) ? "text-zinc-100" : "text-zinc-500"

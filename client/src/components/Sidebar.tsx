@@ -9,7 +9,7 @@ type SidebarProps = {
 
 export function Sidebar({ variant = "services" }: SidebarProps){
     return (
-        <div className="flex flex-col gap-2 bg-slate-900 p-3.5 pt-7 items-center h-full">
+        <div className="flex flex-col gap-2 bg-slate-900 p-3.5 pt-7 items-center h-full select-none">
             <h2 className="flex text-zinc-100 text-lg font-normal rounded-lg pl-4 justify-start w-full">
                 <div className="flex gap-2">
                     <span>🏠︎</span>

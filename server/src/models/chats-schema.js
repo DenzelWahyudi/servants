@@ -25,6 +25,16 @@ db.model(
                 message: String
             },
             default: null
-        }
+        },
+        readBy: [
+            {
+                _id: false,
+                userId: {
+                    type: db.Schema.Types.ObjectId,
+                    ref: 'User'
+                },
+                userName: String
+            }
+        ]
     }, { timestamps : true })
 );

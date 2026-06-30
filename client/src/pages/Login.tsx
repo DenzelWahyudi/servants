@@ -53,7 +53,7 @@ export function Login() {
     }
     
     return(
-        <div className="mx-auto px-4 sm:px-12 py-5 flex flex-col gap-7 sm:gap-15 items-center">
+        <div className="mx-auto px-4 sm:px-12 py-5 flex flex-col gap-7 sm:gap-15 items-center select-none">
             <Header variant="login" />
             <div className="flex flex-col gap-0.5 sm:gap-1.5 p-6 sm:p-7 bg-slate-800 items-center rounded-xl w-80 sm:w-100 h-104 sm:h-118">
                 <div className="mt-2">
