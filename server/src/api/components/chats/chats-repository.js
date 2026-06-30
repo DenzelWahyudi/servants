@@ -12,8 +12,39 @@ async function deleteChats(serviceId){
     return Chats.deleteMany({ serviceId })
 }
 
+async function markChatAsRead(chatId, userId, userName){
+    return Chats.findOneAndUpdate(
+        {
+            _id: chatId,
+            'readBy.userId': { $ne: userId }
+        },
+        {
+            $push: { readBy: { userId, userName } }
+        },
+        { new: true }
+    )
+}
+
+async function markServiceChatsAsRead(serviceId, userId, userName) {
+    return Chats.updateMany(
+        {
+            serviceId,
+            'readBy.userId': { $ne: userId }
+        },
+        {
+            $push: { readBy: { userId, userName }}
+        }
+    )
+}
+
+async function getReadStatus(chatId){
+    return Chats.findById(chatId).select('readBy')
+}
+
 module.exports = {
     sendChat,
     getAllChats,
-    deleteChats
+    deleteChats,
+    markChatAsRead,
+    markServiceChatsAsRead
 }

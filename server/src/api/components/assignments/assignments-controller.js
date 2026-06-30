@@ -1,7 +1,7 @@
 const assignmentsService = require('./assignments-service')
-const rolesService = require('../roles/roles-service')
+const { getRole, increaseRoleSpotsFilled } = require('../roles/roles-service');
 const { errorResponder, errorTypes } = require('../../../core/errors')
-const usersService = require('../users/users-service');
+const { getUser } = require('../users/users-service');
 
 async function createAssignment(req, res, next){
     try {
@@ -14,7 +14,7 @@ async function createAssignment(req, res, next){
             throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Role id empty!')
         }
         
-        const role = await rolesService.getRole(roleId)
+        const role = await getRole(roleId)
         if (!role){
             throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Role id invalid!')
         }
@@ -37,7 +37,7 @@ async function createAssignment(req, res, next){
 async function adminCreateAssignment(req, res, next) {
     try {
         const { userId, roleId, status } = req.body;
-        const user = await usersService.getUser(req.user.id);
+        const user = await getUser(req.user.id);
 
         if (user.role !== 'admin') {
             throw errorResponder(
@@ -59,7 +59,7 @@ async function adminCreateAssignment(req, res, next) {
             );
         }
 
-        const role = await rolesService.getRole(roleId);
+        const role = await getRole(roleId);
         if (!role) {
             throw errorResponder(
                 errorTypes.UNPROCESSABLE_ENTITY,
@@ -75,7 +75,7 @@ async function adminCreateAssignment(req, res, next) {
         }
 
         if (status === 'confirmed')
-            await rolesService.increaseRoleSpotsFilled(roleId);
+            await increaseRoleSpotsFilled(roleId);
 
         const success = await assignmentsService.createAssignment(
             userId,
@@ -129,7 +129,7 @@ async function updateStatus(req, res, next){
     try {
         const assignmentId = req.params.id
         const { status, roleId } = req.body
-        const user = await usersService.getUser(req.user.id);
+        const user = await getUser(req.user.id);
 
         if (user.role !== 'admin') {
             throw errorResponder(
@@ -146,7 +146,7 @@ async function updateStatus(req, res, next){
             throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Status type empty')
         }
 
-        if (status === "confirmed") await rolesService.increaseRoleSpotsFilled(roleId)
+        if (status === "confirmed") await increaseRoleSpotsFilled(roleId)
 
         const success = await assignmentsService.updateStatus(assignmentId, status)
 
@@ -193,7 +193,7 @@ async function getUsersToRelieve(req, res, next){
 async function relieveUser(req, res, next){
     try {
         const { userId, roleId } = req.body
-        const user = await usersService.getUser(req.user.id);
+        const user = await getUser(req.user.id);
 
         if (user.role !== 'admin') {
             throw errorResponder(
