@@ -38,8 +38,12 @@ async function getAllUserAssignedServices(userId){
     return assignmentsRepository.getAllUserAssignedServices(userId)
 }
 
-async function getGroupDetails(serviceId){
-    return assignmentsRepository.getGroupDetails(serviceId)
+async function getGroupDetails(serviceId) {
+    return assignmentsRepository.getGroupDetails(serviceId);
+}
+
+async function getGroupMemberNames(serviceId) {
+    return assignmentsRepository.getGroupMemberNames(serviceId);
 }
 
 module.exports = {
@@ -52,5 +56,6 @@ module.exports = {
     getUsersToRelieve,
     relieveUser,
     getAllUserAssignedServices,
-    getGroupDetails
+    getGroupDetails,
+    getGroupMemberNames
 }

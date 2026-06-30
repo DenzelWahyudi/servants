@@ -44,11 +44,52 @@ async function getAllChats(req, res, next){
 
 async function markChatAsRead(req, res, next){
     try {
-        const { chatId, userId, userName } = req.body
+        const userId = req.user.id;
+        const { serviceId, chatId } = req.body
+        const userName = await getUserName(userId)
 
         const success = await chatsService.markChatAsRead(chatId, userId, userName)
         if (!success){
             throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Failed to mark chat as read.')
+        }
+
+        broadcastToService(serviceId, { type: 'NEW_READ', data: success });
+
+        res.status(200).json(success)
+    } catch (error) {
+        next(error)
+    }
+}
+
+async function markServiceChatsAsRead(req, res, next){
+    try {
+        const userId = req.user.id;
+        const { serviceId } = req.body
+        const userName = await getUserName(userId)
+        
+        const success = await chatsService.markServiceChatsAsRead(serviceId, userId, userName)
+        if (!success){
+            throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Failed to mark service chats as read.')
+        }
+
+        broadcastToService(serviceId, { type: 'NEW_READS', data: success });
+        
+        res.status(200).json(success)
+    } catch (error) {
+        next(error)
+    }
+}
+
+async function getReadStatus(req, res, next){
+    try {
+        const chatId = req.params.id
+        
+        const success = await chatsService.getReadStatus(chatId)
+        if (!success){
+            throw errorResponder(
+                errorTypes.UNPROCESSABLE_ENTITY,
+                'Failed to get chat read status.'
+            );
         }
 
         res.status(200).json(success)
@@ -57,8 +98,10 @@ async function markChatAsRead(req, res, next){
     }
 }
 
-
 module.exports = {
     sendChat,
-    getAllChats
+    getAllChats,
+    markChatAsRead,
+    markServiceChatsAsRead,
+    getReadStatus
 }

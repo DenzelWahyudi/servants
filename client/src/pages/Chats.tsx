@@ -46,6 +46,11 @@ interface Chat {
     message: string
 }
 
+interface Member {
+    userId: string,
+    userName: string
+}
+
 export function Chats() {
 
     const { token } = useAuth()
@@ -70,6 +75,7 @@ export function Chats() {
     const [loadingDetails, setLoadingDetails] = useState(false)
     const messageRefs = useRef<Record<string, HTMLDivElement | null>>({})
     const [highlightedId, setHighlightedId] = useState<string | null>(null)
+    const [members, setMembers] = useState<Member[] | null>(null)
 
     useEffect(() => {
         async function fetchAssignedServices(){
@@ -166,7 +172,9 @@ export function Chats() {
         const data: Group[] = await response.json()
 
         if(!response.ok){
+            setLoadingDetails(false)
             setError("Failed to get group details")
+            return
         }
 
         setGroupDetails(data)
@@ -193,6 +201,43 @@ export function Chats() {
         setTimeout(() => setHighlightedId(null), 1500);
     }
 
+    async function handleReadServiceChats(serviceId: string){
+        setError(null)
+
+        const response = await fetch(`${API_URL}/api/chats/read-all`, {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ serviceId })
+        })
+
+        if (!response.ok){
+            setError("Failed to mark read all service chats.")
+            return
+        }
+        setError(null)
+    }
+
+    async function fetchGroupMemberNames(serviceId: string){
+        setError(null)
+
+        const response = await fetch(`${API_URL}/api/assignments/group-names/${serviceId}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json'}
+        })
+
+        const data: Member[] = await response.json()
+
+        if(!response.ok){
+            setError("Failed to get group member names")
+            return
+        }
+
+        setMembers(data)
+    }
+
     return(
         <div className="flex flex-col gap-5 mx-auto p-4 sm:px-12 py-5">
             <Header variant="chats" />
@@ -214,6 +259,8 @@ export function Chats() {
                             onClick={() => {
                                 setChosenService(s);
                                 setMessage(prev => ({...prev, serviceId: s.serviceId}))
+                                handleReadServiceChats(s.serviceId).then()
+                                fetchGroupMemberNames(s.serviceId).then()
                             }}
                             >
                                 <div className="flex flex-col text-left">
@@ -296,7 +343,8 @@ export function Chats() {
                                                 </span>
                                             </div>
                                             <span className="absolute bottom-1 inline-flex gap-1 items-center right-1.5 text-[10px] text-zinc-300 whitespace-nowrap select-none">
-                                                {format(new Date(c.createdAt), 'HH:mm')} {c.userId === userId._id && <CheckCheck size={13} className="text-zinc-100" />}
+                                                {format(new Date(c.createdAt), 'HH:mm')} {c.userId === userId._id &&
+                                                <CheckCheck size={13} className={members && c.readBy.length < members.length ? "text-zinc-100" : "text-blue-800"} />}
                                             </span>
                                         </motion.div>
                                     ) : (
@@ -333,7 +381,8 @@ export function Chats() {
                                                 </span>
                                             </div>
                                             <span className="absolute bottom-1 inline-flex gap-1 items-center right-1.5 text-[10px] text-zinc-300 whitespace-nowrap select-none">
-                                                {format(new Date(c.createdAt), 'HH:mm')} {c.userId === userId._id && <CheckCheck size={13} className="text-zinc-100" />}
+                                                {format(new Date(c.createdAt), 'HH:mm')} {c.userId === userId._id &&
+                                                <CheckCheck size={13} className={members && c.readBy.length < members.length ? "text-zinc-100" : "text-blue-700"} />}
                                             </span>
                                         </motion.div>
                                     )}

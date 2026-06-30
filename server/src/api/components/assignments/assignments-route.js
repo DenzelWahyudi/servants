@@ -18,7 +18,9 @@ module.exports = (app) => {
         assignmentsController.updateStatus
     );
 
-    route.get('/group/:serviceId', assignmentsController.getGroupDetails)
+    route.get('/group/:serviceId', assignmentsController.getGroupDetails);
+
+    route.get('/group-names/:serviceId', assignmentsController.getGroupMemberNames);
 
     route.get('/schedule', authMiddleware, assignmentsController.getUserSchedule)
 

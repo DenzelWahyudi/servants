@@ -26,15 +26,14 @@ async function markChatAsRead(chatId, userId, userName){
 }
 
 async function markServiceChatsAsRead(serviceId, userId, userName) {
-    return Chats.updateMany(
-        {
-            serviceId,
-            'readBy.userId': { $ne: userId }
-        },
-        {
-            $push: { readBy: { userId, userName }}
-        }
-    )
+    const filter = { serviceId, 'readBy.userId': { $ne: userId } };
+
+    const affectedIds = await Chats.find(filter).distinct('_id');
+    if (affectedIds.length === 0) return [];
+
+    await Chats.updateMany(filter, { $push: { readBy: { userId, userName } } });
+
+    return Chats.find({ _id: { $in: affectedIds } }).select('_id readBy');
 }
 
 async function getReadStatus(chatId){
@@ -46,5 +45,6 @@ module.exports = {
     getAllChats,
     deleteChats,
     markChatAsRead,
-    markServiceChatsAsRead
+    markServiceChatsAsRead,
+    getReadStatus
 }

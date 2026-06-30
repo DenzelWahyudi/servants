@@ -8,5 +8,11 @@ module.exports = (app) => {
 
     route.post('/send', authMiddleware, chatsController.sendChat)
 
+    route.post('/read', authMiddleware, chatsController.markChatAsRead)
+
+    route.post('/read-all', authMiddleware, chatsController.markServiceChatsAsRead)
+
+    route.get('/read-status/:id', chatsController.getReadStatus)
+
     route.get('/:serviceId', chatsController.getAllChats)
 }

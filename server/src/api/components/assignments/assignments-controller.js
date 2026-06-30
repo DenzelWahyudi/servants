@@ -244,6 +244,24 @@ async function getGroupDetails(req, res, next){
     }
 }
 
+async function getGroupMemberNames(req, res, next) {
+    try {
+        const serviceId = req.params.serviceId;
+
+        const success = await assignmentsService.getGroupMemberNames(serviceId);
+        if (!success) {
+            throw errorResponder(
+                errorTypes.UNPROCESSABLE_ENTITY,
+                'Failed to get group member names.'
+            );
+        }
+
+        return res.status(200).json(success);
+    } catch (error) {
+        next(error);
+    }
+}
+
 module.exports = {
     createAssignment,
     adminCreateAssignment,
@@ -254,5 +272,6 @@ module.exports = {
     getUsersToRelieve,
     relieveUser,
     getAllUserAssignedServices,
-    getGroupDetails
+    getGroupDetails,
+    getGroupMemberNames
 }

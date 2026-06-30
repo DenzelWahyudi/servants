@@ -8,6 +8,7 @@ interface Chat {
     message: string
     status: string
     replyTo: ReplyTo | null
+    readBy: ReadBy[] | []
     createdAt: string
 }
 
@@ -16,6 +17,11 @@ interface ReplyTo {
     userId: string
     userName: string
     message: string
+}
+
+interface ReadBy {
+    userId: string,
+    userName: string
 }
 
 // Derives ws:// or wss:// from your existing API_URL automatically
@@ -49,6 +55,20 @@ export function useChatSocket(serviceId: string | undefined) {
                 const { type, data } = JSON.parse(event.data);
                 if (type === 'NEW_CHAT') {
                     setChats(prev => [...prev, data]);
+                }
+                if (type === 'NEW_READ') {
+                    setChats(prev => prev.map(chat =>
+                        chat._id === data._id ?  { ...chat, readBy: data.readBy } : chat
+                    ))
+                }
+                if (type === 'NEW_READS') {
+                    setChats((prev) =>
+                        prev.map((chat) => {
+                            const matchingChat = data.find((newChat: Chat) => newChat._id === chat._id)
+                            return matchingChat ? { ...chat, readBy: matchingChat.readBy }
+                                : chat
+                        })
+                    )
                 }
             };
 
