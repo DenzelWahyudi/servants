@@ -230,7 +230,7 @@ function OpeningsCard({ serviceName, date, time, role, roleId, userId, onSave }:
     const [signUpData, setSignUpData] = useState<SignUp | null>(null)
 
     return (
-        <div className="flex flex-col gap-3 bg-zinc-100  text-slate-900 w-43 sm:w-55 h-52 rounded-lg p-3 sm:p-3.5">
+        <div className="flex flex-col gap-3 bg-zinc-100  text-slate-900 w-43 sm:w-55 h-52 rounded-lg p-3 sm:p-3.5 select-none">
             <h2 className="hidden sm:block font-semibold">{ serviceName }</h2>
             <h2 className="sm:hidden font-semibold">{ serviceName.length > 13 ? serviceName.slice(0, 11) + " ...": serviceName }</h2>
             <div className="flex flex-col gap-1">

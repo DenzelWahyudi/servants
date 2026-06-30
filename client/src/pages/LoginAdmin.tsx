@@ -53,7 +53,7 @@ export function LoginAdmin() {
     }
     
     return(
-        <div className="mx-auto px-12 py-5 flex flex-col gap-15 items-center">
+        <div className="mx-auto px-12 py-5 flex flex-col gap-15 items-center select-none">
             <Header variant="loginadmin" />
             <div className="flex flex-col gap-1.5 p-7 bg-slate-800 items-center rounded-xl w-100 h-118">
                 <div className="mt-2">

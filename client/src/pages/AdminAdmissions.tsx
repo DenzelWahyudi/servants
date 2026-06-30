@@ -117,7 +117,7 @@ function AdmitCard({ _id, userName, roleId, roleName, serviceName, date, time, o
     }
 
     return (
-            <div className="flex flex-col gap-2  bg-zinc-100  text-slate-900 w-55 h-57 rounded-lg p-3.5">
+            <div className="flex flex-col gap-2  bg-zinc-100  text-slate-900 w-55 h-57 rounded-lg p-3.5 select-none">
                 <h2 className="font-semibold">{ serviceName }</h2>
                 <div className="flex flex-col gap-1">
                     <h2>{format(date, 'dd MMMM yyyy')}</h2>

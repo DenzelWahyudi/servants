@@ -103,7 +103,7 @@ export function CreateService() {
         }
     }
     return(
-        <div className="mx-auto px-12 py-5 flex flex-col gap-15 items-center">
+        <div className="mx-auto px-12 py-5 flex flex-col gap-15 items-center select-none">
             <Header variant="admin" />
             <div className="flex flex-col gap-3 p-7 bg-slate-800 items-center rounded-xl w-130">
                 <div className="mt-2 mr-auto">

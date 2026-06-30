@@ -4,7 +4,7 @@ import { Header } from "../components/Header";
 import { API_URL } from "../api";
 import { useAuth } from "../hooks/useAuth";
 import { ChevronLeftIcon } from "@heroicons/react/24/solid";
-import { SendHorizontal, X } from 'lucide-react';
+import { SendHorizontal, X, CheckCheck } from 'lucide-react';
 import { format } from 'date-fns';
 import { useLayoutEffect, useRef } from 'react';
 import { useChatSocket } from "../hooks/useChatSocket";
@@ -204,7 +204,7 @@ export function Chats() {
                     <input className="mx-2 px-3 py-1 bg-slate-700 border border-slate-600 focus:border-amber-400 outline-none
                     text-zinc-100 text-sm rounded-lg transition-colors" 
                     placeholder="🔍︎  Search Service"/>
-                    <div className="pr-0">
+                    <div className="pr-0 select-none">
                         {assignedServices?.length === 0 ? (
                                 <p className="text-center text-zinc-100 text-sm">No Assignments</p>
                             ) : (assignedServices?.map((s) => 
@@ -230,7 +230,7 @@ export function Chats() {
                 <div className={`absolute flex flex-col bg-slate-800 w-full h-full 
                 transition-transform duration-300 ease-in-out
                 ${chosenService ? 'translate-x-0' : 'translate-x-full'}`}>
-                    <div className="flex justify-between items-center py-3.5 px-2.5 bg-slate-700">
+                    <div className="flex justify-between items-center py-3.5 px-2.5 bg-slate-700 select-none">
                         <div className="flex gap-1 items-center">
                             <ChevronLeftIcon
                             className="-ml-2 h-6.5 cursor-pointer hover:text-slate-600 transition-colors"
@@ -287,15 +287,16 @@ export function Chats() {
                                             ref={(el) => { messageRefs.current[c._id] = el as HTMLDivElement | null }}
                                         >
                                             <span className={`${c.userId === userId._id ? "hidden" : ""}
-                                            text-[12px] text-rose-400 font-semibold`}>{c.userName}</span>
-                                                <div className="text-sm wrap-break-word whitespace-pre-wrap">
-                                                    {c.message}
-                                                    <span className="invisible inline-block text-[10px] ml-2.5 whitespace-nowrap">
-                                                    {format(new Date(c.createdAt), 'HH:mm')
-                                                    }</span>
-                                                </div>
-                                                <span className="absolute bottom-1 right-1.5 text-[10px] text-zinc-300 whitespace-nowrap select-none">
-                                                {format(new Date(c.createdAt), 'HH:mm')}
+                                                text-[12px] text-rose-400 font-semibold`}>{c.userName}
+                                            </span>
+                                            <div className="text-sm wrap-break-word whitespace-pre-wrap select-text">
+                                                {c.message}
+                                                <span className="invisible inline-flex gap-1 text-[10px] ml-2.5 whitespace-nowrap">
+                                                    {format(new Date(c.createdAt), 'HH:mm')} {c.userId === userId._id && <CheckCheck size={13} className="text-zinc-100" />}
+                                                </span>
+                                            </div>
+                                            <span className="absolute bottom-1 inline-flex gap-1 items-center right-1.5 text-[10px] text-zinc-300 whitespace-nowrap select-none">
+                                                {format(new Date(c.createdAt), 'HH:mm')} {c.userId === userId._id && <CheckCheck size={13} className="text-zinc-100" />}
                                             </span>
                                         </motion.div>
                                     ) : (
@@ -311,8 +312,9 @@ export function Chats() {
                                             gap-2.5 items-end rounded-lg ${highlightedId === c._id ? 'ring-2 ring-amber-400 transition-all' : ''}`}
                                             ref={(el) => { messageRefs.current[c._id] = el as HTMLDivElement | null }}
                                         >
-                                            <span className={`${c.userId === userId._id ? "hidden" : ""}
-                                            text-[12px] text-rose-400 font-semibold`}>{c.userName}</span>
+                                            <span className={`${c.userId === userId._id ? "hidden" : ""} text-[12px] text-rose-400 font-semibold`}>
+                                                {c.userName}
+                                            </span>
                                             <div
                                                 className={`${c.userId === userId._id ? "bg-sky-900" : "bg-black/25"} flex flex-col rounded-lg max-h-22.5 p-2 text-sm
                                                 items-start overflow-hidden border-l-3 border-rose-400`}
@@ -324,14 +326,14 @@ export function Chats() {
                                                 <span className="text-[12px] text-rose-400 font-semibold">{c.replyTo.userName}</span>
                                                 <span className="w-full text-sm text-zinc-200 wrap-break-word whitespace-pre-wrap">{c.replyTo.message}</span>
                                             </div>
-                                            <div className="text-sm wrap-break-word whitespace-pre-wrap">
+                                            <div className="text-sm wrap-break-word whitespace-pre-wrap select-text">
                                                 {c.message}
-                                                <span className="invisible inline-block text-[10px] ml-2.5 whitespace-nowrap">
-                                                    {format(new Date(c.createdAt), 'HH:mm')
-                                                    }</span>
+                                                <span className="invisible inline-flex gap-1 text-[10px] ml-2.5 whitespace-nowrap">
+                                                    {format(new Date(c.createdAt), 'HH:mm')} {c.userId === userId._id && <CheckCheck size={13} className="text-zinc-100" />}
+                                                </span>
                                             </div>
-                                            <span className="absolute bottom-1 right-1.5 text-[10px] text-zinc-300 whitespace-nowrap select-none">
-                                                {format(new Date(c.createdAt), 'HH:mm')}
+                                            <span className="absolute bottom-1 inline-flex gap-1 items-center right-1.5 text-[10px] text-zinc-300 whitespace-nowrap select-none">
+                                                {format(new Date(c.createdAt), 'HH:mm')} {c.userId === userId._id && <CheckCheck size={13} className="text-zinc-100" />}
                                             </span>
                                         </motion.div>
                                     )}

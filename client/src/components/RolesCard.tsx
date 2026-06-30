@@ -225,7 +225,7 @@ function RelieveRoleForm({ roleId, serviceName, roleName, onClose, token }: Role
     }
 
     return (
-        <div className="flex flex-col gap-3 bg-slate-900 rounded-lg p-4.5 w-110">
+        <div className="flex flex-col gap-3 bg-slate-900 rounded-lg p-4.5 w-110 select-none">
             <div className="pb-2.5">
                 <h1 className="text-4xl font-bold text-red-400">Relieve Role</h1>
             </div>
@@ -332,7 +332,7 @@ function AssignRoleForm({ roleId, serviceName, roleName, onClose, token }: RoleF
     }
 
     return (
-        <div className="flex flex-col gap-3 bg-slate-900 rounded-lg p-4.5 w-110">
+        <div className="flex flex-col gap-3 bg-slate-900 rounded-lg p-4.5 w-110 select-none">
             <div className="pb-2.5">
                 <Heading>Assign Role</Heading>
             </div>

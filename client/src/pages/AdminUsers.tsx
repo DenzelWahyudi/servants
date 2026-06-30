@@ -219,7 +219,7 @@ export function AdminUsers() {
 					<div className="flex justify-between py-7 items-end">
 						<Heading>Manage Users</Heading>
                         <select value={q ?? "newest"} 
-                        className="px-1 py-0.5 rounded border border-zinc-400 outline-none"
+                        className="px-1 py-0.5 rounded border border-zinc-400 outline-none select-none"
                         onChange={e => setSearchParams(prev => {
                             prev.set("q", e.target.value)
                             return prev
