@@ -198,44 +198,81 @@ async function relieveUser(userId, roleId){
 }
 
 async function getAllUserAssignedServices(userId){
+    const userObjectId = new mongoose.Types.ObjectId(userId)
+
     return Assignments.aggregate([
         {
             $match: {
-                userId: new mongoose.Types.ObjectId(userId),
-                status: 'confirmed'
-            }
+                userId: userObjectId,
+                status: 'confirmed',
+            },
         },
         {
             $lookup: {
                 from: 'roles',
                 localField: 'roleId',
                 foreignField: '_id',
-                as: 'roles'
-            }
+                as: 'roles',
+            },
         },
         {
-            $unwind: '$roles'
+            $unwind: '$roles',
         },
         {
             $lookup: {
                 from: 'services',
                 localField: 'roles.serviceId',
                 foreignField: '_id',
-                as: 'services'
-            }
+                as: 'services',
+            },
         },
         {
-            $unwind: '$services'
+            $unwind: '$services',
         },
         {
             $group: {
-                _id: { 
+                _id: {
                     serviceName: '$services.name',
                     date: '$services.date',
-                    time: '$services.time'
+                    time: '$services.time',
                 },
                 serviceId: { $first: '$services._id' },
-            }
+            },
+        },
+        {
+            $lookup: {
+                from: 'chats',
+                let: {
+                    serviceId: '$serviceId',
+                    userId: userObjectId,
+                },
+                pipeline: [
+                    {
+                        $match: {
+                            $expr: {
+                                $and: [
+                                    { $eq: ['$serviceId', '$$serviceId'] },
+                                    { $eq: ['$status', 'success'] },
+                                    {
+                                        $not: [
+                                            {
+                                                $in: [
+                                                    '$$userId',
+                                                    '$readBy.userId',
+                                                ],
+                                            },
+                                        ],
+                                    },
+                                ],
+                            },
+                        },
+                    },
+                    {
+                        $project: { _id: 1 },
+                    },
+                ],
+                as: 'unreadMessage',
+            },
         },
         {
             $project: {
@@ -243,10 +280,11 @@ async function getAllUserAssignedServices(userId){
                 serviceId: 1,
                 serviceName: '$_id.serviceName',
                 date: '$_id.date',
-                time: '$_id.time'
-            }
-        }
-    ])
+                time: '$_id.time',
+                unreadMessage: { $size: '$unreadMessage' },
+            },
+        },
+    ]);
 }
 
 async function getGroupDetails(serviceId) {

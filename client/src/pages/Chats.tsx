@@ -16,6 +16,7 @@ interface Service {
     serviceName: string
     date: Date
     time: string
+    unreadMessage: number
 }
 
 interface Group {
@@ -85,6 +86,7 @@ export function Chats() {
         readBy: { userId: string; userName: string }[]
         replyTo: { chatId: string; userId: string; userName: string; message: string } | null
     } | null>(null)
+    const [searchQuery, setSearchQuery] = useState("")
 
     useEffect(() => {
         async function fetchAssignedServices(){
@@ -96,10 +98,18 @@ export function Chats() {
                 }
             })
             const data: Service[] = await response.json();
-            setAssignedServices(data)
+            const sorted = data.sort(
+                (a,b) => b.unreadMessage - a.unreadMessage
+            )
+            if (searchQuery.length < 1 ) setAssignedServices(sorted)
+            else {
+                const filteredServices =
+                    data.filter((s) => s.serviceName.toLowerCase().includes(searchQuery.toLowerCase()))
+                setAssignedServices(filteredServices)
+            }
         }
 
-        async function fetchUserName() {
+        async function fetchUserId() {
 			const response = await fetch(`${API_URL}/api/users/id`, {
 				method: "GET",
 				headers: {
@@ -112,8 +122,8 @@ export function Chats() {
 		}
 
         void fetchAssignedServices()
-        void fetchUserName()
-    }, [token])
+        void fetchUserId()
+    }, [token, searchQuery])
 
     const handleScroll = () => {
         const el = containerRef.current;
@@ -247,6 +257,10 @@ export function Chats() {
         setMembers(data)
     }
 
+    function handleSearchService(e: React.ChangeEvent<HTMLInputElement>){
+        return setSearchQuery(e.target.value)
+    }
+
     return(
         <div className="flex flex-col gap-5 mx-auto p-4 sm:px-12 py-5">
             <Header variant="chats" />
@@ -257,10 +271,13 @@ export function Chats() {
                 ${chosenService ? '-translate-x-full' : 'translate-x-0'}`}>
                     <input className="mx-2 px-3 py-1 bg-slate-700 border border-slate-600 focus:border-amber-400 outline-none
                     text-zinc-100 text-sm rounded-lg transition-colors" 
-                    placeholder="🔍︎  Search Service"/>
+                    placeholder="🔍︎  Search Service"
+                    value={searchQuery}
+                    onChange={handleSearchService}
+                    />
                     <div className="pr-0 select-none">
                         {assignedServices?.length === 0 ? (
-                                <p className="text-center text-zinc-100 text-sm">No Assignments</p>
+                                <p className="text-center text-zinc-100 text-sm">No assignments found — this may still be loading</p>
                             ) : (assignedServices?.map((s) => 
                             <button className="flex justify-between w-full border-y border-zinc-700
                             px-2.5 py-2 text-sm font-medium hover:bg-slate-600"
@@ -270,13 +287,21 @@ export function Chats() {
                                 setMessage(prev => ({...prev, serviceId: s.serviceId}))
                                 void handleReadServiceChats(s.serviceId)
                                 void fetchGroupMemberNames(s.serviceId)
+                                setAssignedServices(prev => prev?.map(se => se.serviceId === s.serviceId ? {...se, unreadMessage: 0} : se) ?? null)
                             }}
                             >
                                 <div className="flex flex-col text-left">
                                     <span>{s.serviceName}</span>
                                     <span className="text-zinc-300 font-normal">{format(new Date(s.date), 'd MMMM yyyy')}</span>
                                 </div>
-                                <span>{s.time}</span>
+                                <div className="flex flex-col gap-0.5 items-end">
+                                    <span>{s.time}</span>
+                                    {s.unreadMessage > 0 ? (
+                                        <span className="flex items-center justify-center bg-indigo-500 rounded-full min-w-4.5 h-4.5 px-1.5 font-light">{s.unreadMessage}</span>
+                                    ) : (
+                                        <span className="flex items-center justify-center rounded-full min-w-4.5 h-4.5 px-1.5 font-light" />
+                                    )}
+                                </div>
                             </button>
                         ))}
                     </div>

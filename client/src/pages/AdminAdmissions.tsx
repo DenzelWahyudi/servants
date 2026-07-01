@@ -72,8 +72,14 @@ export function AdminAdmissions(){
                     <Heading>Manage Admissions</Heading>
                 </div>
                 <div className="flex flex-wrap gap-4">
-                    {assignments?.map((a) => <AdmitCard _id={a._id} userName={a.userName} roleId={a.roleId} roleName={a.roleName} 
-                    serviceName={a.serviceName} date={a.date} time={a.time} onSave={() => {void fetchPendingAssignments()}} token={token}/>)}
+                    {assignments?.map((a) =>
+                        <div key={a._id}>
+                            <AdmitCard _id={a._id} userName={a.userName} roleId={a.roleId} roleName={a.roleName}
+                                       serviceName={a.serviceName} date={a.date} time={a.time}
+                                       onSave={() => {void fetchPendingAssignments()}} token={token}
+                            />
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

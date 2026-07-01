@@ -71,7 +71,7 @@ export function Login() {
                 )}
 
                 <div className="w-full flex justify-end">
-                    <ButtonLink to="/" variant="secondary" className="text-amber-400 text-sm">Forgot Password?</ButtonLink>
+                    <ButtonLink to="/forgot-password" variant="secondary" className="text-amber-400 text-sm">Forgot Password?</ButtonLink>
                 </div>
 
                 <button
