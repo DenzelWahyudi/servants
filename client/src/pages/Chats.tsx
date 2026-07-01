@@ -15,7 +15,8 @@ interface Service {
     serviceId: string
     serviceName: string
     date: Date
-    time: string
+    time: string,
+    unreadMessage: string[]
 }
 
 interface Group {
@@ -97,6 +98,7 @@ export function Chats() {
             })
             const data: Service[] = await response.json();
             setAssignedServices(data)
+            console.log(data)
         }
 
         async function fetchUserName() {

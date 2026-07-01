@@ -238,12 +238,49 @@ async function getAllUserAssignedServices(userId){
             }
         },
         {
+            $lookup: {
+                from: 'chats',
+                let: {
+                    serviceId: '$serviceId',
+                    userId: '$userId'
+                },
+                pipeline: [
+                    {
+                        $match: {
+                            $expr:{
+                                $and: [
+                                    { $eq: ['$serviceId', '$$serviceId'] },
+                                    { $ne: ['$readBy.userId', '$userId'] }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: '$_id',
+                            serviceId: { $first: '$serviceId' }
+                        }
+                    },
+                    {
+                        $project: {
+                            _id: 1
+                        }
+                    }
+                ],
+                as: 'unreadMessage'
+            }
+        },
+        {
+            $unwind: '$unreadMessage'
+        },
+        {
             $project: {
                 _id: 0,
                 serviceId: 1,
                 serviceName: '$_id.serviceName',
                 date: '$_id.date',
-                time: '$_id.time'
+                time: '$_id.time',
+                unreadMessage: 1
             }
         }
     ])
