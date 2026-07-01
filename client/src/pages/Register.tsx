@@ -26,12 +26,10 @@ export function Register() {
     const [timer, setTimer] = useState(60);
 
     useEffect(() => {
-        let interval: ReturnType<typeof setTimeout>;
-        if (page === "otp" && timer > 0) {
-            interval = setInterval(() => {
-                setTimer((prev) => prev - 1);
-            }, 1000);
-        }
+        if (page !== "otp" || timer === 0) return;
+        const interval = setInterval(() => {
+            setTimer((prev) => (prev > 0 ? prev - 1 : 0));
+        }, 1000);
         return () => clearInterval(interval);
     }, [page, timer]);
 

@@ -21,6 +21,8 @@ module.exports = (app) => {
 
     route.post('/send-otp', usersController.sendOTP);
 
+    route.put('/forgot-password', usersController.forgotPassword);
+
     // specific dynamic routes
 
     // route.get('/name/:id', usersController.getUserName);

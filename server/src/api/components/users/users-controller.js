@@ -296,6 +296,60 @@ async function changePassword(request, response, next) {
     }
 }
 
+async function forgotPassword(request, response, next) {
+    try {
+        const {
+            phoneNumber,
+            new_password: newPassword,
+            confirm_new_password: confirmNewPassword,
+            code,
+        } = request.body;
+
+        const user = await usersService.getUser(request.user.id);
+        if (!user) {
+            throw errorResponder(
+                errorTypes.UNPROCESSABLE_ENTITY,
+                'User not found'
+            );
+        }
+
+        if (newPassword.length < 8) {
+            throw errorResponder(
+                errorTypes.UNPROCESSABLE_ENTITY,
+                'Password must be at least 8 characters long'
+            );
+        }
+
+        if (newPassword !== confirmNewPassword) {
+            throw errorResponder(
+                errorTypes.UNPROCESSABLE_ENTITY,
+                'New password and new confirm password do not match'
+            );
+        }
+
+        const hashedPassword = await hashPassword(newPassword);
+
+        await verifyOTP(phoneNumber, code);
+
+        const success = await usersService.forgotPassword(
+            phoneNumber,
+            hashedPassword
+        );
+        if (!success) {
+            throw errorResponder(
+                errorTypes.UNPROCESSABLE_ENTITY,
+                'Failed to change password'
+            );
+        }
+
+        return response
+            .status(200)
+            .json({ message: 'Password change succesful!' });
+    } catch (error) {
+        return next(error);
+    }
+}
+
 async function deleteUser(request, response, next) {
     try {
         const user = await usersService.getUser(request.user.id);
@@ -585,6 +639,7 @@ module.exports = {
     updatePhoneNumber,
     updateName,
     changePassword,
+    forgotPassword,
     deleteUser,
     getUserName,
     login,
