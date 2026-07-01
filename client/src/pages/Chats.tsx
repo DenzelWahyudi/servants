@@ -97,10 +97,13 @@ export function Chats() {
                 }
             })
             const data: Service[] = await response.json();
-            setAssignedServices(data)
+            const sorted = data.sort(
+                (a,b) => b.unreadMessage - a.unreadMessage
+            )
+            setAssignedServices(sorted)
         }
 
-        async function fetchUserName() {
+        async function fetchUserId() {
 			const response = await fetch(`${API_URL}/api/users/id`, {
 				method: "GET",
 				headers: {
@@ -113,7 +116,7 @@ export function Chats() {
 		}
 
         void fetchAssignedServices()
-        void fetchUserName()
+        void fetchUserId()
     }, [token])
 
     const handleScroll = () => {
