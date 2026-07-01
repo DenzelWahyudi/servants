@@ -15,8 +15,8 @@ interface Service {
     serviceId: string
     serviceName: string
     date: Date
-    time: string,
-    unreadMessage: string[]
+    time: string
+    unreadMessage: number
 }
 
 interface Group {
@@ -98,7 +98,6 @@ export function Chats() {
             })
             const data: Service[] = await response.json();
             setAssignedServices(data)
-            console.log(data)
         }
 
         async function fetchUserName() {
@@ -272,13 +271,21 @@ export function Chats() {
                                 setMessage(prev => ({...prev, serviceId: s.serviceId}))
                                 void handleReadServiceChats(s.serviceId)
                                 void fetchGroupMemberNames(s.serviceId)
+                                setAssignedServices(prev => prev?.map(se => se.serviceId === s.serviceId ? {...se, unreadMessage: 0} : se) ?? null)
                             }}
                             >
                                 <div className="flex flex-col text-left">
                                     <span>{s.serviceName}</span>
                                     <span className="text-zinc-300 font-normal">{format(new Date(s.date), 'd MMMM yyyy')}</span>
                                 </div>
-                                <span>{s.time}</span>
+                                <div className="flex flex-col gap-0.5 items-end">
+                                    <span>{s.time}</span>
+                                    {s.unreadMessage > 0 ? (
+                                        <span className="flex items-center justify-center bg-indigo-500 rounded-full min-w-4.5 h-4.5 px-1.5 font-light">{s.unreadMessage}</span>
+                                    ) : (
+                                        <span className="flex items-center justify-center rounded-full min-w-4.5 h-4.5 px-1.5 font-light" />
+                                    )}
+                                </div>
                             </button>
                         ))}
                     </div>
