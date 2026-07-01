@@ -24,7 +24,7 @@ export function ForgotPassword(){
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(form)
             })
-            const data = response.json()
+            const data = await response.json()
 
             if (!response.ok){
                 setError(data.message || "Failed to change password.")
@@ -36,6 +36,28 @@ export function ForgotPassword(){
             setLoading(false)
         }
 
+    }
+
+    async function handleSendOTP(){
+        setLoading(true);
+        setError(null);
+
+        try {
+            const response = await fetch(`${API_URL}/api/users/send-otp`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ phone: form?.phoneNumber })
+            })
+            const data = await response.json();
+            if (!response.ok){
+                setError(data.statusCode === 400 ? "Use international format eg: +62123456..." : data.message || "Failed to send otp.");
+                return;
+            }
+        } catch {
+            setError("Could not connect to the server. Please try again.");
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
