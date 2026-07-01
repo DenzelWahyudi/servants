@@ -4,51 +4,53 @@ const route = express.Router();
 const authMiddleware = require('../../../core/middlewares/auth');
 
 module.exports = (app) => {
-  app.use('/users', route);
+    app.use('/users', route);
 
-  // static routes
-  route.get('/', usersController.getUsers);
+    // static routes
+    route.get('/', usersController.getUsers);
 
-  route.post('/', usersController.createUser);
+    route.post('/', usersController.createUser);
 
-  route.post('/admin', usersController.createAdmin);
-  
-  route.post('/login', usersController.login);
+    route.post('/admin', usersController.createAdmin);
 
-  route.post('/login/admin', usersController.loginAdmin);
+    route.post('/login', usersController.login);
 
-  route.post('/check', usersController.check);
+    route.post('/login/admin', usersController.loginAdmin);
 
-  route.post('/send-otp', usersController.sendOTP);
+    route.post('/check', usersController.check);
 
-  route.post('/verify-otp', usersController.verifyOTP);
+    route.post('/send-otp', usersController.sendOTP);
 
-  // specific dynamic routes
+    // specific dynamic routes
 
-  // route.get('/name/:id', usersController.getUserName);
+    // route.get('/name/:id', usersController.getUserName);
 
-  // route.put('/update/email/:id', usersController.updateUserEmail);
+    // route.put('/update/email/:id', usersController.updateUserEmail);
 
-  // route.put('/update/phonenumber/:id', usersController.updateUserPhoneNumber);
+    // route.put('/update/phonenumber/:id', usersController.updateUserPhoneNumber);
 
-  // route.put('/update/password/:id', usersController.changePassword);
+    // route.put('/update/password/:id', usersController.changePassword);
 
-  route.get('/id', authMiddleware, usersController.getUserId);
-  
-  route.get('/name', authMiddleware, usersController.getUserName);
+    route.get('/id', authMiddleware, usersController.getUserId);
 
-  route.put('/update/password', authMiddleware, usersController.changePassword);
+    route.get('/name', authMiddleware, usersController.getUserName);
 
-  route.put('/update/email/:id', authMiddleware, usersController.updateEmail);
+    route.put(
+        '/update/password',
+        authMiddleware,
+        usersController.changePassword
+    );
 
-  route.put(
-    '/update/phonenumber/:id',
-    authMiddleware,
-    usersController.updatePhoneNumber
-  );
+    route.put('/update/email/:id', authMiddleware, usersController.updateEmail);
 
-  route.put('/update/name/:id', authMiddleware, usersController.updateName);
+    route.put(
+        '/update/phonenumber/:id',
+        authMiddleware,
+        usersController.updatePhoneNumber
+    );
 
-  // generic dynamic routes
-  route.delete('/:id', authMiddleware, usersController.deleteUser);
+    route.put('/update/name/:id', authMiddleware, usersController.updateName);
+
+    // generic dynamic routes
+    route.delete('/:id', authMiddleware, usersController.deleteUser);
 };

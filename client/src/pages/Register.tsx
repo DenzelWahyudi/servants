@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { ButtonLink } from "../components/ButtonLink";
 import { Form } from "../components/Form";
 import { Heading } from "../components/Heading";
-import React, {useRef, useState} from "react";
+import React, {useRef, useState, useEffect} from "react";
 import { API_URL } from "../api";
 
 export function Register() {
-    
+
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
@@ -16,13 +16,24 @@ export function Register() {
         phoneNumber: "",
         password: "",
         confirm_password: "",
+        code: ""
     });
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState("form");
-    const [otp, setOTP] = useState("");
     const inputRef = useRef<HTMLInputElement>(null);
     const [focused, setFocused] = useState(false);
+    const [timer, setTimer] = useState(60);
+
+    useEffect(() => {
+        let interval: ReturnType<typeof setTimeout>;
+        if (page === "otp" && timer > 0) {
+            interval = setInterval(() => {
+                setTimer((prev) => prev - 1);
+            }, 1000);
+        }
+        return () => clearInterval(interval);
+    }, [page, timer]);
 
     function handleChange(field: keyof typeof formData){
         return (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -32,7 +43,7 @@ export function Register() {
     function handleOTPChange(e: React.ChangeEvent<HTMLInputElement>){
         if (error !== null) setError(null);
         const digits = e.target.value.replace(/\D/g, "");
-        return setOTP(digits);
+        return setFormData(prev => ({ ...prev, code: digits }));
     }
 
     async function handleRegister(){
@@ -41,17 +52,6 @@ export function Register() {
         setLoading(true);
 
         try {
-            const verify = await fetch(`${API_URL}/api/users/verify-otp`, {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({ phone: formData.phoneNumber, code: otp })
-            })
-            const verifyData = await verify.json();
-            if (!verify.ok) {
-                setError(verifyData.message || "Wrong code!")
-                return
-            }
-
             const response = await fetch(`${API_URL}/api/users`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json"},
@@ -101,7 +101,8 @@ export function Register() {
                 return;
             }
 
-            setPage("otp")
+            setPage("otp");
+            setTimer(60);
         } catch {
             setError("Could not connect to the server. Please try again.");
         } finally {
@@ -156,7 +157,7 @@ export function Register() {
 
                     <div className="relative inline-flex gap-2 sm:gap-3 mt-4" onClick={() => inputRef.current?.focus()}>
                         <input
-                            value={otp}
+                            value={formData.code}
                             onChange={handleOTPChange}
                             inputMode="numeric"
                             type="text"
@@ -171,11 +172,15 @@ export function Register() {
                             <div
                             key={i}
                             className={`w-11 sm:w-14 h-14 sm:h-16 flex items-center justify-center text-xl sm:text-2xl text-zinc-100 font-mono border rounded-xl transition-all duration-200
-                                ${focused && i === otp.length ? "border-amber-400 shadow-[0_0_12px_rgba(251,191,36,0.3)]" : error ? "border-red-500 bg-red-500/10" : "border-slate-600 bg-slate-700/50"} `}
+                                ${focused && i === formData.code.length ? "border-amber-400 shadow-[0_0_12px_rgba(251,191,36,0.3)]" : error ? "border-red-500 bg-red-500/10" : "border-slate-600 bg-slate-700/50"} `}
                             >
-                                {otp[i]}
+                                {formData.code[i]}
                             </div>
                         ))}
+                    </div>
+
+                    <div className="text-zinc-400 text-sm text-center">
+                        Code expires in <span className="text-amber-400 font-medium">00:{timer.toString().padStart(2, '0')}</span>
                     </div>
 
                     {error && (<span className="text-center text-red-400 text-sm bg-red-400/10 py-2 px-4 rounded-lg border border-red-400/20 w-full">{error}</span>)}
