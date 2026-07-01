@@ -90,9 +90,9 @@ export function Openings() {
             setUserId(data)
         }
         if (token) {
-            fetchUser()
+            void fetchUser()
         }
-        fetchRoles()
+        void fetchRoles()
     }, [token])
 
     async function fetchRoles() {
@@ -135,7 +135,7 @@ export function Openings() {
                                 role={role.name} 
                                 roleId={role._id}
                                 userId={userId}
-                                onSave={() => {fetchRoles()}}
+                                onSave={() => {void fetchRoles()}}
                                 />
                             )
                         }

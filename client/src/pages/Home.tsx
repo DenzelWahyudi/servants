@@ -4,7 +4,7 @@ import { UpcomingServices } from "../components/UpcomingServices"
 import bell from '../assets/icons/bell.svg'
 import calendar from '../assets/icons/calendar.svg'
 import user from '../assets/icons/user.svg'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useAuth } from "../hooks/useAuth"
 import { startOfToday, isEqual, startOfDay, format } from "date-fns"
 import { API_URL } from "../api"
@@ -95,10 +95,10 @@ export function Home() {
 			setRoles(rolesData)
 		}
 		if (token) {
-			fetchUser()
-			fetchSchedule()
+			void fetchUser()
+			void fetchSchedule()
 		}
-		fetchRoles()
+		void fetchRoles()
 	}, [token])
 
 	async function getAssignments(){

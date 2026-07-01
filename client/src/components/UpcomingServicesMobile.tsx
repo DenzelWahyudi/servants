@@ -33,7 +33,7 @@ export function UpcomingServicesMobile(){
             const data: Service[] = await response.json();
             setServices(data);
         }
-        fetchServices()
+        void fetchServices()
     }, [])
 
     return (

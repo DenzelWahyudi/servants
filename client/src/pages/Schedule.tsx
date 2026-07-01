@@ -17,7 +17,7 @@ import {
 } from "date-fns"
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { capitalizeFirstLetter } from "../utils/functions";
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useAuth } from "../hooks/useAuth";
 import { Heading } from "../components/Heading";
 import { API_URL } from "../api";
@@ -49,7 +49,7 @@ export function Schedule() {
             setSchedule(Array.isArray(data) ? data : [])
         }
         if (token) {
-            fetchSchedule()
+            void fetchSchedule()
         }
     }, [token])
 

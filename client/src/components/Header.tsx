@@ -35,7 +35,7 @@ export function Header({
         setLoading(true);
 
         try {
-            await logout();
+            logout();
             navigate("/admin/login");
         } finally {
             setLoading(false);

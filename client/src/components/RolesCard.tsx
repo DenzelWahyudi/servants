@@ -68,7 +68,7 @@ export function RolesCard({ serviceId, serviceName, serviceTime, serviceDate }: 
             const sorted = data.sort((a, b) => a.name.localeCompare(b.name))
             setRoles(sorted)
         }
-        fetchService()
+        void fetchService()
 
     }, [serviceId, refreshKey])
 
@@ -194,7 +194,7 @@ function RelieveRoleForm({ roleId, serviceName, roleName, onClose, token }: Role
             const usersData: RelieveUser[] = await usersRes.json()
             setUsers(usersData)
         }
-        fetchUsers()
+        void fetchUsers()
     }, [roleId])
 
     function handleChange(e: React.ChangeEvent<HTMLSelectElement>){
@@ -291,7 +291,7 @@ function AssignRoleForm({ roleId, serviceName, roleName, onClose, token }: RoleF
             const data: User[] = await response.json()
             setUsers(data)
         }
-        fetchUsers()
+        void fetchUsers()
     }, [])
 
     async function handleAssign(userId: string, roleId: string){

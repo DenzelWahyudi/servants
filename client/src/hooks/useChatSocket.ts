@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { API_URL } from '../api';
+import {useAuth} from "./useAuth.ts";
 
 interface Chat {
     _id: string
@@ -30,6 +31,7 @@ const WS_URL = API_URL.replace(/^http/, 'ws');
 export function useChatSocket(serviceId: string | undefined) {
     const [chats, setChats] = useState<Chat[]>([]);
     const wsRef = useRef<WebSocket | null>(null);
+    const { token } = useAuth()
 
     useEffect(() => {
         let cancelled = false;
@@ -55,6 +57,14 @@ export function useChatSocket(serviceId: string | undefined) {
                 const { type, data } = JSON.parse(event.data);
                 if (type === 'NEW_CHAT') {
                     setChats(prev => [...prev, data]);
+                    void fetch(`${API_URL}/api/chats/read`, {
+                        method: "POST",
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ serviceId, chatId: data._id })
+                    })
                 }
                 if (type === 'NEW_READ') {
                     setChats(prev => prev.map(chat =>
@@ -86,7 +96,7 @@ export function useChatSocket(serviceId: string | undefined) {
             wsRef.current?.close();
             wsRef.current = null;
         };
-    }, [serviceId]);
+    }, [serviceId, token]);
 
     return { chats };
 }

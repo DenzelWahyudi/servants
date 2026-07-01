@@ -82,7 +82,7 @@ export function AdminUsers() {
             }
             setLoading(false)
         }
-        fetchUsers()
+        void fetchUsers()
     }, [q, refreshKey])
 
     function handleNameChange(field: keyof Chosen){

@@ -80,28 +80,9 @@ async function markServiceChatsAsRead(req, res, next){
     }
 }
 
-async function getReadStatus(req, res, next){
-    try {
-        const chatId = req.params.id
-        
-        const success = await chatsService.getReadStatus(chatId)
-        if (!success){
-            throw errorResponder(
-                errorTypes.UNPROCESSABLE_ENTITY,
-                'Failed to get chat read status.'
-            );
-        }
-
-        res.status(200).json(success)
-    } catch (error) {
-        next(error)
-    }
-}
-
 module.exports = {
     sendChat,
     getAllChats,
     markChatAsRead,
     markServiceChatsAsRead,
-    getReadStatus
 }
