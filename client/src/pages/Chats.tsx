@@ -264,7 +264,7 @@ export function Chats() {
                     placeholder="🔍︎  Search Service"/>
                     <div className="pr-0 select-none">
                         {assignedServices?.length === 0 ? (
-                                <p className="text-center text-zinc-100 text-sm">No Assignments</p>
+                                <p className="text-center text-zinc-100 text-sm">No assignments found — this may still be loading</p>
                             ) : (assignedServices?.map((s) => 
                             <button className="flex justify-between w-full border-y border-zinc-700
                             px-2.5 py-2 text-sm font-medium hover:bg-slate-600"
