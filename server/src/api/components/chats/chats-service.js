@@ -20,15 +20,10 @@ async function markServiceChatsAsRead(serviceId, userId, userName){
     return chatsRepository.markServiceChatsAsRead(serviceId, userId, userName)
 }
 
-async function getReadStatus(chatId){
-    return chatsRepository.getReadStatus(chatId)
-}
-
 module.exports = {
     sendChat,
     getAllChats,
     deleteChats,
     markChatAsRead,
     markServiceChatsAsRead,
-    getReadStatus
 }

@@ -36,15 +36,10 @@ async function markServiceChatsAsRead(serviceId, userId, userName) {
     return Chats.find({ _id: { $in: affectedIds } }).select('_id readBy');
 }
 
-async function getReadStatus(chatId){
-    return Chats.findById(chatId).select('readBy')
-}
-
 module.exports = {
     sendChat,
     getAllChats,
     deleteChats,
     markChatAsRead,
     markServiceChatsAsRead,
-    getReadStatus
 }
