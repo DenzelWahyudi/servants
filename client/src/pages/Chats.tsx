@@ -111,8 +111,8 @@ export function Chats() {
 			setUserId({ _id: data })
 		}
 
-        fetchAssignedServices()
-        fetchUserName()
+        void fetchAssignedServices()
+        void fetchUserName()
     }, [token])
 
     const handleScroll = () => {
@@ -268,8 +268,8 @@ export function Chats() {
                             onClick={() => {
                                 setChosenService(s);
                                 setMessage(prev => ({...prev, serviceId: s.serviceId}))
-                                handleReadServiceChats(s.serviceId).then()
-                                fetchGroupMemberNames(s.serviceId).then()
+                                void handleReadServiceChats(s.serviceId)
+                                void fetchGroupMemberNames(s.serviceId)
                             }}
                             >
                                 <div className="flex flex-col text-left">

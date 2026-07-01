@@ -57,14 +57,14 @@ export function useChatSocket(serviceId: string | undefined) {
                 const { type, data } = JSON.parse(event.data);
                 if (type === 'NEW_CHAT') {
                     setChats(prev => [...prev, data]);
-                    fetch(`${API_URL}/api/chats/read`, {
+                    void fetch(`${API_URL}/api/chats/read`, {
                         method: "POST",
                         headers: {
                             Authorization: `Bearer ${token}`,
                             "Content-Type": "application/json"
                         },
                         body: JSON.stringify({ serviceId, chatId: data._id })
-                    }).then()
+                    })
                 }
                 if (type === 'NEW_READ') {
                     setChats(prev => prev.map(chat =>

@@ -28,7 +28,7 @@ export function AdminRoles() {
 			)
 			setServices(sorted)
 		}
-		fetchServices()
+		void fetchServices()
 	}, [])
 
 	return (

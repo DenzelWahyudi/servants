@@ -32,7 +32,7 @@ export function UpcomingServices(){
             const data: Service[] = await response.json();
             setServices(data);
         }
-        fetchServices()
+        void fetchServices()
     }, [])
 
     return (

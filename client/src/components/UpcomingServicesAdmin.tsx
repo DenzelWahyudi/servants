@@ -76,7 +76,7 @@ export function UpcomingServicesAdmin(){
             const data: Service[] = await response.json();
             setServices(data);
         }
-        fetchServices()
+        void fetchServices()
     }, [])
 
     async function handleDelete(serviceId: string){
@@ -274,7 +274,7 @@ function EditServiceForm({ id, onClose, onSave, token }: EditServiceFormProps){
                 }))
             );
         }
-        fetchService();
+        void fetchService();
     },[id, token]);
     
 
