@@ -305,7 +305,7 @@ async function forgotPassword(request, response, next) {
             code,
         } = request.body;
 
-        const user = await usersService.getUser(request.user.id);
+        const user = await usersService.phoneNumberExists(phoneNumber);
         if (!user) {
             throw errorResponder(
                 errorTypes.UNPROCESSABLE_ENTITY,
