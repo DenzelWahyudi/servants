@@ -86,6 +86,7 @@ export function Chats() {
         readBy: { userId: string; userName: string }[]
         replyTo: { chatId: string; userId: string; userName: string; message: string } | null
     } | null>(null)
+    const [searchQuery, setSearchQuery] = useState("")
 
     useEffect(() => {
         async function fetchAssignedServices(){
@@ -100,7 +101,12 @@ export function Chats() {
             const sorted = data.sort(
                 (a,b) => b.unreadMessage - a.unreadMessage
             )
-            setAssignedServices(sorted)
+            if (searchQuery.length < 1 ) setAssignedServices(sorted)
+            else {
+                const filteredServices =
+                    data.filter((s) => s.serviceName.toLowerCase().includes(searchQuery.toLowerCase()))
+                setAssignedServices(filteredServices)
+            }
         }
 
         async function fetchUserId() {
@@ -117,7 +123,7 @@ export function Chats() {
 
         void fetchAssignedServices()
         void fetchUserId()
-    }, [token])
+    }, [token, searchQuery])
 
     const handleScroll = () => {
         const el = containerRef.current;
@@ -251,6 +257,10 @@ export function Chats() {
         setMembers(data)
     }
 
+    function handleSearchService(e: React.ChangeEvent<HTMLInputElement>){
+        return setSearchQuery(e.target.value)
+    }
+
     return(
         <div className="flex flex-col gap-5 mx-auto p-4 sm:px-12 py-5">
             <Header variant="chats" />
@@ -261,7 +271,10 @@ export function Chats() {
                 ${chosenService ? '-translate-x-full' : 'translate-x-0'}`}>
                     <input className="mx-2 px-3 py-1 bg-slate-700 border border-slate-600 focus:border-amber-400 outline-none
                     text-zinc-100 text-sm rounded-lg transition-colors" 
-                    placeholder="🔍︎  Search Service"/>
+                    placeholder="🔍︎  Search Service"
+                    value={searchQuery}
+                    onChange={handleSearchService}
+                    />
                     <div className="pr-0 select-none">
                         {assignedServices?.length === 0 ? (
                                 <p className="text-center text-zinc-100 text-sm">No assignments found — this may still be loading</p>
