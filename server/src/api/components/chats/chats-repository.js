@@ -1,4 +1,5 @@
 const { Chats } = require('../../../models');
+const cloudinary = require('../../../core/cloudinary');
 
 async function sendChat(
     serviceId,
@@ -25,6 +26,12 @@ async function getAllChats(serviceId) {
 }
 
 async function deleteChats(serviceId) {
+    const chats = await Chats.find({ serviceId });
+    await Promise.allSettled(
+        chats
+            .filter((c) => c.file?.publicId)
+            .map((c) => cloudinary.uploader.destroy(c.file.publicId))
+    );
     return Chats.deleteMany({ serviceId });
 }
 
