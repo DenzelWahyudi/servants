@@ -46,7 +46,7 @@ export function Login() {
             
             navigate("/");
         } catch {
-            setError("Could not connect to the server. Please try again.");
+            setError("Please connect to a Wi-Fi network and try again.");
         } finally {
             setLoading(false);
         }
@@ -60,7 +60,8 @@ export function Login() {
                     <Heading>Login</Heading>
                 </div>
                 <div className="mt-4 mb-4">
-                    <h2 className="text-zinc-400 sm:text-lg">No one comes to help, no one comes to contribute, everybody comes to learn and to serve - Stephen Tong
+                    <h2 className="text-zinc-400 sm:text-lg">
+                        No one comes to help, no one comes to contribute, everybody comes to learn and to serve - Stephen Tong
                     </h2>
                 </div>
                 <Form label="Phone number"  value={formData.phoneNumber}    onChange={handleChange("phoneNumber")} />
