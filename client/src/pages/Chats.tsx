@@ -272,6 +272,12 @@ export function Chats() {
         if (fileInputRef.current) fileInputRef.current.value = ""
     }
 
+    function handlePreviewFile(file: File){
+        if (file.type.startsWith("image/")){
+            return window.open(URL.createObjectURL(file), '_blank', 'noopener,noreffer')
+        }
+    }
+
     return(
         <div className="flex flex-col gap-5 mx-auto p-4 sm:px-12 py-5">
             <Header variant="chats" />
@@ -475,7 +481,10 @@ export function Chats() {
                                 
                                 <div className="flex items-center gap-2.5 overflow-hidden">
                                     <div className="flex flex-col overflow-hidden">
-                                        <span className="wrap-break-word font-medium text-[13px] text-zinc-200">
+                                        <span
+                                            className="wrap-break-word font-medium text-[13px] text-zinc-200"
+                                            onClick={() => handlePreviewFile(attachedFile)}
+                                        >
                                             {attachedFile.name}
                                         </span>
                                         <span className="text-[10px] text-zinc-400">
