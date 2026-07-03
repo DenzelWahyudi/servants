@@ -434,7 +434,14 @@ export function Chats() {
                                                 text-[12px] text-rose-400 font-semibold`}>{c.userName}
                                             </span>
                                             <div className="text-sm wrap-break-word whitespace-pre-wrap select-text">
-                                                {c.message}
+                                                {c.file ? (
+                                                    <div
+                                                        className={`${c.userId === userId._id ? "bg-sky-900" : "bg-black/25"} rounded px-1.5 py-2.5 cursor-pointer select-none`}
+                                                        onClick={() => window.open(c.file?.url, '_blank', 'noopener,noreffer')}
+                                                    >
+                                                        {c.message}
+                                                    </div>
+                                                ) : c.message}
                                                 <span className="invisible inline-flex gap-1 text-[10px] ml-2.5 whitespace-nowrap">
                                                     {format(new Date(c.createdAt), 'HH:mm')} {c.userId === userId._id && <CheckCheck size={13} className="text-zinc-100" />}
                                                 </span>
@@ -473,7 +480,14 @@ export function Chats() {
                                                 <span className="w-full text-sm text-zinc-200 wrap-break-word whitespace-pre-wrap">{c.replyTo.message}</span>
                                             </div>
                                             <div className="text-sm wrap-break-word whitespace-pre-wrap select-text">
-                                                {c.message}
+                                                {c.file ? (
+                                                    <div
+                                                        className={`${c.userId === userId._id ? "bg-sky-900" : "bg-black/25"} rounded px-1.5 py-2.5 cursor-pointer select-none mt-1.5`}
+                                                        onClick={() => window.open(c.file?.url, '_blank', 'noopener,noreffer')}
+                                                    >
+                                                        {c.message}
+                                                    </div>
+                                                ) : c.message}
                                                 <span className="invisible inline-flex gap-1 text-[10px] ml-2.5 whitespace-nowrap">
                                                     {format(new Date(c.createdAt), 'HH:mm')} {c.userId === userId._id && <CheckCheck size={13} className="text-zinc-100" />}
                                                 </span>
