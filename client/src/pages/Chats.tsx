@@ -28,6 +28,7 @@ interface Group {
 interface Message {
     serviceId: string,
     message: string,
+    file: UploadedFile | null
     status: string,
     replyTo: ReplyTo | null
 }
@@ -51,6 +52,16 @@ interface Member {
     userName: string
 }
 
+interface UploadedFile {
+    _id: string;
+    url: string;
+    publicId: string;
+    resourceType: string;
+    format?: string;
+    originalName?: string;
+    bytes?: number;
+}
+
 export function Chats() {
 
     const { token } = useAuth()
@@ -60,6 +71,7 @@ export function Chats() {
     const [message, setMessage] = useState<Message>({
         serviceId: "",
         message: "",
+        file: null,
         status: "success",
         replyTo: null
     })
@@ -155,14 +167,22 @@ export function Chats() {
         setLoading(true)
         setError(null)
 
+        let payload = message;
+
         try {
+            if (attachedFile){
+                const data: UploadedFile = await uploadFile()
+                payload = { ...message, message: attachedFile.name, file: data }
+                handleRemoveFile()
+            }
+
             const response = await fetch(`${API_URL}/api/chats/send`, {
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(message)
+                body: JSON.stringify(payload)
             })
 
             const data = await response.json()
@@ -172,11 +192,12 @@ export function Chats() {
                 return
             }
 
-            setMessage((prev) => ({...prev, message:"", replyTo: null}))
+            setMessage((prev) => ({...prev, message:"", file: null, replyTo: null}))
 
-            setLoading(false)
         } catch {
             setError("Could not connect to the server. Please try again.")
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -276,6 +297,30 @@ export function Chats() {
         if (file.type.startsWith("image/")){
             return window.open(URL.createObjectURL(file), '_blank', 'noopener,noreffer')
         }
+    }
+
+    async function uploadFile(): Promise<UploadedFile>{
+        setError(null)
+
+        if (!attachedFile){
+            throw new Error("No file attached!")
+        }
+
+        const formData = new FormData();
+        formData.append('file', attachedFile);
+
+        const response = await fetch('/api/file/upload', {
+            method: "POST",
+            body: formData
+        })
+
+        const data: UploadedFile = await response.json()
+        if (!response.ok){
+            setError("Failed to upload file to cloudinary.")
+            throw new Error("Failed to upload file!")
+        }
+
+        return data
     }
 
     return(

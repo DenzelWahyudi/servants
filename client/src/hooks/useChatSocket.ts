@@ -7,6 +7,7 @@ interface Chat {
     userId: string
     userName: string
     message: string
+    file: UploadedFile | null
     status: string
     replyTo: ReplyTo | null
     readBy: ReadBy[] | []
@@ -23,6 +24,16 @@ interface ReplyTo {
 interface ReadBy {
     userId: string,
     userName: string
+}
+
+interface UploadedFile {
+    _id: string;
+    url: string;
+    publicId: string;
+    resourceType: string;
+    format?: string;
+    originalName?: string;
+    bytes?: number;
 }
 
 // Derives ws:// or wss:// from your existing API_URL automatically

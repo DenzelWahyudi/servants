@@ -1,28 +1,44 @@
 const { Chats } = require('../../../models');
 
-async function sendChat(serviceId, userId, userName, message, status, replyTo){
-    return Chats.create({ serviceId, userId, userName, message, status, replyTo })
+async function sendChat(
+    serviceId,
+    userId,
+    userName,
+    message,
+    file,
+    status,
+    replyTo
+) {
+    return Chats.create({
+        serviceId,
+        userId,
+        userName,
+        message,
+        file,
+        status,
+        replyTo,
+    });
 }
 
-async function getAllChats(serviceId){
-    return Chats.find({ serviceId })
+async function getAllChats(serviceId) {
+    return Chats.find({ serviceId });
 }
 
-async function deleteChats(serviceId){
-    return Chats.deleteMany({ serviceId })
+async function deleteChats(serviceId) {
+    return Chats.deleteMany({ serviceId });
 }
 
-async function markChatAsRead(chatId, userId, userName){
+async function markChatAsRead(chatId, userId, userName) {
     return Chats.findOneAndUpdate(
         {
-            _id: chatId,
-            'readBy.userId': { $ne: userId }
+            '_id': chatId,
+            'readBy.userId': { $ne: userId },
         },
         {
-            $push: { readBy: { userId, userName } }
+            $push: { readBy: { userId, userName } },
         },
         { new: true }
-    )
+    );
 }
 
 async function markServiceChatsAsRead(serviceId, userId, userName) {
@@ -42,4 +58,4 @@ module.exports = {
     deleteChats,
     markChatAsRead,
     markServiceChatsAsRead,
-}
+};
