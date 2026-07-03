@@ -4,7 +4,7 @@ import { Header } from "../components/Header";
 import { API_URL } from "../api";
 import { useAuth } from "../hooks/useAuth";
 import { ChevronLeftIcon } from "@heroicons/react/24/solid";
-import { SendHorizontal, X, CheckCheck } from 'lucide-react';
+import { SendHorizontal, X, CheckCheck, Paperclip } from 'lucide-react';
 import { format } from 'date-fns';
 import { useLayoutEffect, useRef } from 'react';
 import { useChatSocket } from "../hooks/useChatSocket";
@@ -87,12 +87,14 @@ export function Chats() {
         replyTo: { chatId: string; userId: string; userName: string; message: string } | null
     } | null>(null)
     const [searchQuery, setSearchQuery] = useState("")
+    const [attachedFile, setAttachedFile] = useState<File | null>(null)
+    const fileInputRef = useRef<HTMLInputElement>(null)
 
     useEffect(() => {
         async function fetchAssignedServices(){
             const response = await fetch(`${API_URL}/api/assignments/assignedservices`, {
                 method: 'GET',
-                headers: { 
+                headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 }
@@ -110,16 +112,16 @@ export function Chats() {
         }
 
         async function fetchUserId() {
-			const response = await fetch(`${API_URL}/api/users/id`, {
-				method: "GET",
-				headers: {
-					Authorization: `Bearer ${token}`,
-					"Content-Type": "application/json",
-				},
-			})
-			const data = await response.json()
-			setUserId({ _id: data })
-		}
+            const response = await fetch(`${API_URL}/api/users/id`, {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            })
+            const data = await response.json()
+            setUserId({ _id: data })
+        }
 
         void fetchAssignedServices()
         void fetchUserId()
@@ -136,7 +138,7 @@ export function Chats() {
         if (containerRef.current && stickToBottomRef.current) {
             containerRef.current.scrollTop = containerRef.current.scrollHeight;
         }
-        
+
         const textarea = textareaRef.current;
         if (textarea){
             textarea.style.height = 'auto';
@@ -261,6 +263,16 @@ export function Chats() {
         return setSearchQuery(e.target.value)
     }
 
+    function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>){
+        const file = e.target.files?.[0]
+        if (file) setAttachedFile(file)
+    }
+
+    function handleRemoveFile(){
+        setAttachedFile(null)
+        if (fileInputRef.current) fileInputRef.current.value = ""
+    }
+
     return(
         <div className="flex flex-col gap-5 mx-auto p-4 sm:px-12 py-5">
             <Header variant="chats" />
@@ -270,25 +282,25 @@ export function Chats() {
                 transition-transform duration-300 ease-in-out
                 ${chosenService ? '-translate-x-full' : 'translate-x-0'}`}>
                     <input className="mx-2 px-3 py-1 bg-slate-700 border border-slate-600 focus:border-amber-400 outline-none
-                    text-zinc-100 text-sm rounded-lg transition-colors" 
-                    placeholder="🔍︎  Search Service"
-                    value={searchQuery}
-                    onChange={handleSearchService}
+                    text-zinc-100 text-sm rounded-lg transition-colors"
+                           placeholder="🔍︎  Search Service"
+                           value={searchQuery}
+                           onChange={handleSearchService}
                     />
                     <div className="pr-0 select-none">
                         {assignedServices?.length === 0 ? (
-                                <p className="text-center text-zinc-100 text-sm">No assignments found — this may still be loading</p>
-                            ) : (assignedServices?.map((s) => 
+                            <p className="text-center text-zinc-100 text-sm">No assignments found — this may still be loading</p>
+                        ) : (assignedServices?.map((s) =>
                             <button className="flex justify-between w-full border-y border-zinc-700
                             px-2.5 py-2 text-sm font-medium hover:bg-slate-600"
-                            key={s.serviceId}
-                            onClick={() => {
-                                setChosenService(s);
-                                setMessage(prev => ({...prev, serviceId: s.serviceId}))
-                                void handleReadServiceChats(s.serviceId)
-                                void fetchGroupMemberNames(s.serviceId)
-                                setAssignedServices(prev => prev?.map(se => se.serviceId === s.serviceId ? {...se, unreadMessage: 0} : se) ?? null)
-                            }}
+                                    key={s.serviceId}
+                                    onClick={() => {
+                                        setChosenService(s);
+                                        setMessage(prev => ({...prev, serviceId: s.serviceId}))
+                                        void handleReadServiceChats(s.serviceId)
+                                        void fetchGroupMemberNames(s.serviceId)
+                                        setAssignedServices(prev => prev?.map(se => se.serviceId === s.serviceId ? {...se, unreadMessage: 0} : se) ?? null)
+                                    }}
                             >
                                 <div className="flex flex-col text-left">
                                     <span>{s.serviceName}</span>
@@ -314,39 +326,39 @@ export function Chats() {
                     <div className="flex justify-between items-center py-3.5 px-2.5 bg-slate-700 select-none">
                         <div className="flex gap-1 items-center">
                             <ChevronLeftIcon
-                            className="-ml-2 h-6.5 cursor-pointer hover:text-slate-600 transition-colors"
-                            onClick={() => {
-                                setChosenService(null)
-                                setMessage(prev => ({...prev, replyTo: null }))
-                            }}
+                                className="-ml-2 h-6.5 cursor-pointer hover:text-slate-600 transition-colors"
+                                onClick={() => {
+                                    setChosenService(null)
+                                    setMessage(prev => ({...prev, replyTo: null }))
+                                }}
                             />
                             <div className="flex flex-col gap-1 items-start">
-                                <button 
-                                disabled={loadingDetails}
-                                className="text-[13.5px] font-medium leading-none hover:text-zinc-300 disabled:text-zinc-300"
-                                onClick={() => fetchGroupDetails(chosenService!.serviceId)}
+                                <button
+                                    disabled={loadingDetails}
+                                    className="text-[13.5px] font-medium leading-none hover:text-zinc-300 disabled:text-zinc-300"
+                                    onClick={() => fetchGroupDetails(chosenService!.serviceId)}
                                 >
                                     {chosenService?.serviceName}
                                 </button>
                                 <h2 className="text-zinc-300 text-[10px] leading-none">
                                     {chosenService ? format(new Date(chosenService.date), 'd MMMM yyyy') : null}
-                                    </h2>
+                                </h2>
                             </div>
                         </div>
                         <h3 className="text-[12px]">{chosenService?.time}</h3>
                     </div>
 
-                    <div 
-                    ref={containerRef}
-                    onScroll={handleScroll}
-                    className="flex flex-col gap-2.5 w-full h-full overflow-y-auto py-2 px-2.5">
+                    <div
+                        ref={containerRef}
+                        onScroll={handleScroll}
+                        className="flex flex-col gap-2.5 w-full h-full overflow-y-auto py-2 px-2.5">
                         {chats?.map((c, index) => {
                             const currentDate = new Date(c.createdAt)
                             const prevDate = index > 0 ? new Date(chats[index-1].createdAt) : null
-                            const showDateSeperator = 
+                            const showDateSeperator =
                                 !prevDate ||
                                 currentDate.toDateString() !== prevDate.toDateString()
-                            
+
                             return (
                                 <React.Fragment key={c._id}>
                                     {showDateSeperator && (
@@ -404,7 +416,7 @@ export function Chats() {
                                                 items-start overflow-hidden border-l-3 border-rose-400`}
                                                 onClick={() => {
                                                     if(c.replyTo !== null) scrollToMessage(c.replyTo.chatId)
-                                                    }
+                                                }
                                                 }
                                             >
                                                 <span className="text-[12px] text-rose-400 font-semibold">{c.replyTo.userName}</span>
@@ -443,18 +455,59 @@ export function Chats() {
                         </div>
                     ) : null}
                     <div className="flex items-center py-2 gap-1.5 px-2.5 mt-auto bg-slate-700">
-                        <textarea 
-                        ref={textareaRef}
-                        className="px-3 py-1.5 w-full bg-slate-700 border border-slate-600 focus:border-amber-400 outline-none
-                        text-sm leading-normal text-zinc-100 rounded-2xl transition-colors resize-none max-h-32 overflow-y-hidden" 
-                        rows={1}
-                        value={message.message}
-                        onChange={handleChange("message")}
+                        <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept="image/*,.pdf"
+                            onChange={handleFileSelect}
+                            className="hidden"
                         />
                         <button
-                        onClick={() => handleSend()}
-                        disabled={message.message === "" || loading}
-                        className="flex items-center justify-center w-5.5 h-5.5 bg-green-600 rounded-xl text-zinc-950 hover:bg-green-950 disabled:bg-green-800"
+                            onClick={() => fileInputRef.current?.click()}
+                            className="flex items-center justify-center w-5 h-5 shrink-0 text-zinc-300 hover:text-amber-400 transition-colors"
+                        >
+                            <Paperclip size={16} />
+                        </button>
+
+                        {attachedFile ? (
+                            <div
+                                className="flex flex-1 min-w-0 items-center justify-between px-3 py-2 w-full bg-slate-700/80 border border-slate-600
+                                text-sm text-zinc-100 rounded-2xl shadow-sm">
+                                
+                                <div className="flex items-center gap-2.5 overflow-hidden">
+                                    <div className="flex flex-col overflow-hidden">
+                                        <span className="wrap-break-word font-medium text-[13px] text-zinc-200">
+                                            {attachedFile.name}
+                                        </span>
+                                        <span className="text-[10px] text-zinc-400">
+                                            {(attachedFile.size / (1024 * 1024) >= 1) 
+                                                ? `${(attachedFile.size / (1024 * 1024)).toFixed(2)} MB` 
+                                                : `${(attachedFile.size / 1024).toFixed(1)} KB`}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <button
+                                    className="flex items-center justify-center w-7 h-7 rounded-full bg-slate-800/50 hover:bg-rose-500/20 text-zinc-400 hover:text-rose-400 transition-all ml-2 shrink-0"
+                                    onClick={handleRemoveFile}
+                                >
+                                    <X size={14} />
+                                </button>
+                            </div>
+                        ) : (
+                            <textarea
+                                ref={textareaRef}
+                                className="px-3 py-1.5 w-full bg-slate-700 border border-slate-600 focus:border-amber-400 outline-none
+                                text-sm leading-normal text-zinc-100 rounded-2xl transition-colors resize-none max-h-32 overflow-y-hidden"
+                                rows={1}
+                                value={message.message}
+                                onChange={handleChange("message")}
+                            />
+                        )}
+                        <button
+                            onClick={() => handleSend()}
+                            disabled={(message.message === "" && attachedFile === null) || loading}
+                            className="flex items-center justify-center shrink-0 w-7 h-7 bg-green-600 rounded-xl text-zinc-950 hover:bg-green-950 disabled:bg-green-800"
                         >
                             <SendHorizontal size={15}/>
                         </button>
@@ -468,13 +521,13 @@ export function Chats() {
                 transition-transform duration-300 ease-in-out overflow-y-auto
                 ${groupDetails && chosenService ? 'translate-x-0' : 'translate-x-full'}`}>
                     <ChevronLeftIcon
-                    className="-ml-2 h-6.5 cursor-pointer hover:text-slate-600 transition-colors"
-                    onClick={() => setGroupDetails(null)}
+                        className="-ml-2 h-6.5 cursor-pointer hover:text-slate-600 transition-colors"
+                        onClick={() => setGroupDetails(null)}
                     />
                     <div className="flex flex-col gap-1 items-center">
                         <h1 className="font-semibold text-xl">{chosenService?.serviceName}</h1>
                         <h3 className="text-sm text-zinc-300">Group ⋅ {groupDetails?.length} members</h3>
-                        <h1 className="text-sm">{chosenService ? 
+                        <h1 className="text-sm">{chosenService ?
                             format(new Date(chosenService.date), 'EEEE dd MMMM yyyy, HH:mm') : null}
                         </h1>
                         <div className="flex flex-col w-83 mt-2 px-3 border rounded-lg border-zinc-400">
@@ -502,8 +555,8 @@ export function Chats() {
                     {/* header */}
                     <div className="flex items-center gap-1 py-3.5 px-2.5 bg-slate-700 select-none">
                         <ChevronLeftIcon
-                        className="-ml-2 h-6.5 cursor-pointer hover:text-slate-600 transition-colors"
-                        onClick={() => setReadStatusChat(null)}
+                            className="-ml-2 h-6.5 cursor-pointer hover:text-slate-600 transition-colors"
+                            onClick={() => setReadStatusChat(null)}
                         />
                         <div className="flex flex-col gap-1 items-start">
                             <span className="text-[13.5px] font-medium leading-none">Message Info</span>
@@ -588,11 +641,9 @@ export function Chats() {
                                 ))
                             }
                         </div>
-                    )}                    
+                    )}
                 </div>
             </div>
-            
-            <Footer />
         </div>
     )
 }
