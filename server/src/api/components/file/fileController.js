@@ -7,16 +7,16 @@ const uploadFile = async (req, res) => {
 
         const result = await uploadToCloudinary(req.file.buffer);
 
-        // const savedFile = await File.create({
-        //     url: result.secure_url,
-        //     publicId: result.public_id,
-        //     resourceType: result.resource_type,
-        //     format: result.format,
-        //     originalName: req.file.originalname,
-        //     bytes: result.bytes,
-        // });
+        const savedFile = {
+            url: result.secure_url,
+            publicId: result.public_id,
+            resourceType: result.resource_type,
+            format: result.format,
+            originalName: req.file.originalname,
+            bytes: result.bytes,
+        };
 
-        res.status(201).json(result);
+        res.status(201).json(savedFile);
     } catch (error) {
         res.status(500).json({
             message: 'Upload failed',

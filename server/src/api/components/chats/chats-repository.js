@@ -30,7 +30,11 @@ async function deleteChats(serviceId) {
     await Promise.allSettled(
         chats
             .filter((c) => c.file?.publicId)
-            .map((c) => cloudinary.uploader.destroy(c.file.publicId))
+            .map((c) =>
+                cloudinary.uploader.destroy(c.file.publicId, {
+                    resource_type: c.file.resourceType,
+                })
+            )
     );
     return Chats.deleteMany({ serviceId });
 }
