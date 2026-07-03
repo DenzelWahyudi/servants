@@ -46,7 +46,7 @@ export function Login() {
             
             navigate("/");
         } catch {
-            setError("Could not connect to the server. Please try again.");
+            setError("Please connect to a Wi-Fi network.");
         } finally {
             setLoading(false);
         }
@@ -55,22 +55,23 @@ export function Login() {
     return(
         <div className="mx-auto px-4 sm:px-12 py-5 flex flex-col gap-7 sm:gap-15 items-center select-none">
             <Header variant="login" />
-            <div className="flex flex-col gap-0.5 sm:gap-1.5 p-6 sm:p-7 bg-slate-800 items-center rounded-xl w-80 sm:w-100 h-104 sm:h-118">
+            <div className="flex flex-col gap-0.5 sm:gap-1.5 p-6 sm:p-7 bg-slate-800 items-center rounded-xl w-80 sm:w-100 min-h-104 sm:h-118">
                 <div className="mt-2">
                     <Heading>Login</Heading>
                 </div>
                 <div className="mt-4 mb-4">
-                    <h2 className="text-zinc-400 sm:text-lg">No one comes to help, no one comes to contribute, everybody comes to learn and to serve - Stephen Tong
+                    <h2 className="text-zinc-400 sm:text-lg">
+                        No one comes to help, no one comes to contribute, everybody comes to learn and to serve - Stephen Tong
                     </h2>
                 </div>
                 <Form label="Phone number"  value={formData.phoneNumber}    onChange={handleChange("phoneNumber")} />
                 <Form label="Password"      value={formData.password}       onChange={handleChange("password")} type="password"/>
 
                 {error && (
-                    <p className="text-red-400 text-sm text-center w-full">{error}</p>
+                    <p className="mt-1 sm:mt-0 text-red-400 text-sm text-center w-full">{error}</p>
                 )}
 
-                <div className="w-full flex justify-end">
+                <div className={`w-full flex justify-end ${error ? 'mb-8 sm:mb-0' : ''}`}>
                     <ButtonLink to="/forgot-password" variant="secondary" className="text-amber-400 text-sm">Forgot Password?</ButtonLink>
                 </div>
 

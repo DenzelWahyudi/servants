@@ -67,7 +67,7 @@ export function RegisterAdmin() {
             navigate("/admin/login");
 
         } catch {
-            setError("Could not connect to the server. Please try again.");
+            setError("Please connect to a Wi-Fi network and try again.");
         } finally {
             setLoading(false);
         }
@@ -103,7 +103,7 @@ export function RegisterAdmin() {
             setPage("otp");
             setTimer(60);
         } catch {
-            setError("Could not connect to the server. Please try again.");
+            setError("Please connect to a Wi-Fi network and try again.");
         } finally {
             setLoading(false);
         }

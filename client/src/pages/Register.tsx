@@ -66,7 +66,7 @@ export function Register() {
             navigate("/login");
 
         } catch {
-            setError("Could not connect to the server. Please try again.");
+            setError("Please connect to a Wi-Fi network and try again.");
         } finally {
             setLoading(false);
         }
@@ -102,7 +102,7 @@ export function Register() {
             setPage("otp");
             setTimer(60);
         } catch {
-            setError("Could not connect to the server. Please try again.");
+            setError("Please connect to a Wi-Fi network and try again.");
         } finally {
             setLoading(false);
         }

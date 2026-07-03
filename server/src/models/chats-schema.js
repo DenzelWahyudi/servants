@@ -1,40 +1,54 @@
 module.exports = (db) =>
-db.model(
-    'Chats',
-    db.Schema({
-        serviceId: {
-            type: db.Schema.Types.ObjectId,
-            ref: 'Service',
-        }, 
-        userId: {
-            type: db.Schema.Types.ObjectId,
-            ref: 'User',
-        },
-        userName: String,
-        message: String,
-        status: {
-            type: String,
-            default: 'pending',
-            enum: ['success', 'pending', 'failed'],
-        },
-        replyTo: {
-            type: {
-                chatId: String,
-                userId: String,
-                userName: String,
-                message: String
-            },
-            default: null
-        },
-        readBy: [
+    db.model(
+        'Chats',
+        db.Schema(
             {
-                _id: false,
+                serviceId: {
+                    type: db.Schema.Types.ObjectId,
+                    ref: 'Service',
+                },
                 userId: {
                     type: db.Schema.Types.ObjectId,
-                    ref: 'User'
+                    ref: 'User',
                 },
-                userName: String
-            }
-        ]
-    }, { timestamps : true })
-);
+                userName: String,
+                message: String,
+                file: {
+                    type: {
+                        url: String,
+                        publicId: String,
+                        resourceType: String,
+                        format: String,
+                        originalName: String,
+                        bytes: String,
+                    },
+                    default: null,
+                },
+                status: {
+                    type: String,
+                    default: 'pending',
+                    enum: ['success', 'pending', 'failed'],
+                },
+                replyTo: {
+                    type: {
+                        chatId: String,
+                        userId: String,
+                        userName: String,
+                        message: String,
+                    },
+                    default: null,
+                },
+                readBy: [
+                    {
+                        _id: false,
+                        userId: {
+                            type: db.Schema.Types.ObjectId,
+                            ref: 'User',
+                        },
+                        userName: String,
+                    },
+                ],
+            },
+            { timestamps: true }
+        )
+    );
