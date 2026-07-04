@@ -594,8 +594,9 @@ export function Chats() {
                     <div className="flex flex-col gap-1 items-center">
                         <h1 className="font-semibold text-xl">{chosenService?.serviceName}</h1>
                         <h3 className="text-sm text-zinc-300">Group ⋅ {groupDetails?.length} members</h3>
-                        <h1 className="text-sm">{chosenService ?
-                            format(new Date(chosenService.date), 'EEEE dd MMMM yyyy, HH:mm') : null}
+                        <h1 className="text-sm">{chosenService
+                            ? `${format(new Date(chosenService.date), 'EEEE dd MMMM yyyy')}, ${chosenService.time}`
+                            : null}
                         </h1>
                         <div className="flex flex-col w-83 mt-2 px-3 border rounded-lg border-zinc-400">
                             {groupDetails?.map((g, index) => (
