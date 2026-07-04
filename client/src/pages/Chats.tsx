@@ -309,7 +309,7 @@ export function Chats() {
         const formData = new FormData();
         formData.append('file', attachedFile);
 
-        const response = await fetch('/api/file/upload', {
+        const response = await fetch(`${API_URL}/api/file/upload`, {
             method: "POST",
             body: formData
         })
