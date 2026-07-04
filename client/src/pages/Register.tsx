@@ -23,7 +23,7 @@ export function Register() {
     const [page, setPage] = useState("form");
     const inputRef = useRef<HTMLInputElement>(null);
     const [focused, setFocused] = useState(false);
-    const [timer, setTimer] = useState(60);
+    const [timer, setTimer] = useState(600);
 
     useEffect(() => {
         if (page !== "otp" || timer === 0) return;
@@ -100,7 +100,7 @@ export function Register() {
             }
 
             setPage("otp");
-            setTimer(60);
+            setTimer(600);
         } catch {
             setError("Please connect to a Wi-Fi network and try again.");
         } finally {
@@ -178,7 +178,7 @@ export function Register() {
                     </div>
 
                     <div className="text-zinc-400 text-sm text-center">
-                        Code expires in <span className="text-amber-400 font-medium">00:{timer.toString().padStart(2, '0')}</span>
+                        Code expires in <span className="text-amber-400 font-medium">{Math.floor(timer / 60).toString().padStart(2, '0')}:{(timer % 60).toString().padStart(2, '0')}</span>
                     </div>
 
                     {error && (<span className="text-center text-red-400 text-sm bg-red-400/10 py-2 px-4 rounded-lg border border-red-400/20 w-full">{error}</span>)}
