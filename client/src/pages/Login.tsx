@@ -64,7 +64,7 @@ export function Login() {
                         No one comes to help, no one comes to contribute, everybody comes to learn and to serve - Stephen Tong
                     </h2>
                 </div>
-                <Form label="Phone number"  value={formData.phoneNumber}    onChange={handleChange("phoneNumber")} />
+                <Form label="Phone number"  value={formData.phoneNumber}    onChange={handleChange("phoneNumber")} type="tel" />
                 <Form label="Password"      value={formData.password}       onChange={handleChange("password")} type="password"/>
 
                 {error && (

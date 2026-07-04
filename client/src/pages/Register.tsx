@@ -120,8 +120,8 @@ export function Register() {
 
                     <div className="w-full flex flex-col gap-3.5">
                         <Form label="Full Name"         value={formData.name}               onChange={handleChange("name")} />
-                        <Form label="Email"             value={formData.email}              onChange={handleChange("email")} />
-                        <Form label="Phone Number"      value={formData.phoneNumber}        onChange={handleChange("phoneNumber")} />
+                        <Form label="Email"             value={formData.email}              onChange={handleChange("email")} type="email" />
+                        <Form label="Phone Number"      value={formData.phoneNumber}        onChange={handleChange("phoneNumber")} type="tel" />
                         <Form label="Password"          value={formData.password}           onChange={handleChange("password")} />
                         <Form label="Confirm Password"  value={formData.confirm_password}   onChange={handleChange("confirm_password")} />
                     </div>
