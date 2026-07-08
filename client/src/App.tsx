@@ -29,7 +29,7 @@ export default function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
 
           {/* Protected routes */}
-          <Route path="/" element={
+          <Route path="/home" element={
             <ProtectedRoute><Home /></ProtectedRoute>
           } />
           <Route path="/schedule" element={

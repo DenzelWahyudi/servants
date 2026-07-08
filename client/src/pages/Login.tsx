@@ -44,7 +44,7 @@ export function Login() {
 
             login(data.token, data.user);
             
-            navigate("/");
+            navigate("/home");
         } catch {
             setError("Please connect to a Wi-Fi network.");
         } finally {

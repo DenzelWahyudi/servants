@@ -98,7 +98,7 @@ function getVariantStyles(variant: Variant, onLogout: () => void, onLogoutAdmin:
         case "schedule":
             return (
                 <div className={wrapperClass}>
-                    <ButtonLink to="/" variant='secondary'>Home</ButtonLink>
+                    <ButtonLink to="/home" variant='secondary'>Home</ButtonLink>
                     <Button variant='secondary'>Schedule</Button>
                     <ButtonLink to="/openings" variant='secondary'>Openings</ButtonLink>
                     <ButtonLink to="/chats" variant='secondary'>Chats</ButtonLink>
@@ -114,7 +114,7 @@ function getVariantStyles(variant: Variant, onLogout: () => void, onLogoutAdmin:
         case "openings":
             return (
                 <div className={wrapperClass}>
-                    <ButtonLink to="/" variant='secondary'>Home</ButtonLink>
+                    <ButtonLink to="/home" variant='secondary'>Home</ButtonLink>
                     <ButtonLink to="/schedule" variant='secondary'>Schedule</ButtonLink>
                     <Button variant='secondary'>Openings</Button>
                     <ButtonLink to="/chats" variant='secondary'>Chats</ButtonLink>
@@ -130,7 +130,7 @@ function getVariantStyles(variant: Variant, onLogout: () => void, onLogoutAdmin:
         case "chats":
             return (
                 <div className={wrapperClass}>
-                    <ButtonLink to="/" variant='secondary'>Home</ButtonLink>
+                    <ButtonLink to="/home" variant='secondary'>Home</ButtonLink>
                     <ButtonLink to="/schedule" variant='secondary'>Schedule</ButtonLink>
                     <ButtonLink to="/openings" variant='secondary'>Openings</ButtonLink>
                     <Button variant='secondary'>Chats</Button>
