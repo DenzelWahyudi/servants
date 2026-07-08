@@ -15,6 +15,7 @@ import { AdminAdmissions } from "./pages/AdminAdmissions";
 import { Chats } from "./pages/Chats";
 import { AdminUsers } from "./pages/AdminUsers";
 import { ForgotPassword } from "./pages/ForgotPassword.tsx";
+import { Landing } from "./pages/Landing";
 
 export default function App() {
   return (
@@ -27,9 +28,10 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/admin/login" element={<LoginAdmin />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/" element={<Landing />} />
 
           {/* Protected routes */}
-          <Route path="/" element={
+          <Route path="/home" element={
             <ProtectedRoute><Home /></ProtectedRoute>
           } />
           <Route path="/schedule" element={
