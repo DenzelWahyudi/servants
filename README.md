@@ -36,6 +36,7 @@ Servants Web App is a comprehensive management system designed for organizations
 - **Dashboard:** At-a-glance view of upcoming services, active roles, and organizational statistics.
 - **Service Management:** Admins can create, edit, and delete services, including specific opening slots.
 - **Role System:** Flexible role management allowing admins to assign or relieve specific responsibilities to servants.
+- **Landing Page:** A dedicated public-facing landing page introducing the app to new visitors.
 - **Openings:** Servants can view and sign up for open service slots.
 - **Schedule Tracking:** Comprehensive view of service schedules and volunteer assignments.
 - **Real-time Chat & File Uploads:** Live messaging between users powered by WebSockets, with a dedicated `Chats` page. Users can attach files and preview pictures before sending them. Includes robust error handling for connection stability.
@@ -73,6 +74,7 @@ servants/
 │   │   │   ├── useAuth.ts
 │   │   │   └── useChatSocket.ts
 │   │   ├── pages/                # Full-page components
+│   │   │   ├── Landing.tsx
 │   │   │   ├── Home.tsx
 │   │   │   ├── Schedule.tsx
 │   │   │   ├── Openings.tsx
