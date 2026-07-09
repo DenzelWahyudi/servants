@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../assets/logo.png";
+import {Footer} from "../components/Footer.tsx";
 
 // ─── Animated counter hook ────────────────────────────────────────────────────
 function useCounter(target: number, duration = 1800) {
@@ -508,33 +509,7 @@ export function Landing() {
 
             {/* ── Footer ───────────────────────────────────────────── */}
             <footer className="border-t border-slate-700/50 px-5 sm:px-12 py-10">
-                <div className="max-w-5xl mx-auto flex flex-col sm:flex-row justify-between gap-8 sm:gap-0">
-                    <div className="flex flex-col gap-3">
-                        <div className="flex gap-3 items-center">
-                            <img src={logo} alt="Servants Logo" className="w-6 h-8" />
-                            <span className="text-lg font-bold">Servants</span>
-                        </div>
-                        <p className="text-zinc-500 text-sm max-w-xs leading-relaxed">
-                            A volunteer management platform built for church communities in Jakarta Utara, Indonesia.
-                        </p>
-                    </div>
-                    <div className="grid grid-cols-2 gap-8 sm:gap-16 text-sm">
-                        <div className="flex flex-col gap-3">
-                            <h4 className="text-zinc-300 font-semibold">Quick Links</h4>
-                            <Link to="/register" className="text-zinc-500 hover:text-amber-400 transition-colors">Register</Link>
-                            <Link to="/login" className="text-zinc-500 hover:text-amber-400 transition-colors">Login</Link>
-                        </div>
-                        <div className="flex flex-col gap-3">
-                            <h4 className="text-zinc-300 font-semibold">Contact</h4>
-                            <p className="text-zinc-500">📞 089682115180</p>
-                            <p className="text-zinc-500">✉️ denzel.wahyudi@outlook.com</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="max-w-5xl mx-auto mt-8 pt-6 border-t border-slate-800 flex items-center justify-between">
-                    <span className="text-zinc-600 text-xs">© 2026 Servants. All rights reserved.</span>
-                    <span className="text-zinc-600 text-xs">Indonesia, Jakarta Utara</span>
-                </div>
+                <Footer />
             </footer>
         </div>
     );
