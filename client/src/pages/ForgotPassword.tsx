@@ -91,7 +91,7 @@ export function ForgotPassword() {
             }
 
             setOtpSent(true);
-            setTimer(60);
+            setTimer(600);
         } catch {
             setError("Could not connect to the server. Please try again.");
         } finally {
@@ -117,14 +117,14 @@ export function ForgotPassword() {
                         
                         <div className="flex items-center justify-between">
                             <span className="text-zinc-400 text-sm font-medium">
-                                {otpSent ? (timer > 0 ? `Code expires in 00:${timer.toString().padStart(2, '0')}` : "Code expired") : "OTP Verification"}
+                                {otpSent ? (timer > 0 ? `Code expires in ${Math.floor(timer / 60).toString().padStart(2, '0')}:${(timer % 60).toString().padStart(2, '0')}` : "Code expired") : "OTP Verification"}
                             </span>
                             <button 
                                 onClick={handleSendOTP} 
                                 disabled={loading || (otpSent && timer > 0)}
                                 className="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl transition-all font-semibold shadow-lg shadow-indigo-600/20 active:scale-95 disabled:opacity-50 disabled:active:scale-100"
                             >
-                                {loading && !otpSent ? "Sending..." : (otpSent ? (timer > 0 ? `Resend (${timer}s)` : "Resend OTP") : "Send OTP")}
+                                {loading && !otpSent ? "Sending..." : (otpSent ? (timer > 0 ? `Resend (${Math.floor(timer / 60).toString().padStart(2, '0')}:${(timer % 60).toString().padStart(2, '0')})` : "Resend OTP") : "Send OTP")}
                             </button>
                         </div>
                         
