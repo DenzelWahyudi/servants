@@ -631,6 +631,32 @@ async function verifyOTP(phone, code) {
     }
 }
 
+async function savePushToken(req, res, next) {
+    try {
+        const id = req.user.id;
+        const { pushToken } = req.body;
+
+        if (!pushToken) {
+            throw errorResponder(
+                errorTypes.UNPROCESSABLE_ENTITY,
+                'pushToken is required'
+            );
+        }
+
+        const success = await usersService.savePushToken(id, pushToken);
+        if (!success) {
+            throw errorResponder(
+                errorTypes.UNPROCESSABLE_ENTITY,
+                'Failed to save push token'
+            );
+        }
+
+        return res.status(200).json({ message: 'Push token saved successfully.' });
+    } catch (error) {
+        next(error);
+    }
+}
+
 module.exports = {
     getUsers,
     createUser,
@@ -647,4 +673,5 @@ module.exports = {
     getUserId,
     sendOTP,
     check,
+    savePushToken,
 };

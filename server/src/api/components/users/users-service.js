@@ -65,6 +65,10 @@ async function getUserName(id) {
     return usersRepository.getUserName(id);
 }
 
+async function savePushToken(id, pushToken) {
+    return usersRepository.savePushToken(id, pushToken);
+}
+
 module.exports = {
     getUser,
     getUsers,
@@ -80,4 +84,5 @@ module.exports = {
     forgotPassword,
     deleteUser,
     getUserName,
+    savePushToken,
 };
