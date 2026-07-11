@@ -53,6 +53,10 @@ async function getUserName(id) {
     return user.name;
 }
 
+async function savePushToken(id, pushToken) {
+    return Users.updateOne({ _id: id }, { $set: { pushToken } });
+}
+
 module.exports = {
     getUser,
     getUsers,
@@ -67,4 +71,5 @@ module.exports = {
     forgotPassword,
     deleteUser,
     getUserName,
+    savePushToken,
 };

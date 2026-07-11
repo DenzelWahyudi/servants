@@ -37,6 +37,8 @@ module.exports = (app) => {
 
     route.get('/name', authMiddleware, usersController.getUserName);
 
+    route.put('/push-token', authMiddleware, usersController.savePushToken);
+
     route.put(
         '/update/password',
         authMiddleware,

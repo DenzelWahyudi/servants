@@ -2,6 +2,8 @@ const chatsService = require('./chats-service');
 const { getUserName } = require('../users/users-service');
 const { errorResponder, errorTypes } = require('../../../core/errors');
 const { broadcastToService } = require('../../../core/webSocket');
+const { getGroupDetails } = require('../assignments/assignments-repository');
+const { sendPushNotifications } = require('../../../utils/pushNotifications');
 
 async function sendChat(req, res, next) {
     try {
@@ -31,6 +33,24 @@ async function sendChat(req, res, next) {
         }
 
         broadcastToService(serviceId, { type: 'NEW_CHAT', data: success });
+
+        try {
+            const groupMembers = await getGroupDetails(serviceId);
+            const tokens = groupMembers
+                .filter(member => member.userId.toString() !== userId.toString() && member.pushToken)
+                .map(member => member.pushToken);
+            
+            if (tokens.length > 0) {
+                await sendPushNotifications(
+                    tokens,
+                    `New message from ${userName}`,
+                    message,
+                    { serviceId }
+                );
+            }
+        } catch (err) {
+            console.error('Failed to send push notifications:', err);
+        }
 
         return res.status(201).json(success);
     } catch (error) {
